@@ -3,7 +3,9 @@
 import { useAuth } from "@/src/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import SettingsPage from "@/src/components/SettingsPage";
+import dynamic from "next/dynamic";
+
+const SettingsPage = dynamic(() => import("@/src/components/SettingsPage"), { ssr: false });
 
 export default function SettingsRoute() {
   const { user, loading } = useAuth();

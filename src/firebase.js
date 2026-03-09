@@ -1,6 +1,6 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, initializeFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDajYLU7XH08fpTQ8v0c3KJ-xImaISRGCw",
@@ -12,7 +12,15 @@ const firebaseConfig = {
   measurementId: "G-7X11BQ59Y3",
 };
 
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const googleProvider = new GoogleAuthProvider();
+let app, auth, db, googleProvider;
+
+if (typeof window !== "undefined") {
+  app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+  auth = getAuth(app);
+  db = initializeFirestore(app, {
+    experimentalForceLongPolling: true,
+  });
+  googleProvider = new GoogleAuthProvider();
+}
+
+export { app, auth, db, googleProvider };

@@ -2,7 +2,9 @@
 
 import { useAuth } from "@/src/context/AuthContext";
 import LoginPage from "@/src/components/LoginPage";
-import HomePage from "@/src/components/HomePage";
+import dynamic from "next/dynamic";
+
+const HomePage = dynamic(() => import("@/src/components/HomePage"), { ssr: false });
 
 export default function Page() {
   const { user } = useAuth();

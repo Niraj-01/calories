@@ -3,7 +3,9 @@
 import { useAuth } from "@/src/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import HistoryPage from "@/src/components/HistoryPage";
+import dynamic from "next/dynamic";
+
+const HistoryPage = dynamic(() => import("@/src/components/HistoryPage"), { ssr: false });
 
 export default function HistoryRoute() {
   const { user, loading } = useAuth();
