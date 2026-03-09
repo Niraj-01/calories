@@ -1,7 +1,11 @@
 {
   "hosting": {
     "public": "out",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
     "rewrites": [
       {
         "source": "**",
@@ -28,5 +32,19 @@
         ]
       }
     ]
+  },
+  "firestore": {
+    "database": "(default)",
+    "location": "asia-southeast1",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "auth": {
+    "providers": {
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "Calories",
+        "supportEmail": "nirajvaidya0.0@gmail.com"
+      }
+    }
   }
 }
