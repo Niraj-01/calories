@@ -1,0 +1,102 @@
+.header {
+  margin-bottom: 24px;
+}
+
+.card {
+  margin-bottom: 16px;
+}
+
+.profileRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 2px solid var(--border-light);
+}
+
+.avatarPlaceholder {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--accent-dim);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.profileInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.profileName {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.profileEmail {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.field {
+  margin-bottom: 20px;
+}
+
+.goalRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.goalInput {
+  width: 140px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.goalUnit {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.saveBtn {
+  margin-top: 4px;
+}
+
+.signOutBtn {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+
+.signOutBtn:hover {
+  background: var(--danger-dim);
+}
+
+.version {
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 24px;
+  padding-bottom: 8px;
+}
+
+.loadingWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60dvh;
+}

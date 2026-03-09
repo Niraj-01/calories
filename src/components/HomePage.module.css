@@ -1,0 +1,47 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.ringWrap {
+  margin-bottom: 12px;
+}
+
+.remaining {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.remainingText {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.remainingNum {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--accent);
+}
+
+.over .remainingNum {
+  color: var(--danger);
+}
+
+.macroCard {
+  margin-bottom: 24px;
+}
+
+.meals {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.loadingWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60dvh;
+}
