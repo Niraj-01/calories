@@ -21,7 +21,10 @@ export default function HomePage() {
   const lastFetchDate = useRef(null);
 
   const fetchData = useCallback(async () => {
-    if (!user) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     try {
       setLoading(true);
       const [dayEntries, settings] = await Promise.all([
@@ -33,6 +36,7 @@ export default function HomePage() {
       lastFetchDate.current = today;
     } catch (err) {
       console.error("Failed to load data:", err);
+      // Show empty state instead of infinite spinner
     } finally {
       setLoading(false);
     }

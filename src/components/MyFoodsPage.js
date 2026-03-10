@@ -18,17 +18,23 @@ export default function MyFoodsPage() {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
     (async () => {
       try {
         const data = await getMyFoods(user.uid);
-        setFoods(data);
+        if (!cancelled) setFoods(data);
       } catch (err) {
         console.error("Failed to load my foods:", err);
+        // Show empty state instead of infinite spinner
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     })();
+    return () => { cancelled = true; };
   }, [user]);
 
   const openAdd = () => {
