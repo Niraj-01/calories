@@ -7,6 +7,7 @@ import styles from "./BottomNav.module.css";
 const tabs = [
   { href: "/", label: "Today", icon: "◉" },
   { href: "/history", label: "History", icon: "☰" },
+  { href: "/my-foods", label: "My Foods", icon: "★" },
   { href: "/settings", label: "Settings", icon: "⚙" },
 ];
 

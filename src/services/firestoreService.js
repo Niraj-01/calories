@@ -6,6 +6,7 @@ import {
   getDocs,
   getDoc,
   setDoc,
+  updateDoc,
   query,
   orderBy,
   serverTimestamp,
@@ -80,4 +81,37 @@ export async function getUserSettings(uid) {
 
 export async function setUserSettings(uid, settings) {
   await setDoc(userDocRef(uid), settings, { merge: true });
+}
+
+// --- My Foods ---
+
+// Path: users/{uid}/myFoods/{foodId}
+function myFoodsRef(uid) {
+  return collection(db, "users", uid, "myFoods");
+}
+
+export async function getMyFoods(uid) {
+  const ref = myFoodsRef(uid);
+  const q = query(ref, orderBy("name", "asc"));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
+export async function addMyFood(uid, food) {
+  const ref = myFoodsRef(uid);
+  const docRef = await addDoc(ref, {
+    ...food,
+    createdAt: serverTimestamp(),
+  });
+  return docRef.id;
+}
+
+export async function updateMyFood(uid, foodId, food) {
+  const ref = doc(db, "users", uid, "myFoods", foodId);
+  await updateDoc(ref, food);
+}
+
+export async function deleteMyFood(uid, foodId) {
+  const ref = doc(db, "users", uid, "myFoods", foodId);
+  await deleteDoc(ref);
 }

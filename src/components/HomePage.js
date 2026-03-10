@@ -54,7 +54,7 @@ export default function HomePage() {
         fat: Math.round(food.fat * (food.servingAmount || 100) / 100 * 10) / 10,
         meal,
         servingAmount: food.servingAmount || 100,
-        servingUnit: "g",
+        servingUnit: food.servingUnit || "g",
       };
       const id = await addFoodEntry(user.uid, today, entry);
       setEntries((prev) => [...prev, { id, ...entry }]);
