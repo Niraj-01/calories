@@ -55,7 +55,7 @@ export default function SearchModal({ meal, onAdd, onClose }) {
           setMyFoods(foods);
           setMyFoodsLoaded(true);
         } catch (err) {
-          console.error("Failed to load my foods:", err);
+          console.warn("Failed to load my foods:", err);
         } finally {
           setMyFoodsLoading(false);
         }
@@ -76,12 +76,12 @@ export default function SearchModal({ meal, onAdd, onClose }) {
         const data = await searchFoods(q);
         setResults(data);
       } catch (err) {
-        console.error(err);
+        console.warn(err);
         setError("Search failed. Try again.");
       } finally {
         setLoading(false);
       }
-    }, 400);
+    }, 300);
   }, []);
 
   const handleInputChange = (e) => {

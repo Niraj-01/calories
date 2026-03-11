@@ -35,7 +35,7 @@ export default function HomePage() {
       setGoal(settings.calorieGoal || 2000);
       lastFetchDate.current = today;
     } catch (err) {
-      console.error("Failed to load data:", err);
+      console.warn("Failed to load data:", err);
       // Show empty state instead of infinite spinner
     } finally {
       setLoading(false);
@@ -63,7 +63,7 @@ export default function HomePage() {
       const id = await addFoodEntry(user.uid, today, entry);
       setEntries((prev) => [...prev, { id, ...entry }]);
     } catch (err) {
-      console.error("Failed to add food:", err);
+      console.warn("Failed to add food:", err);
     }
   };
 
@@ -73,7 +73,7 @@ export default function HomePage() {
       await deleteFoodEntry(user.uid, today, entryId);
       setEntries((prev) => prev.filter((e) => e.id !== entryId));
     } catch (err) {
-      console.error("Failed to delete entry:", err);
+      console.warn("Failed to delete entry:", err);
     }
   };
 
@@ -102,9 +102,28 @@ export default function HomePage() {
 
   if (loading) {
     return (
-      <div className="page container">
-        <div className={styles.loadingWrap}>
-          <div className="spinner spinner-lg" />
+      <div className="page container fade-in">
+        <div className={styles.header}>
+          <div>
+            <div className="skeleton" style={{ width: 120, height: 32, marginBottom: 8 }} />
+            <div className="skeleton" style={{ width: 150, height: 20 }} />
+          </div>
+        </div>
+        <div className={styles.ringWrap}>
+          <div className="skeleton" style={{ width: 220, height: 220, borderRadius: "50%" }} />
+        </div>
+        <div className={styles.remaining}>
+          <div className="skeleton" style={{ width: 180, height: 24, margin: "0 auto" }} />
+        </div>
+        <div className={`card ${styles.macroCard}`}>
+          <div className="skeleton" style={{ width: "100%", height: 60 }} />
+        </div>
+        <div className={styles.meals}>
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className={`card ${styles.macroCard}`} style={{ marginTop: 16 }}>
+              <div className="skeleton" style={{ width: "100%", height: 80 }} />
+            </div>
+          ))}
         </div>
       </div>
     );

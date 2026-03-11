@@ -21,7 +21,7 @@ export default function SettingsPage() {
         setGoal(settings.calorieGoal || 2000);
         setDisplayName(settings.displayName || user.displayName || "");
       } catch (err) {
-        console.error("Failed to load settings:", err);
+        console.warn("Failed to load settings:", err);
       } finally {
         setLoading(false);
       }
@@ -39,7 +39,7 @@ export default function SettingsPage() {
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (err) {
-      console.error("Failed to save settings:", err);
+      console.warn("Failed to save settings:", err);
     } finally {
       setSaving(false);
     }

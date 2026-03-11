@@ -41,7 +41,7 @@ export default function HistoryPage() {
 
         setDays(daysList);
       } catch (err) {
-        console.error("Failed to load history:", err);
+        console.warn("Failed to load history:", err);
       } finally {
         setLoading(false);
       }
@@ -65,9 +65,26 @@ export default function HistoryPage() {
 
   if (loading) {
     return (
-      <div className="page container">
-        <div className={styles.loadingWrap}>
-          <div className="spinner spinner-lg" />
+      <div className="page container fade-in">
+        <div className={styles.header}>
+          <div className="skeleton" style={{ width: 100, height: 32, marginBottom: 8 }} />
+          <div className="skeleton" style={{ width: 120, height: 20 }} />
+        </div>
+        <div className={styles.list}>
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className={styles.dayCard}>
+              <div className={styles.dayTop}>
+                <div className="skeleton" style={{ width: 80, height: 20 }} />
+                <div className="skeleton" style={{ width: 50, height: 20 }} />
+              </div>
+              <div className={styles.barTrack}>
+                <div className="skeleton" style={{ width: "100%", height: "100%" }} />
+              </div>
+              <div className={styles.dayMeta} style={{ marginTop: 12 }}>
+                <div className="skeleton" style={{ width: 180, height: 16 }} />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );

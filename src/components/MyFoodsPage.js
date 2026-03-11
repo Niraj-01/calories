@@ -28,7 +28,7 @@ export default function MyFoodsPage() {
         const data = await getMyFoods(user.uid);
         if (!cancelled) setFoods(data);
       } catch (err) {
-        console.error("Failed to load my foods:", err);
+        console.warn("Failed to load my foods:", err);
         // Show empty state instead of infinite spinner
       } finally {
         if (!cancelled) setLoading(false);
@@ -83,7 +83,7 @@ export default function MyFoodsPage() {
       }
       closeForm();
     } catch (err) {
-      console.error("Failed to save food:", err);
+      console.warn("Failed to save food:", err);
     } finally {
       setSaving(false);
     }
@@ -96,7 +96,7 @@ export default function MyFoodsPage() {
       setFoods((prev) => prev.filter((f) => f.id !== foodId));
       setDeleteConfirm(null);
     } catch (err) {
-      console.error("Failed to delete food:", err);
+      console.warn("Failed to delete food:", err);
     }
   };
 
@@ -106,10 +106,23 @@ export default function MyFoodsPage() {
 
   if (loading) {
     return (
-      <div className="page container">
-        <div className={styles.loadingWrap}>
-          <div className="spinner spinner-lg" />
+      <div className="page container fade-in">
+        <div className={styles.header}>
+          <div className="skeleton" style={{ width: 140, height: 32 }} />
+          <div className="skeleton" style={{ width: 100, height: 32, borderRadius: 8 }} />
         </div>
+        {[1, 2, 3].map((i) => (
+          <div key={i} className={`card ${styles.foodCard}`}>
+            <div className={styles.foodInfo}>
+              <div className="skeleton" style={{ width: 120, height: 20, marginBottom: 8 }} />
+              <div className="skeleton" style={{ width: 180, height: 16 }} />
+            </div>
+            <div className={styles.foodActions}>
+              <div className="skeleton" style={{ width: 32, height: 32, borderRadius: "50%" }} />
+              <div className="skeleton" style={{ width: 32, height: 32, borderRadius: "50%" }} />
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
