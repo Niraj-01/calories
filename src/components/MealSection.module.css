@@ -23,14 +23,9 @@
   background: var(--bg-elevated);
 }
 
-.headerLeft {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .icon {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
 }
 
 .mealName {
@@ -97,20 +92,23 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  margin-bottom: 10px;
+  gap: 4px;
+  margin-bottom: 12px;
 }
 
 .entry {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 12px 14px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  transition: border-color 0.2s;
 }
 
-.entry:last-child {
-  border-bottom: none;
+.entry:hover {
+  border-color: var(--border-light);
 }
 
 .entryInfo {
@@ -148,18 +146,19 @@
 }
 
 .deleteBtn {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-full);
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: var(--text-muted);
-  background: transparent;
+  background: var(--bg-card);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s;
   -webkit-tap-highlight-color: transparent;
+  border: 1px solid var(--border);
 }
 
 .deleteBtn:hover {
@@ -194,4 +193,21 @@
 .addBtn span {
   font-size: 1rem;
   font-weight: 600;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.scanBtn {
+  flex: 0.4;
+  color: var(--accent);
+  border-color: var(--accent-dim);
+  background: var(--bg-elevated);
+}
+
+.scanBtn:hover {
+  background: var(--accent-dim);
 }

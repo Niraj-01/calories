@@ -24,17 +24,7 @@ let app, auth, db, googleProvider;
 if (typeof window !== "undefined") {
   app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
   auth = getAuth(app);
-
-  try {
-    db = initializeFirestore(app, {
-      experimentalForceLongPolling: true,
-      localCache: memoryLocalCache(),
-    });
-  } catch (e) {
-    // Already initialized (HMR reload)
-    db = getFirestore(app);
-  }
-
+  db = getFirestore(app);
   googleProvider = new GoogleAuthProvider();
 }
 

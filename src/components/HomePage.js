@@ -7,6 +7,7 @@ import CalorieRing from "@/src/components/CalorieRing";
 import MacroBar from "@/src/components/MacroBar";
 import MealSection from "@/src/components/MealSection";
 import SearchModal from "@/src/components/SearchModal";
+import CameraModal from "@/src/components/CameraModal";
 import styles from "./HomePage.module.css";
 
 const MEALS = ["breakfast", "lunch", "dinner", "snacks"];
@@ -17,6 +18,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [goal, setGoal] = useState(2000);
   const [searchMeal, setSearchMeal] = useState(null);
+  const [cameraMeal, setCameraMeal] = useState(null);
   const today = dateKey();
   const lastFetchDate = useRef(null);
 
@@ -175,6 +177,7 @@ export default function HomePage() {
             meal={meal}
             entries={mealEntries[meal]}
             onAdd={() => setSearchMeal(meal)}
+            onScan={() => setCameraMeal(meal)}
             onDelete={handleDelete}
           />
         ))}
@@ -186,6 +189,15 @@ export default function HomePage() {
           meal={searchMeal}
           onAdd={(food) => handleAddFood(food, searchMeal)}
           onClose={() => setSearchMeal(null)}
+        />
+      )}
+
+      {/* Camera Modal */}
+      {cameraMeal && (
+        <CameraModal 
+          meal={cameraMeal}
+          onAdd={(food) => handleAddFood(food, cameraMeal)}
+          onClose={() => setCameraMeal(null)}
         />
       )}
     </div>

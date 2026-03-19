@@ -25,11 +25,11 @@
   border-top-right-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
-  animation: slideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
 }
 
-@keyframes slideUp {
+@keyframes modalSlideUp {
   from {
     transform: translateY(100%);
   }
