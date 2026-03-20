@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useAuth } from "@/src/context/AuthContext";
 import { searchFoods } from "@/src/services/nutritionService";
 import { getMyFoods } from "@/src/services/firestoreService";
@@ -33,10 +34,12 @@ export default function SearchModal({ meal, onAdd, onClose }) {
   const [myFoods, setMyFoods] = useState([]);
   const [myFoodsLoading, setMyFoodsLoading] = useState(false);
   const [myFoodsLoaded, setMyFoodsLoaded] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const inputRef = useRef(null);
   const timerRef = useRef(null);
 
   useEffect(() => {
+    setMounted(true);
     if (activeTab === "search") inputRef.current?.focus();
     document.body.style.overflow = "hidden";
     return () => {
@@ -129,7 +132,9 @@ export default function SearchModal({ meal, onAdd, onClose }) {
 
   const mealLabel = meal.charAt(0).toUpperCase() + meal.slice(1);
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div className={styles.overlay} onClick={onClose}>
       <div
         className={styles.modal}
@@ -294,6 +299,7 @@ export default function SearchModal({ meal, onAdd, onClose }) {
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

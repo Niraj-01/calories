@@ -52,15 +52,23 @@ export async function getDayRange(uid, startDate, endDate) {
   const start = new Date(startDate);
   const end = new Date(endDate);
 
+  const promises = [];
+
   for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
     const key = dateKey(d);
-    try {
-      const entries = await getDayEntries(uid, key);
-      results[key] = entries;
-    } catch {
-      results[key] = [];
-    }
+    promises.push(
+      (async () => {
+        try {
+          const entries = await getDayEntries(uid, key);
+          results[key] = entries;
+        } catch {
+          results[key] = [];
+        }
+      })()
+    );
   }
+
+  await Promise.all(promises);
   return results;
 }
 

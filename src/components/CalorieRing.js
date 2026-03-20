@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import styles from "./CalorieRing.module.css";
 
 export default function CalorieRing({ consumed = 0, goal = 2000 }) {
@@ -8,9 +9,17 @@ export default function CalorieRing({ consumed = 0, goal = 2000 }) {
   const normalizedRadius = radius - stroke / 2;
   const circumference = 2 * Math.PI * normalizedRadius;
 
-  const ratio = Math.min(consumed / Math.max(goal, 1), 1.5);
-  const offset = circumference - ratio * circumference;
+  const [offset, setOffset] = useState(circumference);
   const isOver = consumed > goal;
+
+  useEffect(() => {
+    const ratio = Math.min(consumed / Math.max(goal, 1), 1.5);
+    const targetOffset = circumference - ratio * circumference;
+    
+    // Slight delay to ensure the CSS transition triggers on mount
+    const timer = setTimeout(() => setOffset(targetOffset), 50);
+    return () => clearTimeout(timer);
+  }, [consumed, goal, circumference]);
 
   return (
     <div className={styles.wrapper}>

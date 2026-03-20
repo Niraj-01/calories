@@ -118,12 +118,25 @@ export default function HomePage() {
           <div className="skeleton" style={{ width: 180, height: 24, margin: "0 auto" }} />
         </div>
         <div className={`card ${styles.macroCard}`}>
-          <div className="skeleton" style={{ width: "100%", height: 60 }} />
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12 }}>
+             {[1, 2, 3].map((i) => (
+                <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+                  <div className="skeleton" style={{ width: 40, height: 24 }} />
+                  <div className="skeleton" style={{ width: 60, height: 12 }} />
+                </div>
+             ))}
+          </div>
         </div>
         <div className={styles.meals}>
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className={`card ${styles.macroCard}`} style={{ marginTop: 16 }}>
-              <div className="skeleton" style={{ width: "100%", height: 80 }} />
+            <div key={i} className={`card ${styles.macroCard}`} style={{ padding: 0, marginTop: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 16px' }}>
+                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                  <div className="skeleton" style={{ width: 24, height: 24, borderRadius: '50%' }} />
+                  <div className="skeleton" style={{ width: 80, height: 16 }} />
+                </div>
+                <div className="skeleton" style={{ width: 40, height: 16 }} />
+              </div>
             </div>
           ))}
         </div>

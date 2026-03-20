@@ -23,11 +23,19 @@ export default function BottomNav() {
               ? pathname === "/"
               : pathname.startsWith(tab.href);
 
+          const handleNavClick = () => {
+            if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
+              // Subtle haptic feedback for supported devices
+              window.navigator.vibrate(50);
+            }
+          };
+
           return (
             <Link
               key={tab.href}
               href={tab.href}
               className={`${styles.tab} ${isActive ? styles.active : ""}`}
+              onClick={handleNavClick}
             >
               <span className={styles.icon}>{tab.icon}</span>
               <span className={styles.label}>{tab.label}</span>

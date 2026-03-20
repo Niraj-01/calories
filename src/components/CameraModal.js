@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import styles from "./CameraModal.module.css";
 
 export default function CameraModal({ meal, onAdd, onClose }) {
@@ -7,12 +8,21 @@ export default function CameraModal({ meal, onAdd, onClose }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [prediction, setPrediction] = useState(null);
+  const [mounted, setMounted] = useState(false);
   
   // States for user adjustment
   const [servingAmount, setServingAmount] = useState(100);
   const [servingUnit, setServingUnit] = useState("g");
   
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    setMounted(true);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -94,7 +104,9 @@ export default function CameraModal({ meal, onAdd, onClose }) {
     onClose();
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div className={styles.overlay}>
       <div className={styles.modal}>
         <div className={styles.modalHeader}>
@@ -156,9 +168,9 @@ export default function CameraModal({ meal, onAdd, onClose }) {
           {/* Loading State */}
           {loading && (
             <div className={styles.loadingArea}>
-              <div className={styles.scannerLine}></div>
-              {preview && <img src={preview} alt="Analyzing" className={styles.previewImageDimmed} />}
-              <p className={styles.loadingText}>AI is analyzing your plate...</p>
+               <div className={styles.scannerLine}></div>
+               {preview && <img src={preview} alt="Analyzing" className={styles.previewImageDimmed} />}
+               <p className={styles.loadingText}>AI is analyzing your plate...</p>
             </div>
           )}
 
@@ -241,6 +253,7 @@ export default function CameraModal({ meal, onAdd, onClose }) {
 
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

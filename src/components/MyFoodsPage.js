@@ -221,11 +221,15 @@ export default function MyFoodsPage() {
       {/* Food list */}
       {foods.length === 0 && !formOpen && (
         <div className="empty-state">
-          <p className="empty-state-icon">★</p>
+          <div className="empty-state-icon" style={{ fontSize: '3rem', opacity: 1, filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.5))' }}>📝</div>
+          <h3 style={{ fontSize: '1.2rem', marginBottom: '8px', color: 'var(--text-primary)' }}>No custom foods yet</h3>
           <p className="empty-state-text">
-            No custom foods yet.<br />
-            Tap &ldquo;+ Add Food&rdquo; to create one.
+            Build your personal food database.<br />
+            Create custom foods for quick logging.
           </p>
+          <button className="btn btn-primary" style={{ marginTop: '20px' }} onClick={openAdd}>
+            + Create Food
+          </button>
         </div>
       )}
 

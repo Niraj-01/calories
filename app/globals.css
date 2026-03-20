@@ -1,18 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Dark theme - Richer Midnight Blue/Black */
-  --bg-primary: #05050A;
-  --bg-secondary: rgba(15, 15, 22, 0.7);
-  --bg-card: #12121A;
-  --bg-elevated: #1C1C26;
-  --bg-input: rgba(30, 30, 42, 0.5);
+  /* Dark theme - Zinc-based true dark mode */
+  --bg-primary: #09090b;
+  --bg-secondary: rgba(24, 24, 27, 0.7);
+  --bg-card: #18181b;
+  --bg-elevated: #27272a;
+  --bg-input: rgba(39, 39, 42, 0.5);
 
   /* Text */
-  --text-primary: #FFFFFF;
-  --text-secondary: #A1A1AA;
-  --text-muted: #71717A;
-  --text-inverse: #05050A;
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --text-inverse: #09090b;
 
   /* Accent — vibrant energetic amber/orange */
   --accent: #FF9900;
@@ -41,15 +41,15 @@
   --safe-bottom: env(safe-area-inset-bottom, 16px);
 
   /* Radius */
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
   --radius-full: 9999px;
 
   /* Shadows - softer, more diffuse */
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
-  --shadow-card: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255, 255, 255, 0.03);
-  --shadow-elevated: 0 12px 32px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  --shadow-sm: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-card: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255, 255, 255, 0.04);
+  --shadow-elevated: 0 16px 48px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255, 255, 255, 0.06);
   --shadow-glow: 0 0 24px var(--accent-glow);
 
   /* Typography */
@@ -58,7 +58,8 @@
   
   /* Easings */
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 *, *::before, *::after {
@@ -159,7 +160,6 @@ ul, ol {
   -webkit-backdrop-filter: blur(8px);
 }
 
-/* Button base */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -169,14 +169,14 @@ ul, ol {
   border-radius: var(--radius-sm);
   font-weight: 600;
   font-size: 0.95rem;
-  transition: all 0.25s var(--ease-smooth);
+  transition: all 0.2s var(--ease-snappy);
   white-space: nowrap;
   user-select: none;
   border: 1px solid transparent;
 }
 
 .btn:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
 .btn-primary {
@@ -286,13 +286,13 @@ ul, ol {
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .fade-in {
-  /* Using a snappier cubic-bezier for a more premium feel */
-  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  /* Snappier fade in */
+  animation: slideUp 0.5s var(--ease-snappy) forwards;
 }
 
 /* Spinner */
