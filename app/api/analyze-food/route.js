@@ -36,11 +36,23 @@ export async function POST(request) {
       );
     }
 
-    const hfResult = await hfResponse.json();
+    // HuggingFace sometimes returns text when the model is loading; guard parse
+    let hfResult;
+    try {
+      const hfText = await hfResponse.text();
+      hfResult = JSON.parse(hfText);
+    } catch (parseErr) {
+      console.error("HuggingFace parse error", parseErr);
+      return NextResponse.json(
+        { error: "AI response was not valid JSON. Please retry in a moment." },
+        { status: 502 }
+      );
+    }
 
     if (!Array.isArray(hfResult) || hfResult.length === 0) {
+      const fallbackMsg = typeof hfResult?.error === "string" ? hfResult.error : "Could not identify food.";
       return NextResponse.json(
-        { error: 'Could not identify food.' },
+        { error: fallbackMsg },
         { status: 400 }
       );
     }
@@ -78,11 +90,25 @@ export async function POST(request) {
             protein: 0,
             carbs: 0,
             fat: 0,
-            message: "Food identified, but failed to fetch nutrition data."
+            message: `Nutrition lookup failed (${nutritionResponse.status}).`
         });
     }
 
-    const nutritionData = await nutritionResponse.json();
+    let nutritionData;
+    try {
+      nutritionData = await nutritionResponse.json();
+    } catch (parseErr) {
+      console.error("Nutrition parse error", parseErr);
+      return NextResponse.json({
+        name: foodName,
+        confidence: topPrediction.score,
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0,
+        message: "Nutrition service returned invalid data."
+      });
+    }
 
     // The API might return 0 if it doesn't understand the query or has no data
     if (!nutritionData.calories) {
