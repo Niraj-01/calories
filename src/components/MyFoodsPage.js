@@ -5,7 +5,17 @@ import { useAuth } from "@/src/context/AuthContext";
 import { getMyFoods, addMyFood, updateMyFood, deleteMyFood } from "@/src/services/firestoreService";
 import styles from "./MyFoodsPage.module.css";
 
-const EMPTY_FOOD = { name: "", calories: "", protein: "", carbs: "", fat: "" };
+const UNITS = ["g", "ml", "kg", "l", "oz", "cup", "tbsp", "tsp"];
+
+const EMPTY_FOOD = {
+  name: "",
+  calories: "",
+  protein: "",
+  carbs: "",
+  fat: "",
+  defaultAmount: "100",
+  defaultUnit: "g",
+};
 
 export default function MyFoodsPage() {
   const { user } = useAuth();
@@ -50,6 +60,8 @@ export default function MyFoodsPage() {
       protein: food.protein,
       carbs: food.carbs,
       fat: food.fat,
+      defaultAmount: food.defaultAmount != null ? String(food.defaultAmount) : "100",
+      defaultUnit: food.defaultUnit || "g",
     });
     setEditingId(food.id);
     setFormOpen(true);
@@ -64,12 +76,17 @@ export default function MyFoodsPage() {
   const handleSave = async () => {
     if (!user || !form.name.trim()) return;
     setSaving(true);
+    const defaultAmountValue = parseFloat(form.defaultAmount);
+    const defaultAmount = Number.isFinite(defaultAmountValue) && defaultAmountValue > 0 ? defaultAmountValue : 100;
+    const defaultUnit = UNITS.includes(form.defaultUnit) ? form.defaultUnit : "g";
     const foodData = {
       name: form.name.trim(),
       calories: parseFloat(form.calories) || 0,
       protein: parseFloat(form.protein) || 0,
       carbs: parseFloat(form.carbs) || 0,
       fat: parseFloat(form.fat) || 0,
+      defaultAmount,
+      defaultUnit,
     };
     try {
       if (editingId) {
@@ -203,6 +220,29 @@ export default function MyFoodsPage() {
             </div>
           </div>
 
+          <div className={styles.field}>
+            <label className="label" htmlFor="foodDefault">Default serving (prefill)</label>
+            <div className={styles.servingGroup}>
+              <input
+                id="foodDefault"
+                type="number"
+                className="input num"
+                min="1"
+                value={form.defaultAmount}
+                onChange={(e) => updateField("defaultAmount", e.target.value)}
+              />
+              <select
+                className="input"
+                value={form.defaultUnit}
+                onChange={(e) => updateField("defaultUnit", e.target.value)}
+              >
+                {UNITS.map((u) => (
+                  <option key={u} value={u}>{u}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           <div className={styles.formActions}>
             <button className="btn btn-secondary" onClick={closeForm}>
               Cancel
@@ -249,6 +289,9 @@ export default function MyFoodsPage() {
               </span>
               <span className={styles.foodMacro} style={{ color: "var(--fat)" }}>
                 F:{food.fat}g
+              </span>
+              <span className={styles.servingChip}>
+                Default: {food.defaultAmount ?? 100}{food.defaultUnit || "g"}
               </span>
             </div>
           </div>

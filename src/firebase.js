@@ -10,13 +10,13 @@ import {
 } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDajYLU7XH08fpTQ8v0c3KJ-xImaISRGCw",
-  authDomain: "gym-centre-482209.firebaseapp.com",
-  projectId: "gym-centre-482209",
-  storageBucket: "gym-centre-482209.firebasestorage.app",
-  messagingSenderId: "299236777108",
-  appId: "1:299236777108:web:a143d7eb319600e2912881",
-  measurementId: "G-7X11BQ59Y3",
+  apiKey: "AIzaSyBxDmz6_pw_MK-UQ2lVYoJweT8giiDZGDI",
+  authDomain: "calories-88b0d.firebaseapp.com",
+  projectId: "calories-88b0d",
+  storageBucket: "calories-88b0d.firebasestorage.app",
+  messagingSenderId: "34828594720",
+  appId: "1:34828594720:web:41937eb2f0712de1451645",
+  measurementId: "G-4V3EHPQMW8",
 };
 
 let app, auth, db, googleProvider;
@@ -24,7 +24,17 @@ let app, auth, db, googleProvider;
 if (typeof window !== "undefined") {
   app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
   auth = getAuth(app);
-  db = getFirestore(app);
+  try {
+    db = initializeFirestore(app, {
+      localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager(),
+        cacheSizeBytes: CACHE_SIZE_UNLIMITED,
+      }),
+    });
+  } catch (err) {
+    console.warn("Persistent cache unavailable, falling back to memory cache", err);
+    db = getFirestore(app, { localCache: memoryLocalCache() });
+  }
   googleProvider = new GoogleAuthProvider();
 }
 

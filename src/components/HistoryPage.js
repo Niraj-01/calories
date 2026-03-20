@@ -15,14 +15,16 @@ export default function HistoryPage() {
     if (!user) return;
     (async () => {
       try {
-        const settings = await getUserSettings(user.uid);
-        setGoal(settings.calorieGoal || 2000);
-
         const today = new Date();
         const start = new Date(today);
         start.setDate(start.getDate() - 13);
 
-        const rangeData = await getDayRange(user.uid, dateKey(start), dateKey(today));
+        const [settings, rangeData] = await Promise.all([
+          getUserSettings(user.uid),
+          getDayRange(user.uid, dateKey(start), dateKey(today)),
+        ]);
+
+        setGoal(settings.calorieGoal || 2000);
 
         const daysList = Object.entries(rangeData)
           .map(([date, entries]) => {

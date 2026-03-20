@@ -1,34 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Calories Tracker
 
-## Getting Started
+Next.js app with Firebase Auth + Firestore for storing user foods and daily logs.
 
-First, run the development server:
+## Quickstart (local)
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Firebase setup
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+1) Create a Firebase project and enable Firestore (production mode) and Google Sign-In.
+2) In the Firebase console, add a Web App and copy the config.
+3) Paste the config into [src/firebase.js](src/firebase.js) `firebaseConfig`.
+4) Deploy strict rules: `firebase deploy --only firestore` using [firestore.rules](firestore.rules).
+	- Rules enforce that users can only read/write their own `users/{uid}` subtree.
+5) (Optional) To speed up cold loads, Firestore persistence is enabled in [src/firebase.js](src/firebase.js); keep this file as-is.
 
-## Learn More
+## Deploy to Firebase Hosting
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install -g firebase-tools
+firebase login
+firebase use --add <your-project-id>
+firebase init hosting   # choose existing project, framework: Next.js
+npm run build
+firebase deploy --only hosting
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Notes
+- Auth: Google sign-in via Firebase Auth.
+- Data: per-user logs at `users/{uid}/logs/{date}/entries` and custom foods at `users/{uid}/myFoods`.
+- If data seems missing after reload, ensure you are signed into the same Firebase project and account used to create it.

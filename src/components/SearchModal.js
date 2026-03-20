@@ -96,8 +96,10 @@ export default function SearchModal({ meal, onAdd, onClose }) {
 
   const handleSelect = (food) => {
     setSelectedFood(food);
-    setServingAmount(100);
-    setUnit("g");
+    const defaultAmount = Math.max(1, parseFloat(food.defaultAmount) || 100);
+    const defaultUnit = food.defaultUnit || "g";
+    setServingAmount(defaultAmount);
+    setUnit(defaultUnit);
   };
 
   // Compute grams equivalent for scaling
