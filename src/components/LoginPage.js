@@ -8,11 +8,12 @@ export default function LoginPage() {
 
   return (
     <div className={styles.container}>
+      <div className={styles.glow} />
       <div className={styles.content}>
         <div className={styles.brand}>
-          <div className={styles.logoIcon}>🔥</div>
-          <h1 className={`${styles.appName} num`}>CALORIES</h1>
-          <p className={styles.tagline}>Track what fuels you</p>
+          <div className={styles.logoIcon}>🍽️</div>
+          <h1 className={styles.appName}>CALORIES</h1>
+          <p className={styles.tagline}>Track smarter. Eat better.</p>
         </div>
 
         <button className={styles.googleBtn} onClick={signIn}>

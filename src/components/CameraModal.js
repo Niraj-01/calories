@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import styles from "./CameraModal.module.css";
@@ -9,20 +11,28 @@ export default function CameraModal({ meal, onAdd, onClose }) {
   const [error, setError] = useState(null);
   const [prediction, setPrediction] = useState(null);
   const [mounted, setMounted] = useState(false);
-  
-  // States for user adjustment
+  const [visible, setVisible] = useState(false);
+
   const [servingAmount, setServingAmount] = useState(100);
   const [servingUnit, setServingUnit] = useState("g");
-  
+
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     setMounted(true);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setVisible(true));
+    });
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "";
     };
   }, []);
+
+  const handleClose = () => {
+    setVisible(false);
+    setTimeout(onClose, 300);
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -36,7 +46,7 @@ export default function CameraModal({ meal, onAdd, onClose }) {
 
   const handleAnalyze = async () => {
     if (!image) return;
-    
+
     setLoading(true);
     setError(null);
     setPrediction(null);
@@ -57,10 +67,9 @@ export default function CameraModal({ meal, onAdd, onClose }) {
       }
 
       setPrediction(data);
-      // Reset to 100g by default for predictions
       setServingAmount(100);
       setServingUnit("g");
-      
+
     } catch (err) {
       console.error(err);
       setError(err.message);
@@ -71,9 +80,7 @@ export default function CameraModal({ meal, onAdd, onClose }) {
 
   const calculateMacros = () => {
     if (!prediction) return null;
-    
     const multiplier = servingAmount / 100;
-    
     return {
       calories: Math.round(prediction.calories * multiplier),
       protein: Math.round(prediction.protein * multiplier * 10) / 10,
@@ -84,155 +91,170 @@ export default function CameraModal({ meal, onAdd, onClose }) {
 
   const handleAddSubmit = () => {
     if (!prediction) return;
-    
-    // We pass the base 100g values and let the parent handle the math,
-    // OR we pass the calculated values. The existing code handleAddFood does math:
-    // math: Math.round(food.calories * (food.servingAmount || 100) / 100)
-    // So we just need to pass the base values and the serving info
     const foodData = {
       name: prediction.name.charAt(0).toUpperCase() + prediction.name.slice(1),
       brand: "AI Estimate",
-      calories: prediction.calories, // Base per 100g
+      calories: prediction.calories,
       protein: prediction.protein,
       carbs: prediction.carbs,
       fat: prediction.fat,
       servingAmount: servingAmount,
       servingUnit: servingUnit,
     };
-    
     onAdd(foodData);
-    onClose();
+    handleClose();
   };
 
   if (!mounted) return null;
 
   return createPortal(
-    <div className={styles.overlay}>
-      <div className={styles.modal}>
-        <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>Scan Food for {meal}</h2>
-          <button className={styles.closeBtn} onClick={onClose}>
-            ✕
+    <div className={`${styles.overlay} ${visible ? styles.overlayVisible : ""}`} onClick={handleClose}>
+      <div
+        className={`${styles.sheet} ${visible ? styles.sheetVisible : ""}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Drag handle */}
+        <div className={styles.handleBar}>
+          <div className={styles.handle} />
+        </div>
+
+        {/* Header */}
+        <div className={styles.sheetHeader}>
+          <h2 className={styles.sheetTitle}>Scan Food for {meal}</h2>
+          <button className={styles.closeBtn} onClick={handleClose}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
           </button>
         </div>
 
         <div className={styles.content}>
-          
-          {/* Upload Area */}
-          {!prediction && !loading && (
-             <div className={styles.uploadArea}>
-               {preview ? (
-                 <div className={styles.previewContainer}>
-                   <img src={preview} alt="Upload preview" className={styles.previewImage} />
-                   <button 
-                     className="btn btn-secondary btn-sm"
-                     onClick={() => {
-                       setImage(null);
-                       setPreview(null);
-                     }}
-                     style={{ marginTop: 12 }}
-                   >
-                     Change Photo
-                   </button>
-                 </div>
-               ) : (
-                 <div 
-                   className={styles.dropzone}
-                   onClick={() => fileInputRef.current?.click()}
-                 >
-                   <div className={styles.uploadIcon}>📷</div>
-                   <p>Tap to take a photo or upload</p>
-                   <input 
-                     type="file" 
-                     accept="image/*"
-                     capture="environment"
-                     ref={fileInputRef}
-                     style={{ display: 'none' }}
-                     onChange={handleImageChange}
-                   />
-                 </div>
-               )}
-               
-               {error && <p className={styles.error}>{error}</p>}
-               
-               <button 
-                 className={`btn btn-primary btn-full ${styles.analyzeBtn}`}
-                 disabled={!image}
-                 onClick={handleAnalyze}
-               >
-                 Analyze Food
-               </button>
-             </div>
-          )}
 
-          {/* Loading State */}
-          {loading && (
-            <div className={styles.loadingArea}>
-               <div className={styles.scannerLine}></div>
-               {preview && <img src={preview} alt="Analyzing" className={styles.previewImageDimmed} />}
-               <p className={styles.loadingText}>AI is analyzing your plate...</p>
+          {/* Upload Area — idle state */}
+          {!prediction && !loading && (
+            <div className={styles.uploadArea}>
+              {preview ? (
+                <div className={styles.previewContainer}>
+                  <img src={preview} alt="Upload preview" className={styles.previewImage} />
+                  <button
+                    className={styles.changeBtn}
+                    onClick={() => {
+                      setImage(null);
+                      setPreview(null);
+                    }}
+                  >
+                    Change Photo
+                  </button>
+                </div>
+              ) : (
+                <div
+                  className={styles.dropzone}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <div className={styles.uploadIcon}>📷</div>
+                  <p className={styles.uploadText}>Tap to scan your meal</p>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    ref={fileInputRef}
+                    className={styles.fileInput}
+                    onChange={handleImageChange}
+                  />
+                </div>
+              )}
+
+              {error && (
+                <div className={styles.errorCard}>
+                  <p className={styles.errorText}>{error}</p>
+                  <p className={styles.errorHint}>Try a clearer photo of the food</p>
+                </div>
+              )}
+
+              <button
+                className="btn btn-primary btn-full"
+                disabled={!image}
+                onClick={handleAnalyze}
+              >
+                Analyze Food
+              </button>
             </div>
           )}
 
-          {/* Result Area */}
+          {/* Loading / Analyzing state */}
+          {loading && (
+            <div className={styles.loadingArea}>
+              <div className={styles.pulseRing}>
+                <div className={styles.pulseInner}>🍽️</div>
+              </div>
+              <p className={styles.loadingText}>Identifying food...</p>
+              {preview && (
+                <img src={preview} alt="Analyzing" className={styles.loadingPreview} />
+              )}
+            </div>
+          )}
+
+          {/* Result state */}
           {prediction && !loading && (
             <div className={styles.resultArea}>
-              <div className={styles.predictionHeader}>
-                 <h3 className={styles.foodName}>
-                   {prediction.name.charAt(0).toUpperCase() + prediction.name.slice(1)}
-                 </h3>
-                 <span className={styles.confidence}>
-                   {Math.round(prediction.confidence * 100)}% Match
-                 </span>
+              <div className={styles.resultHeader}>
+                <h3 className={styles.foodName}>
+                  {prediction.name.charAt(0).toUpperCase() + prediction.name.slice(1)}
+                </h3>
+                <span className={styles.confidenceBadge}>
+                  {Math.round(prediction.confidence * 100)}% match
+                </span>
               </div>
-              
-              <p className={styles.disclaimer}>{prediction.message}</p>
 
-              <div className={styles.servingRow}>
-                <div className={styles.field}>
-                  <label className="label">Amount</label>
-                  <div className={styles.servingGroup}>
-                    <input
-                      type="number"
-                      className={`input num ${styles.servingInput}`}
-                      value={servingAmount}
-                      onChange={(e) => setServingAmount(parseFloat(e.target.value) || 0)}
-                      min="0"
-                    />
-                    <select 
-                      className={styles.unitSelect}
-                      value={servingUnit}
-                      onChange={(e) => setServingUnit(e.target.value)}
-                    >
-                      <option value="g">grams</option>
-                      <option value="ml">ml</option>
-                      <option value="oz">oz</option>
-                      <option value="serving">servings</option>
-                    </select>
-                  </div>
+              {prediction.message && prediction.message !== "Success" && (
+                <p className={styles.disclaimer}>{prediction.message}</p>
+              )}
+
+              {/* Serving adjustment */}
+              <div className={styles.servingSection}>
+                <span className={styles.servingLabel}>Serving</span>
+                <div className={styles.servingGroup}>
+                  <input
+                    type="number"
+                    className={`input ${styles.servingInput}`}
+                    value={servingAmount}
+                    onChange={(e) => setServingAmount(parseFloat(e.target.value) || 0)}
+                    min="0"
+                  />
+                  <select
+                    className={`input ${styles.unitSelect}`}
+                    value={servingUnit}
+                    onChange={(e) => setServingUnit(e.target.value)}
+                  >
+                    <option value="g">grams</option>
+                    <option value="ml">ml</option>
+                    <option value="oz">oz</option>
+                    <option value="serving">servings</option>
+                  </select>
                 </div>
               </div>
 
+              {/* Macros card */}
               <div className={styles.macrosCard}>
-                <h4 className="label">Estimated Nutrition</h4>
+                <span className={styles.macrosTitle}>Estimated Nutrition</span>
                 {(() => {
                   const calculated = calculateMacros();
                   return (
                     <div className={styles.macrosGrid}>
                       <div className={styles.macroBox}>
-                        <span className={styles.macroValue} style={{color: 'var(--accent)'}}>{calculated.calories}</span>
+                        <span className={styles.macroValue} data-type="calories">{calculated.calories}</span>
                         <span className={styles.macroLabel}>kcal</span>
                       </div>
                       <div className={styles.macroBox}>
-                        <span className={styles.macroValue} style={{color: 'var(--protein)'}}>{calculated.protein}g</span>
+                        <span className={styles.macroValue} data-type="protein">{calculated.protein}g</span>
                         <span className={styles.macroLabel}>Protein</span>
                       </div>
                       <div className={styles.macroBox}>
-                        <span className={styles.macroValue} style={{color: 'var(--carbs)'}}>{calculated.carbs}g</span>
+                        <span className={styles.macroValue} data-type="carbs">{calculated.carbs}g</span>
                         <span className={styles.macroLabel}>Carbs</span>
                       </div>
                       <div className={styles.macroBox}>
-                        <span className={styles.macroValue} style={{color: 'var(--fat)'}}>{calculated.fat}g</span>
+                        <span className={styles.macroValue} data-type="fat">{calculated.fat}g</span>
                         <span className={styles.macroLabel}>Fat</span>
                       </div>
                     </div>
@@ -250,7 +272,6 @@ export default function CameraModal({ meal, onAdd, onClose }) {
               </div>
             </div>
           )}
-
         </div>
       </div>
     </div>,

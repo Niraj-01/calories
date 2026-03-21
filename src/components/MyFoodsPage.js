@@ -5,90 +5,55 @@ import { useAuth } from "@/src/context/AuthContext";
 import { getMyFoods, addMyFood, updateMyFood, deleteMyFood } from "@/src/services/firestoreService";
 import styles from "./MyFoodsPage.module.css";
 
-const UNITS = ["g", "ml", "kg", "l", "oz", "cup", "tbsp", "tsp"];
-
-const EMPTY_FOOD = {
-  name: "",
-  calories: "",
-  protein: "",
-  carbs: "",
-  fat: "",
-  defaultAmount: "100",
-  defaultUnit: "g",
-};
+const emptyForm = { name: "", calories: "", protein: "", carbs: "", fat: "", defaultAmount: "100", defaultUnit: "g" };
 
 export default function MyFoodsPage() {
   const { user } = useAuth();
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [formOpen, setFormOpen] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [form, setForm] = useState(EMPTY_FOOD);
+  const [form, setForm] = useState({ ...emptyForm });
   const [saving, setSaving] = useState(false);
-  const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   useEffect(() => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-    let cancelled = false;
+    if (!user) return;
     (async () => {
       try {
         const data = await getMyFoods(user.uid);
-        if (!cancelled) setFoods(data);
+        setFoods(data);
       } catch (err) {
-        console.warn("Failed to load my foods:", err);
-        // Show empty state instead of infinite spinner
+        console.warn("Failed to load foods:", err);
       } finally {
-        if (!cancelled) setLoading(false);
+        setLoading(false);
       }
     })();
-    return () => { cancelled = true; };
   }, [user]);
 
-  const openAdd = () => {
-    setForm(EMPTY_FOOD);
-    setEditingId(null);
-    setFormOpen(true);
+  const handleFormChange = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const openEdit = (food) => {
-    setForm({
-      name: food.name,
-      calories: food.calories,
-      protein: food.protein,
-      carbs: food.carbs,
-      fat: food.fat,
-      defaultAmount: food.defaultAmount != null ? String(food.defaultAmount) : "100",
-      defaultUnit: food.defaultUnit || "g",
-    });
-    setEditingId(food.id);
-    setFormOpen(true);
-  };
-
-  const closeForm = () => {
-    setFormOpen(false);
+  const resetForm = () => {
+    setForm({ ...emptyForm });
     setEditingId(null);
-    setForm(EMPTY_FOOD);
+    setShowForm(false);
   };
 
   const handleSave = async () => {
-    if (!user || !form.name.trim()) return;
+    if (!form.name || !form.calories) return;
     setSaving(true);
-    const defaultAmountValue = parseFloat(form.defaultAmount);
-    const defaultAmount = Number.isFinite(defaultAmountValue) && defaultAmountValue > 0 ? defaultAmountValue : 100;
-    const defaultUnit = UNITS.includes(form.defaultUnit) ? form.defaultUnit : "g";
-    const foodData = {
-      name: form.name.trim(),
-      calories: parseFloat(form.calories) || 0,
-      protein: parseFloat(form.protein) || 0,
-      carbs: parseFloat(form.carbs) || 0,
-      fat: parseFloat(form.fat) || 0,
-      defaultAmount,
-      defaultUnit,
-    };
     try {
+      const foodData = {
+        name: form.name,
+        calories: parseFloat(form.calories) || 0,
+        protein: parseFloat(form.protein) || 0,
+        carbs: parseFloat(form.carbs) || 0,
+        fat: parseFloat(form.fat) || 0,
+        defaultAmount: parseFloat(form.defaultAmount) || 100,
+        defaultUnit: form.defaultUnit || "g",
+      };
+
       if (editingId) {
         await updateMyFood(user.uid, editingId, foodData);
         setFoods((prev) =>
@@ -96,9 +61,9 @@ export default function MyFoodsPage() {
         );
       } else {
         const id = await addMyFood(user.uid, foodData);
-        setFoods((prev) => [...prev, { id, ...foodData }].sort((a, b) => a.name.localeCompare(b.name)));
+        setFoods((prev) => [...prev, { id, ...foodData }]);
       }
-      closeForm();
+      resetForm();
     } catch (err) {
       console.warn("Failed to save food:", err);
     } finally {
@@ -106,40 +71,46 @@ export default function MyFoodsPage() {
     }
   };
 
-  const handleDelete = async (foodId) => {
-    if (!user) return;
+  const handleEdit = (food) => {
+    setForm({
+      name: food.name,
+      calories: String(food.calories),
+      protein: String(food.protein),
+      carbs: String(food.carbs),
+      fat: String(food.fat),
+      defaultAmount: String(food.defaultAmount || 100),
+      defaultUnit: food.defaultUnit || "g",
+    });
+    setEditingId(food.id);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id) => {
     try {
-      await deleteMyFood(user.uid, foodId);
-      setFoods((prev) => prev.filter((f) => f.id !== foodId));
-      setDeleteConfirm(null);
+      await deleteMyFood(user.uid, id);
+      setFoods((prev) => prev.filter((f) => f.id !== id));
     } catch (err) {
       console.warn("Failed to delete food:", err);
     }
-  };
-
-  const updateField = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   if (loading) {
     return (
       <div className="page container fade-in">
         <div className={styles.header}>
-          <div className="skeleton" style={{ width: 140, height: 32 }} />
-          <div className="skeleton" style={{ width: 100, height: 32, borderRadius: 8 }} />
+          <div className="skeleton" style={{ width: 120, height: 32 }} />
         </div>
-        {[1, 2, 3].map((i) => (
-          <div key={i} className={`card ${styles.foodCard}`}>
-            <div className={styles.foodInfo}>
-              <div className="skeleton" style={{ width: 120, height: 20, marginBottom: 8 }} />
-              <div className="skeleton" style={{ width: 180, height: 16 }} />
+        <div className={styles.list}>
+          {[1, 2, 3].map((i) => (
+            <div key={i} className={`card ${styles.foodCard}`}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div className="skeleton" style={{ width: 120, height: 18 }} />
+                <div className="skeleton" style={{ width: 50, height: 18 }} />
+              </div>
+              <div className="skeleton" style={{ width: 200, height: 14, marginTop: 8 }} />
             </div>
-            <div className={styles.foodActions}>
-              <div className="skeleton" style={{ width: 32, height: 32, borderRadius: "50%" }} />
-              <div className="skeleton" style={{ width: 32, height: 32, borderRadius: "50%" }} />
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     );
   }
@@ -148,175 +119,142 @@ export default function MyFoodsPage() {
     <div className="page container fade-in">
       <div className={styles.header}>
         <h1 className="page-title">My Foods</h1>
-        <button className="btn btn-primary btn-sm" onClick={openAdd}>
-          + Add Food
+        <button
+          className="btn btn-sm btn-secondary"
+          onClick={() => {
+            if (showForm) resetForm();
+            else setShowForm(true);
+          }}
+        >
+          {showForm ? "Cancel" : "+ New"}
         </button>
       </div>
 
-      {/* Add/Edit Form */}
-      {formOpen && (
+      {/* Add / Edit form */}
+      {showForm && (
         <div className={`card ${styles.formCard}`}>
-          <h3 className={styles.formTitle}>
-            {editingId ? "Edit Food" : "New Food"}
-          </h3>
-          <p className={styles.formHint}>Values per 100g</p>
-
-          <div className={styles.field}>
-            <label className="label" htmlFor="foodName">Name</label>
-            <input
-              id="foodName"
-              type="text"
-              className="input"
-              placeholder="e.g. Chicken Breast"
-              value={form.name}
-              onChange={(e) => updateField("name", e.target.value)}
-            />
-          </div>
-
-          <div className={styles.macroGrid}>
-            <div className={styles.field}>
-              <label className="label" htmlFor="foodCal">Calories</label>
+          <h3 className={styles.formTitle}>{editingId ? "Edit Food" : "Add Food"}</h3>
+          <div className={styles.formGrid}>
+            <div className={styles.fieldFull}>
+              <label className="label">Name</label>
               <input
-                id="foodCal"
+                className="input"
+                type="text"
+                placeholder="e.g. Greek Yogurt"
+                value={form.name}
+                onChange={(e) => handleFormChange("name", e.target.value)}
+              />
+            </div>
+            <div className={styles.fieldHalf}>
+              <label className="label">Calories</label>
+              <input
+                className="input"
                 type="number"
-                className="input num"
                 placeholder="0"
                 value={form.calories}
-                onChange={(e) => updateField("calories", e.target.value)}
+                onChange={(e) => handleFormChange("calories", e.target.value)}
               />
             </div>
-            <div className={styles.field}>
-              <label className="label" htmlFor="foodProtein">Protein (g)</label>
+            <div className={styles.fieldHalf}>
+              <label className="label">Protein (g)</label>
               <input
-                id="foodProtein"
+                className="input"
                 type="number"
-                className="input num"
                 placeholder="0"
                 value={form.protein}
-                onChange={(e) => updateField("protein", e.target.value)}
+                onChange={(e) => handleFormChange("protein", e.target.value)}
               />
             </div>
-            <div className={styles.field}>
-              <label className="label" htmlFor="foodCarbs">Carbs (g)</label>
+            <div className={styles.fieldHalf}>
+              <label className="label">Carbs (g)</label>
               <input
-                id="foodCarbs"
+                className="input"
                 type="number"
-                className="input num"
                 placeholder="0"
                 value={form.carbs}
-                onChange={(e) => updateField("carbs", e.target.value)}
+                onChange={(e) => handleFormChange("carbs", e.target.value)}
               />
             </div>
-            <div className={styles.field}>
-              <label className="label" htmlFor="foodFat">Fat (g)</label>
+            <div className={styles.fieldHalf}>
+              <label className="label">Fat (g)</label>
               <input
-                id="foodFat"
+                className="input"
                 type="number"
-                className="input num"
                 placeholder="0"
                 value={form.fat}
-                onChange={(e) => updateField("fat", e.target.value)}
+                onChange={(e) => handleFormChange("fat", e.target.value)}
               />
             </div>
-          </div>
-
-          <div className={styles.field}>
-            <label className="label" htmlFor="foodDefault">Default serving (prefill)</label>
-            <div className={styles.servingGroup}>
+            <div className={styles.fieldHalf}>
+              <label className="label">Default Amount</label>
               <input
-                id="foodDefault"
+                className="input"
                 type="number"
-                className="input num"
-                min="1"
+                placeholder="100"
                 value={form.defaultAmount}
-                onChange={(e) => updateField("defaultAmount", e.target.value)}
+                onChange={(e) => handleFormChange("defaultAmount", e.target.value)}
               />
+            </div>
+            <div className={styles.fieldHalf}>
+              <label className="label">Unit</label>
               <select
                 className="input"
                 value={form.defaultUnit}
-                onChange={(e) => updateField("defaultUnit", e.target.value)}
+                onChange={(e) => handleFormChange("defaultUnit", e.target.value)}
               >
-                {UNITS.map((u) => (
-                  <option key={u} value={u}>{u}</option>
-                ))}
+                <option value="g">g</option>
+                <option value="ml">ml</option>
+                <option value="oz">oz</option>
+                <option value="serving">serving</option>
               </select>
             </div>
           </div>
-
-          <div className={styles.formActions}>
-            <button className="btn btn-secondary" onClick={closeForm}>
-              Cancel
-            </button>
-            <button
-              className="btn btn-primary"
-              onClick={handleSave}
-              disabled={saving || !form.name.trim()}
-            >
-              {saving ? "Saving..." : editingId ? "Update" : "Save"}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Food list */}
-      {foods.length === 0 && !formOpen && (
-        <div className="empty-state">
-          <div className="empty-state-icon" style={{ fontSize: '3rem', opacity: 1, filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.5))' }}>📝</div>
-          <h3 style={{ fontSize: '1.2rem', marginBottom: '8px', color: 'var(--text-primary)' }}>No custom foods yet</h3>
-          <p className="empty-state-text">
-            Build your personal food database.<br />
-            Create custom foods for quick logging.
-          </p>
-          <button className="btn btn-primary" style={{ marginTop: '20px' }} onClick={openAdd}>
-            + Create Food
+          <button
+            className="btn btn-primary btn-full"
+            disabled={!form.name || !form.calories || saving}
+            onClick={handleSave}
+          >
+            {saving ? "Saving..." : editingId ? "Update" : "Save"}
           </button>
         </div>
       )}
 
-      {foods.map((food) => (
-        <div key={food.id} className={`card ${styles.foodCard}`}>
-          <div className={styles.foodInfo}>
-            <p className={styles.foodName}>{food.name}</p>
-            <div className={styles.foodMacros}>
-              <span className={styles.foodCal}>
-                <span className="num">{food.calories}</span> kcal
-              </span>
-              <span className={styles.foodMacro} style={{ color: "var(--protein)" }}>
-                P:{food.protein}g
-              </span>
-              <span className={styles.foodMacro} style={{ color: "var(--carbs)" }}>
-                C:{food.carbs}g
-              </span>
-              <span className={styles.foodMacro} style={{ color: "var(--fat)" }}>
-                F:{food.fat}g
-              </span>
-              <span className={styles.servingChip}>
-                Default: {food.defaultAmount ?? 100}{food.defaultUnit || "g"}
+      {/* Foods list */}
+      {foods.length === 0 && !showForm && (
+        <div className="empty-state">
+          <p className="empty-state-icon">★</p>
+          <p className="empty-state-text">
+            Create custom foods you eat often<br />
+            for quick logging.
+          </p>
+        </div>
+      )}
+
+      <div className={styles.list}>
+        {foods.map((food) => (
+          <div key={food.id} className={`card ${styles.foodCard}`}>
+            <div className={styles.foodTop}>
+              <div className={styles.foodInfo}>
+                <span className={styles.foodName}>{food.name}</span>
+                <span className={styles.foodMeta}>
+                  P:{food.protein}g · C:{food.carbs}g · F:{food.fat}g
+                </span>
+              </div>
+              <span className={styles.foodCals}>
+                {food.calories}<span className={styles.foodUnit}>kcal</span>
               </span>
             </div>
-          </div>
-          <div className={styles.foodActions}>
-            <button className="btn btn-ghost btn-sm" onClick={() => openEdit(food)}>
-              ✎
-            </button>
-            {deleteConfirm === food.id ? (
-              <button
-                className="btn btn-danger btn-sm"
-                onClick={() => handleDelete(food.id)}
-              >
-                Confirm
+            <div className={styles.foodActions}>
+              <button className="btn btn-ghost btn-sm" onClick={() => handleEdit(food)}>
+                Edit
               </button>
-            ) : (
-              <button
-                className="btn btn-ghost btn-sm"
-                onClick={() => setDeleteConfirm(food.id)}
-              >
-                ✕
+              <button className="btn btn-ghost btn-sm" style={{ color: "var(--danger)" }} onClick={() => handleDelete(food.id)}>
+                Delete
               </button>
-            )}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

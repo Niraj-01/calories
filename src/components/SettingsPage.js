@@ -6,20 +6,20 @@ import { getUserSettings, setUserSettings } from "@/src/services/firestoreServic
 import styles from "./SettingsPage.module.css";
 
 export default function SettingsPage() {
-  const { user, signOut } = useAuth();
-  const [goal, setGoal] = useState(2000);
+  const { user, signOutUser } = useAuth();
   const [displayName, setDisplayName] = useState("");
+  const [calorieGoal, setCalorieGoal] = useState(2000);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
     (async () => {
       try {
         const settings = await getUserSettings(user.uid);
-        setGoal(settings.calorieGoal || 2000);
         setDisplayName(settings.displayName || user.displayName || "");
+        setCalorieGoal(settings.calorieGoal || 2000);
       } catch (err) {
         console.warn("Failed to load settings:", err);
       } finally {
@@ -31,13 +31,14 @@ export default function SettingsPage() {
   const handleSave = async () => {
     if (!user) return;
     setSaving(true);
+    setSaved(false);
     try {
       await setUserSettings(user.uid, {
-        calorieGoal: parseInt(goal) || 2000,
-        displayName: displayName.trim(),
+        displayName,
+        calorieGoal: parseInt(calorieGoal) || 2000,
       });
       setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
+      setTimeout(() => setSaved(false), 2500);
     } catch (err) {
       console.warn("Failed to save settings:", err);
     } finally {
@@ -47,9 +48,17 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="page container">
-        <div className={styles.loadingWrap}>
-          <div className="spinner spinner-lg" />
+      <div className="page container fade-in">
+        <div style={{ marginBottom: 20 }}>
+          <div className="skeleton" style={{ width: 100, height: 32 }} />
+        </div>
+        <div className={`card ${styles.group}`}>
+          {[1, 2].map((i) => (
+            <div key={i} className={styles.row}>
+              <div className="skeleton" style={{ width: 80, height: 14, marginBottom: 8 }} />
+              <div className="skeleton" style={{ width: "100%", height: 48, borderRadius: 16 }} />
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -57,84 +66,71 @@ export default function SettingsPage() {
 
   return (
     <div className="page container fade-in">
-      <div className={styles.header}>
-        <h1 className="page-title">Settings</h1>
-      </div>
+      <h1 className="page-title" style={{ marginBottom: 24 }}>Settings</h1>
 
-      {/* Profile */}
-      <div className={`card ${styles.card}`}>
-        <div className={styles.profileRow}>
-          {user?.photoURL ? (
-            <img
-              src={user.photoURL}
-              alt=""
-              className={styles.avatar}
-              referrerPolicy="no-referrer"
-            />
-          ) : (
-            <div className={styles.avatarPlaceholder}>
-              {(displayName || user?.email || "U").charAt(0).toUpperCase()}
-            </div>
-          )}
+      {/* Profile section */}
+      <div className={`card ${styles.group}`}>
+        <div className={styles.profileHeader}>
+          <div className={styles.avatar}>
+            {(displayName || user?.email || "U")
+              .split(" ")
+              .map((w) => w[0])
+              .join("")
+              .toUpperCase()
+              .slice(0, 2)}
+          </div>
           <div className={styles.profileInfo}>
-            <p className={styles.profileName}>
-              {displayName || user?.displayName || "User"}
-            </p>
-            <p className={styles.profileEmail}>{user?.email}</p>
+            <span className={styles.profileName}>
+              {displayName || "No name set"}
+            </span>
+            <span className={styles.profileEmail}>{user?.email}</span>
           </div>
         </div>
-      </div>
 
-      {/* Settings form */}
-      <div className={`card ${styles.card}`}>
-        <div className={styles.field}>
-          <label className="label" htmlFor="displayName">Display Name</label>
+        <div className={styles.divider} />
+
+        <div className={styles.row}>
+          <label className="label">Display Name</label>
           <input
-            id="displayName"
-            type="text"
             className="input"
+            type="text"
+            placeholder="Your name"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            placeholder="Your name"
           />
         </div>
 
-        <div className={styles.field}>
-          <label className="label" htmlFor="calorieGoal">Daily Calorie Goal</label>
-          <div className={styles.goalRow}>
-            <input
-              id="calorieGoal"
-              type="number"
-              className={`input ${styles.goalInput} num`}
-              value={goal}
-              min={500}
-              max={10000}
-              onChange={(e) => setGoal(e.target.value)}
-            />
-            <span className={styles.goalUnit}>kcal</span>
-          </div>
+        <div className={styles.row}>
+          <label className="label">Daily Calorie Goal</label>
+          <input
+            className="input"
+            type="number"
+            placeholder="2000"
+            value={calorieGoal}
+            onChange={(e) => setCalorieGoal(e.target.value)}
+          />
         </div>
 
         <button
-          className={`btn btn-primary btn-full ${styles.saveBtn}`}
-          onClick={handleSave}
+          className="btn btn-primary btn-full"
           disabled={saving}
+          onClick={handleSave}
         >
-          {saving ? "Saving..." : saved ? "✓ Saved" : "Save changes"}
+          {saved ? "✓ Saved" : saving ? "Saving..." : "Save Changes"}
         </button>
       </div>
 
       {/* Sign out */}
-      <div className={`card ${styles.card}`}>
+      <div className={`card ${styles.group}`} style={{ marginTop: 12 }}>
         <button
           className={`btn btn-danger btn-full ${styles.signOutBtn}`}
-          onClick={signOut}
+          onClick={signOutUser}
         >
-          Sign out
+          Sign Out
         </button>
       </div>
 
-      <p className={styles.version}>Calories v1.0</p>
+      <p className={styles.version}>CALORIES v1.0</p>
     </div>
   );
 }

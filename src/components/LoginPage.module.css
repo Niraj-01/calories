@@ -3,16 +3,34 @@
   align-items: center;
   justify-content: center;
   min-height: 100dvh;
-  padding: 24px;
+  background: var(--bg-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.glow {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -65%);
+  pointer-events: none;
+  opacity: 0.6;
 }
 
 .content {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;
-  max-width: 320px;
+  padding: 0 32px;
   width: 100%;
+  max-width: 360px;
+  gap: 40px;
 }
 
 .brand {
@@ -23,48 +41,56 @@
 }
 
 .logoIcon {
-  font-size: 3rem;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
   margin-bottom: 8px;
-  filter: drop-shadow(0 0 16px var(--accent-glow));
+  box-shadow: var(--shadow-glow);
 }
 
 .appName {
-  font-size: 2rem;
+  font-family: var(--font-display);
+  font-size: 36px;
   font-weight: 700;
-  letter-spacing: 0.2em;
-  color: var(--accent);
+  color: var(--text-primary);
+  letter-spacing: -1px;
 }
 
 .tagline {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  letter-spacing: 0.02em;
+  font-size: 16px;
+  color: var(--text-secondary);
+  text-align: center;
 }
 
 .googleBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
-  padding: 14px 24px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-sm);
+  height: 52px;
+  background: #ffffff;
+  color: #1f1f1f;
+  font-size: 15px;
   font-weight: 600;
-  font-size: 0.95rem;
+  border: none;
+  border-radius: var(--radius-pill);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
-.googleBtn:hover {
-  background: var(--bg-elevated);
-  border-color: var(--accent);
+.googleBtn:active {
+  transform: scale(0.97);
 }
 
-.googleBtn:active {
-  transform: scale(0.98);
+.googleBtn:hover {
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.1);
 }
 
 .googleIcon {
@@ -72,8 +98,7 @@
 }
 
 .footer {
-  font-size: 0.72rem;
-  color: var(--text-muted);
+  font-size: 13px;
+  color: var(--text-tertiary);
   text-align: center;
-  line-height: 1.5;
 }

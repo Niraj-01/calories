@@ -3,35 +3,22 @@
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 100;
-  background: rgba(9, 9, 11, 0.85);
-  border-top: 1px solid var(--border);
-  padding-bottom: var(--safe-bottom);
+  z-index: 900;
+  background: rgba(8, 8, 8, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-}
-
-@media (min-width: 480px) {
-  .nav {
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 32px);
-    max-width: 440px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-elevated);
-    padding-bottom: 0;
-  }
+  border-top: 1px solid var(--border-subtle);
+  padding-bottom: var(--safe-bottom);
 }
 
 .inner {
   display: flex;
-  align-items: center;
-  justify-content: space-around;
-  max-width: 480px;
+  max-width: 430px;
   margin: 0 auto;
   height: var(--nav-height);
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px;
 }
 
 .tab {
@@ -39,50 +26,45 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 8px 16px;
-  border-radius: var(--radius-full);
+  gap: 3px;
+  padding: 8px 12px;
+  min-width: 56px;
   text-decoration: none;
-  transition: all 0.25s var(--ease-snappy);
+  transition: transform 120ms var(--ease-spring);
   -webkit-tap-highlight-color: transparent;
   position: relative;
-  min-width: 72px;
 }
 
 .tab:active {
-  transform: scale(0.92);
+  transform: scale(0.88);
 }
 
 .icon {
-  font-size: 1.4rem;
-  line-height: 1;
-  color: var(--text-muted);
-  transition: all 0.3s var(--ease-spring);
-  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  opacity: 0.5;
+  transition: color 0.2s, opacity 0.2s;
 }
 
 .label {
-  font-size: 0.65rem;
+  font-size: 11px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  transition: all 0.25s var(--ease-snappy);
-  z-index: 2;
+  color: var(--accent);
+  letter-spacing: -0.1px;
 }
 
-.active {
-  background: var(--bg-elevated);
-  box-shadow: inset 0 1px 1px rgba(255,255,255,0.05);
+.dot {
+  width: 24px;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  position: absolute;
+  bottom: 4px;
 }
 
 .active .icon {
   color: var(--accent);
-  transform: translateY(-2px);
-  filter: drop-shadow(0 4px 8px var(--accent-glow));
-}
-
-.active .label {
-  color: var(--text-primary);
-  font-weight: 700;
+  opacity: 1;
 }

@@ -74,7 +74,7 @@ export default function HistoryPage() {
         </div>
         <div className={styles.list}>
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className={styles.dayCard}>
+            <div key={i} className={`card ${styles.dayCard}`}>
               <div className={styles.dayTop}>
                 <div className="skeleton" style={{ width: 80, height: 20 }} />
                 <div className="skeleton" style={{ width: 50, height: 20 }} />
@@ -108,16 +108,17 @@ export default function HistoryPage() {
           return (
             <div
               key={day.date}
-              className={`${styles.dayCard} ${isEmpty ? styles.empty : ""}`}
+              className={`card ${styles.dayCard} ${isEmpty ? styles.empty : ""}`}
             >
               <div className={styles.dayTop}>
                 <span className={styles.dayDate}>{formatDate(day.date)}</span>
                 <span
-                  className={`${styles.dayCals} num ${
+                  className={`${styles.dayCals} ${
                     isEmpty ? styles.muted : isOver ? styles.red : styles.green
                   }`}
                 >
                   {isEmpty ? "—" : day.calories}
+                  {!isEmpty && <span className={styles.kcalSuffix}>kcal</span>}
                 </span>
               </div>
 
@@ -134,15 +135,15 @@ export default function HistoryPage() {
                   </div>
                   <div className={styles.dayMeta}>
                     <span className={styles.metaItem}>
-                      <span className={styles.metaDot} style={{ background: "var(--protein)" }} />
+                      <span className={styles.metaDot} data-type="protein" />
                       {day.protein.toFixed(0)}g
                     </span>
                     <span className={styles.metaItem}>
-                      <span className={styles.metaDot} style={{ background: "var(--carbs)" }} />
+                      <span className={styles.metaDot} data-type="carbs" />
                       {day.carbs.toFixed(0)}g
                     </span>
                     <span className={styles.metaItem}>
-                      <span className={styles.metaDot} style={{ background: "var(--fat)" }} />
+                      <span className={styles.metaDot} data-type="fat" />
                       {day.fat.toFixed(0)}g
                     </span>
                     <span className={styles.metaGoal}>

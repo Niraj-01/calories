@@ -10,7 +10,7 @@ export function generateViewport() {
     width: "device-width",
     initialScale: 1,
     viewportFit: "cover",
-    themeColor: "#0A0A0B",
+    themeColor: "#080808",
   };
 }
 

@@ -1,10 +1,3 @@
-.loadingWrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40vh;
-}
-
 .header {
   display: flex;
   align-items: center;
@@ -12,108 +5,89 @@
   margin-bottom: 20px;
 }
 
-/* Form card */
+/* Form */
 .formCard {
   margin-bottom: 20px;
-  animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 .formTitle {
-  font-size: 1rem;
+  font-family: var(--font-display);
+  font-size: 18px;
   font-weight: 700;
-  margin-bottom: 2px;
-}
-
-.formHint {
-  font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--text-primary);
   margin-bottom: 16px;
 }
 
-.field {
-  margin-bottom: 12px;
-}
-
-.macroGrid {
+.formGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+  margin-bottom: 16px;
 }
 
-.macroGrid .field {
-  margin-bottom: 0;
+.fieldFull {
+  grid-column: 1 / -1;
 }
 
-.servingGroup {
-  display: grid;
-  grid-template-columns: 1fr 120px;
-  gap: 8px;
-}
-
-.formActions {
+.fieldHalf {
   display: flex;
+  flex-direction: column;
+}
+
+/* List */
+.list {
+  display: flex;
+  flex-direction: column;
   gap: 10px;
-  justify-content: flex-end;
-  margin-top: 16px;
 }
 
-/* Food card */
 .foodCard {
+  padding: 16px 20px !important;
+}
+
+.foodTop {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 10px;
-  padding: 14px 16px;
+  gap: 12px;
 }
 
 .foodInfo {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   min-width: 0;
 }
 
 .foodName {
-  font-size: 0.95rem;
+  font-size: 16px;
   font-weight: 600;
-  margin-bottom: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: var(--text-primary);
 }
 
-.foodMacros {
-  display: flex;
-  gap: 10px;
-  font-size: 0.75rem;
-  flex-wrap: wrap;
+.foodMeta {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
 }
 
-.foodCal {
-  color: var(--accent);
-  font-weight: 600;
+.foodCals {
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  flex-shrink: 0;
 }
 
-.foodMacro {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-}
-
-.servingChip {
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 2px 8px;
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  white-space: nowrap;
+.foodUnit {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  margin-left: 2px;
 }
 
 .foodActions {
   display: flex;
   gap: 4px;
-  flex-shrink: 0;
-  margin-left: 12px;
+  margin-top: 8px;
 }

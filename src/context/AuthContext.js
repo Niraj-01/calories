@@ -22,8 +22,10 @@ export function AuthProvider({ children }) {
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (err) {
+      if (err.code === "auth/cancelled-popup-request" || err.code === "auth/popup-closed-by-user") {
+        return; // user dismissed the popup — not an error
+      }
       console.error("Sign-in error:", err);
-      throw err;
     }
   };
 

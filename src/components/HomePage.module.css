@@ -5,43 +5,101 @@
   margin-bottom: 24px;
 }
 
-.ringWrap {
-  margin-bottom: 12px;
-}
-
-.remaining {
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.remainingText {
-  font-size: 0.85rem;
+.greeting {
+  font-size: 14px;
   color: var(--text-secondary);
+  margin-bottom: 2px;
 }
 
-.remainingNum {
+.userName {
+  font-family: var(--font-display);
+  font-size: 22px;
   font-weight: 700;
-  font-size: 1rem;
-  color: var(--accent);
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
 }
 
-.over .remainingNum {
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Hero Card */
+.heroCard {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 20px;
+}
+
+.ringWrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.statRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+}
+
+.statPill {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 4px;
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+.statOver {
   color: var(--danger);
 }
 
-.macroCard {
-  margin-bottom: 24px;
+.statLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
+.statDivider {
+  width: 1px;
+  height: 32px;
+  background: var(--border-subtle);
+  flex-shrink: 0;
+}
+
+/* Macro Card */
+.macroCard {
+  margin-bottom: 16px;
+}
+
+/* Meals */
 .meals {
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.loadingWrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 60dvh;
 }

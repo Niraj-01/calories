@@ -7,7 +7,6 @@ import { searchFoods } from "@/src/services/nutritionService";
 import { getMyFoods } from "@/src/services/firestoreService";
 import styles from "./SearchModal.module.css";
 
-// Conversion factors to grams (all values per 100g base)
 const UNIT_FACTORS = {
   g: 1,
   ml: 1,
@@ -35,20 +34,28 @@ export default function SearchModal({ meal, onAdd, onClose }) {
   const [myFoodsLoading, setMyFoodsLoading] = useState(false);
   const [myFoodsLoaded, setMyFoodsLoaded] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [visible, setVisible] = useState(false);
   const inputRef = useRef(null);
   const timerRef = useRef(null);
 
   useEffect(() => {
     setMounted(true);
-    if (activeTab === "search") inputRef.current?.focus();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setVisible(true));
+    });
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "";
       clearTimeout(timerRef.current);
     };
-  }, [activeTab]);
+  }, []);
 
-  // Load My Foods when tab is switched
+  useEffect(() => {
+    if (visible && activeTab === "search") {
+      setTimeout(() => inputRef.current?.focus(), 300);
+    }
+  }, [visible, activeTab]);
+
   useEffect(() => {
     if (activeTab === "myfoods" && !myFoodsLoaded && user) {
       (async () => {
@@ -65,6 +72,11 @@ export default function SearchModal({ meal, onAdd, onClose }) {
       })();
     }
   }, [activeTab, myFoodsLoaded, user]);
+
+  const handleClose = () => {
+    setVisible(false);
+    setTimeout(onClose, 300);
+  };
 
   const handleSearch = useCallback(async (q) => {
     if (q.trim().length < 2) {
@@ -102,7 +114,6 @@ export default function SearchModal({ meal, onAdd, onClose }) {
     setUnit(defaultUnit);
   };
 
-  // Compute grams equivalent for scaling
   const gramsEquiv = servingAmount * UNIT_FACTORS[unit];
 
   const scaledCals = selectedFood
@@ -129,7 +140,7 @@ export default function SearchModal({ meal, onAdd, onClose }) {
     setSelectedFood(null);
     setQuery("");
     setResults([]);
-    onClose();
+    handleClose();
   };
 
   const mealLabel = meal.charAt(0).toUpperCase() + meal.slice(1);
@@ -137,16 +148,23 @@ export default function SearchModal({ meal, onAdd, onClose }) {
   if (!mounted) return null;
 
   return createPortal(
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={`${styles.overlay} ${visible ? styles.overlayVisible : ""}`} onClick={handleClose}>
       <div
-        className={styles.modal}
+        className={`${styles.sheet} ${visible ? styles.sheetVisible : ""}`}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Drag handle */}
+        <div className={styles.handleBar}>
+          <div className={styles.handle} />
+        </div>
+
         {/* Header */}
-        <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>Add to {mealLabel}</h2>
-          <button className={styles.closeBtn} onClick={onClose}>
-            ×
+        <div className={styles.sheetHeader}>
+          <h2 className={styles.sheetTitle}>Add to {mealLabel}</h2>
+          <button className={styles.closeBtn} onClick={handleClose}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
           </button>
         </div>
 
@@ -166,7 +184,7 @@ export default function SearchModal({ meal, onAdd, onClose }) {
           </button>
         </div>
 
-        {/* Selected food detail (shared between tabs) */}
+        {/* Selected food detail */}
         {selectedFood && (
           <div className={styles.selectedCard}>
             <div className={styles.selectedInfo}>
@@ -174,21 +192,27 @@ export default function SearchModal({ meal, onAdd, onClose }) {
               {selectedFood.brand && (
                 <p className={styles.selectedBrand}>{selectedFood.brand}</p>
               )}
-              <div className={styles.macros}>
-                <span className={styles.macroChip} style={{ borderColor: "var(--protein)" }}>
-                  P: {scaledProtein}g
-                </span>
-                <span className={styles.macroChip} style={{ borderColor: "var(--carbs)" }}>
-                  C: {scaledCarbs}g
-                </span>
-                <span className={styles.macroChip} style={{ borderColor: "var(--fat)" }}>
-                  F: {scaledFat}g
-                </span>
+            </div>
+
+            {/* Macros chips */}
+            <div className={styles.macroRow}>
+              <div className={styles.macroChip}>
+                <span className={styles.macroDot} data-type="protein" />
+                <span className={styles.macroVal}>{scaledProtein}g</span>
+              </div>
+              <div className={styles.macroChip}>
+                <span className={styles.macroDot} data-type="carbs" />
+                <span className={styles.macroVal}>{scaledCarbs}g</span>
+              </div>
+              <div className={styles.macroChip}>
+                <span className={styles.macroDot} data-type="fat" />
+                <span className={styles.macroVal}>{scaledFat}g</span>
               </div>
             </div>
 
-            <div className={styles.servingRow}>
-              <label className="label">Serving</label>
+            {/* Serving */}
+            <div className={styles.servingSection}>
+              <span className={styles.servingLabel}>Serving</span>
               <div className={styles.servingGroup}>
                 <input
                   type="number"
@@ -197,19 +221,21 @@ export default function SearchModal({ meal, onAdd, onClose }) {
                   min={1}
                   onChange={(e) => setServingAmount(Math.max(1, parseInt(e.target.value) || 1))}
                 />
-                <select
-                  className={`input ${styles.unitSelect}`}
-                  value={unit}
-                  onChange={(e) => setUnit(e.target.value)}
-                >
+                <div className={styles.unitPills}>
                   {UNITS.map((u) => (
-                    <option key={u} value={u}>{u}</option>
+                    <button
+                      key={u}
+                      className={`${styles.unitPill} ${unit === u ? styles.unitPillActive : ""}`}
+                      onClick={() => setUnit(u)}
+                    >
+                      {u}
+                    </button>
                   ))}
-                </select>
+                </div>
               </div>
             </div>
 
-            <button className={`btn btn-primary btn-full ${styles.addBtn}`} onClick={handleAdd}>
+            <button className="btn btn-primary btn-full" onClick={handleAdd}>
               Add — <span className="num">{scaledCals} kcal</span>
             </button>
           </div>
@@ -219,10 +245,16 @@ export default function SearchModal({ meal, onAdd, onClose }) {
         {activeTab === "search" && !selectedFood && (
           <>
             <div className={styles.searchWrap}>
+              <div className={styles.searchIcon}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="M21 21l-4.35-4.35" />
+                </svg>
+              </div>
               <input
                 ref={inputRef}
                 type="text"
-                className={`input ${styles.searchInput}`}
+                className={styles.searchInput}
                 placeholder="Search foods..."
                 value={query}
                 onChange={handleInputChange}
@@ -235,7 +267,7 @@ export default function SearchModal({ meal, onAdd, onClose }) {
 
               {!loading && query.length >= 2 && results.length === 0 && !error && (
                 <div className="empty-state">
-                  <p className="empty-state-text">No results found for &ldquo;{query}&rdquo;</p>
+                  <p className="empty-state-text">No results for &ldquo;{query}&rdquo;</p>
                 </div>
               )}
 
@@ -252,8 +284,8 @@ export default function SearchModal({ meal, onAdd, onClose }) {
                     )}
                   </div>
                   <div className={styles.resultCals}>
-                    <span className="num">{food.calories}</span>
-                    <span className={styles.resultUnit}>kcal</span>
+                    <span className={styles.resultCalNum}>{food.calories}</span>
+                    <span className={styles.resultCalUnit}>kcal</span>
                   </div>
                 </button>
               ))}
@@ -293,8 +325,8 @@ export default function SearchModal({ meal, onAdd, onClose }) {
                   </span>
                 </div>
                 <div className={styles.resultCals}>
-                  <span className="num">{food.calories}</span>
-                  <span className={styles.resultUnit}>kcal</span>
+                  <span className={styles.resultCalNum}>{food.calories}</span>
+                  <span className={styles.resultCalUnit}>kcal</span>
                 </div>
               </button>
             ))}

@@ -12,11 +12,19 @@ import styles from "./HomePage.module.css";
 
 const MEALS = ["breakfast", "lunch", "dinner", "snacks"];
 
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return "Good morning";
+  if (h < 17) return "Good afternoon";
+  return "Good evening";
+}
+
 export default function HomePage() {
   const { user } = useAuth();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [goal, setGoal] = useState(2000);
+  const [displayName, setDisplayName] = useState("");
   const [searchMeal, setSearchMeal] = useState(null);
   const [cameraMeal, setCameraMeal] = useState(null);
   const today = dateKey();
@@ -35,10 +43,10 @@ export default function HomePage() {
       ]);
       setEntries(dayEntries);
       setGoal(settings.calorieGoal || 2000);
+      setDisplayName(settings.displayName || user.displayName || "");
       lastFetchDate.current = today;
     } catch (err) {
       console.warn("Failed to load data:", err);
-      // Show empty state instead of infinite spinner
     } finally {
       setLoading(false);
     }
@@ -90,49 +98,60 @@ export default function HomePage() {
     { calories: 0, protein: 0, carbs: 0, fat: 0 }
   );
 
+  const remaining = goal - totals.calories;
+
   // Group by meal
   const mealEntries = {};
   MEALS.forEach((m) => {
     mealEntries[m] = entries.filter((e) => e.meal === m);
   });
 
-  const todayLabel = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "short",
-    day: "numeric",
-  });
+  const initials = (displayName || user?.email || "U")
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 
   if (loading) {
     return (
       <div className="page container fade-in">
         <div className={styles.header}>
           <div>
-            <div className="skeleton" style={{ width: 120, height: 32, marginBottom: 8 }} />
-            <div className="skeleton" style={{ width: 150, height: 20 }} />
+            <div className="skeleton" style={{ width: 100, height: 16, marginBottom: 6 }} />
+            <div className="skeleton" style={{ width: 140, height: 24 }} />
+          </div>
+          <div className="skeleton" style={{ width: 36, height: 36, borderRadius: "50%" }} />
+        </div>
+        <div className={styles.heroCard}>
+          <div className={styles.ringWrap}>
+            <div className="skeleton" style={{ width: 200, height: 200, borderRadius: "50%" }} />
+          </div>
+          <div className={styles.statRow}>
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="skeleton" style={{ width: 80, height: 48, borderRadius: 12 }} />
+            ))}
           </div>
         </div>
-        <div className={styles.ringWrap}>
-          <div className="skeleton" style={{ width: 220, height: 220, borderRadius: "50%" }} />
-        </div>
-        <div className={styles.remaining}>
-          <div className="skeleton" style={{ width: 180, height: 24, margin: "0 auto" }} />
-        </div>
-        <div className={`card ${styles.macroCard}`}>
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12 }}>
-             {[1, 2, 3].map((i) => (
-                <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-                  <div className="skeleton" style={{ width: 40, height: 24 }} />
-                  <div className="skeleton" style={{ width: 60, height: 12 }} />
+        <div className="card" style={{ marginTop: 16 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 20, padding: 4 }}>
+            {[1, 2, 3].map((i) => (
+              <div key={i}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                  <div className="skeleton" style={{ width: 60, height: 14 }} />
+                  <div className="skeleton" style={{ width: 40, height: 20 }} />
                 </div>
-             ))}
+                <div className="skeleton" style={{ width: "100%", height: 4, borderRadius: 100 }} />
+              </div>
+            ))}
           </div>
         </div>
         <div className={styles.meals}>
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className={`card ${styles.macroCard}`} style={{ padding: 0, marginTop: 16 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 16px' }}>
-                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                  <div className="skeleton" style={{ width: 24, height: 24, borderRadius: '50%' }} />
+            <div key={i} className="card" style={{ padding: 0, marginTop: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "16px 20px" }}>
+                <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                  <div className="skeleton" style={{ width: 24, height: 24, borderRadius: "50%" }} />
                   <div className="skeleton" style={{ width: 80, height: 16 }} />
                 </div>
                 <div className="skeleton" style={{ width: 40, height: 16 }} />
@@ -146,34 +165,43 @@ export default function HomePage() {
 
   return (
     <div className="page container fade-in">
+      {/* Header */}
       <div className={styles.header}>
         <div>
-          <h1 className="page-title">Today</h1>
-          <p className="page-subtitle">{todayLabel}</p>
+          <p className={styles.greeting}>{getGreeting()}</p>
+          <h1 className={styles.userName}>{displayName || "Hi there"}</h1>
+        </div>
+        <div className={styles.avatar}>
+          {initials}
         </div>
       </div>
 
-      {/* Calorie Ring */}
-      <div className={styles.ringWrap}>
-        <CalorieRing consumed={totals.calories} goal={goal} />
+      {/* Hero Card — Calorie Ring + Stats */}
+      <div className={`card ${styles.heroCard}`}>
+        <div className={styles.ringWrap}>
+          <CalorieRing consumed={totals.calories} goal={goal} />
+        </div>
+        <div className={styles.statRow}>
+          <div className={styles.statPill}>
+            <span className={styles.statValue}>{goal}</span>
+            <span className={styles.statLabel}>Goal</span>
+          </div>
+          <div className={styles.statDivider} />
+          <div className={styles.statPill}>
+            <span className={styles.statValue}>{totals.calories}</span>
+            <span className={styles.statLabel}>Eaten</span>
+          </div>
+          <div className={styles.statDivider} />
+          <div className={styles.statPill}>
+            <span className={`${styles.statValue} ${remaining < 0 ? styles.statOver : ""}`}>
+              {Math.abs(remaining)}
+            </span>
+            <span className={styles.statLabel}>{remaining < 0 ? "Over" : "Left"}</span>
+          </div>
+        </div>
       </div>
 
-      {/* Remaining  */}
-      <div className={styles.remaining}>
-        {totals.calories <= goal ? (
-          <p className={styles.remainingText}>
-            <span className={`num ${styles.remainingNum}`}>{goal - totals.calories}</span>
-            <span> kcal remaining</span>
-          </p>
-        ) : (
-          <p className={`${styles.remainingText} ${styles.over}`}>
-            <span className={`num ${styles.remainingNum}`}>{totals.calories - goal}</span>
-            <span> kcal over goal</span>
-          </p>
-        )}
-      </div>
-
-      {/* Macros */}
+      {/* Macros Card */}
       <div className={`card ${styles.macroCard}`}>
         <MacroBar
           protein={totals.protein}
@@ -207,7 +235,7 @@ export default function HomePage() {
 
       {/* Camera Modal */}
       {cameraMeal && (
-        <CameraModal 
+        <CameraModal
           meal={cameraMeal}
           onAdd={(food) => handleAddFood(food, cameraMeal)}
           onClose={() => setCameraMeal(null)}
