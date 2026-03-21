@@ -10,7 +10,7 @@ const mealIcons = {
   snacks: "🍿",
 };
 
-export default function MealSection({ meal, entries = [], onAdd, onScan, onDelete }) {
+export default function MealSection({ meal, entries = [], onAdd, onScan, onBarcode, onDelete }) {
   const [expanded, setExpanded] = useState(true);
 
   const totalCals = entries.reduce((sum, e) => sum + (e.calories || 0), 0);
@@ -75,6 +75,9 @@ export default function MealSection({ meal, entries = [], onAdd, onScan, onDelet
           </button>
           <button className={styles.addBtn} onClick={onScan}>
             📷 Scan
+          </button>
+          <button className={styles.addBtn} onClick={onBarcode}>
+            ▮▮▯ Barcode
           </button>
         </div>
       </div>

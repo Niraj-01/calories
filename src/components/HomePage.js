@@ -2,12 +2,23 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "@/src/context/AuthContext";
-import { addFoodEntry, getDayEntries, deleteFoodEntry, getUserSettings, dateKey } from "@/src/services/firestoreService";
+import {
+  addFoodEntry,
+  getDayEntries,
+  deleteFoodEntry,
+  getUserSettings,
+  dateKey,
+  getWaterIntake,
+  setWaterIntake,
+  updateStreak,
+} from "@/src/services/firestoreService";
 import CalorieRing from "@/src/components/CalorieRing";
 import MacroBar from "@/src/components/MacroBar";
 import MealSection from "@/src/components/MealSection";
 import SearchModal from "@/src/components/SearchModal";
 import CameraModal from "@/src/components/CameraModal";
+import BarcodeScannerModal from "@/src/components/BarcodeScannerModal";
+import WaterTracker from "@/src/components/WaterTracker";
 import styles from "./HomePage.module.css";
 
 const MEALS = ["breakfast", "lunch", "dinner", "snacks"];
@@ -27,6 +38,9 @@ export default function HomePage() {
   const [displayName, setDisplayName] = useState("");
   const [searchMeal, setSearchMeal] = useState(null);
   const [cameraMeal, setCameraMeal] = useState(null);
+  const [barcodeMeal, setBarcodeMeal] = useState(null);
+  const [waterIntake, setWaterState] = useState(0);
+  const [streak, setStreak] = useState(0);
   const today = dateKey();
   const lastFetchDate = useRef(null);
 
@@ -37,13 +51,17 @@ export default function HomePage() {
     }
     try {
       setLoading(true);
-      const [dayEntries, settings] = await Promise.all([
+      const [dayEntries, settings, water, currentStreak] = await Promise.all([
         getDayEntries(user.uid, today),
         getUserSettings(user.uid),
+        getWaterIntake(user.uid, today),
+        updateStreak(user.uid),
       ]);
       setEntries(dayEntries);
       setGoal(settings.calorieGoal || 2000);
       setDisplayName(settings.displayName || user.displayName || "");
+      setWaterState(water);
+      setStreak(currentStreak);
       lastFetchDate.current = today;
     } catch (err) {
       console.warn("Failed to load data:", err);
@@ -84,6 +102,17 @@ export default function HomePage() {
       setEntries((prev) => prev.filter((e) => e.id !== entryId));
     } catch (err) {
       console.warn("Failed to delete entry:", err);
+    }
+  };
+
+  const handleAddWater = async (ml) => {
+    if (!user) return;
+    const newTotal = waterIntake + ml;
+    setWaterState(newTotal);
+    try {
+      await setWaterIntake(user.uid, today, newTotal);
+    } catch (err) {
+      console.warn("Failed to save water:", err);
     }
   };
 
@@ -169,7 +198,14 @@ export default function HomePage() {
       <div className={styles.header}>
         <div>
           <p className={styles.greeting}>{getGreeting()}</p>
-          <h1 className={styles.userName}>{displayName || "Hi there"}</h1>
+          <h1 className={styles.userName}>
+            {displayName || "Hi there"}
+            {streak > 1 && (
+              <span className={styles.streakBadge} title={`${streak} day streak!`}>
+                🔥 {streak}
+              </span>
+            )}
+          </h1>
         </div>
         <div className={styles.avatar}>
           {initials}
@@ -210,6 +246,9 @@ export default function HomePage() {
         />
       </div>
 
+      {/* Water Tracker */}
+      <WaterTracker intake={waterIntake} onAdd={handleAddWater} />
+
       {/* Meals */}
       <div className={styles.meals}>
         {MEALS.map((meal) => (
@@ -219,6 +258,7 @@ export default function HomePage() {
             entries={mealEntries[meal]}
             onAdd={() => setSearchMeal(meal)}
             onScan={() => setCameraMeal(meal)}
+            onBarcode={() => setBarcodeMeal(meal)}
             onDelete={handleDelete}
           />
         ))}
@@ -241,6 +281,14 @@ export default function HomePage() {
           onClose={() => setCameraMeal(null)}
         />
       )}
+
+      {/* Barcode Scanner Modal */}
+      <BarcodeScannerModal
+        open={!!barcodeMeal}
+        meal={barcodeMeal || ""}
+        onAdd={handleAddFood}
+        onClose={() => setBarcodeMeal(null)}
+      />
     </div>
   );
 }

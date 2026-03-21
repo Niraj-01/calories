@@ -103,3 +103,24 @@
   flex-direction: column;
   gap: 12px;
 }
+
+/* Streak Badge */
+.streakBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ff6b35, #f7931a);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  vertical-align: middle;
+  animation: streakPop 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes streakPop {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}

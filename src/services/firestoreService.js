@@ -123,3 +123,69 @@ export async function deleteMyFood(uid, foodId) {
   const ref = doc(db, "users", uid, "myFoods", foodId);
   await deleteDoc(ref);
 }
+
+// --- Day-level Log Document ---
+// Path: users/{uid}/logs/{date}  (the document itself, not sub-collections)
+
+function dayDocRef(uid, date) {
+  return doc(db, "users", uid, "logs", date);
+}
+
+export async function getDayLog(uid, date) {
+  const snap = await getDoc(dayDocRef(uid, date));
+  return snap.exists() ? snap.data() : {};
+}
+
+export async function setDayLog(uid, date, data) {
+  await setDoc(dayDocRef(uid, date), data, { merge: true });
+}
+
+// --- Water Tracking ---
+
+export async function getWaterIntake(uid, date) {
+  const data = await getDayLog(uid, date);
+  return data.waterIntake || 0;
+}
+
+export async function setWaterIntake(uid, date, ml) {
+  await setDayLog(uid, date, { waterIntake: ml });
+}
+
+// --- Weight Logging ---
+
+export async function getLoggedWeight(uid, date) {
+  const data = await getDayLog(uid, date);
+  return data.loggedWeight || null;
+}
+
+export async function setLoggedWeight(uid, date, kg) {
+  await setDayLog(uid, date, { loggedWeight: kg });
+}
+
+// --- Streak Helpers ---
+
+export async function updateStreak(uid) {
+  const settings = await getUserSettings(uid);
+  const today = dateKey();
+  const lastLog = settings.lastLogDate || "";
+  let streak = settings.currentStreak || 0;
+
+  if (lastLog === today) {
+    // Already logged today — no change
+    return streak;
+  }
+
+  // Check if lastLog was yesterday
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yKey = dateKey(yesterday);
+
+  if (lastLog === yKey) {
+    streak += 1;
+  } else {
+    streak = 1; // reset
+  }
+
+  await setUserSettings(uid, { currentStreak: streak, lastLogDate: today });
+  return streak;
+}

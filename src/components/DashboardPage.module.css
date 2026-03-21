@@ -1,0 +1,46 @@
+.chartCard {
+  margin-bottom: 16px;
+  padding: 16px;
+}
+.chartTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+/* Weight */
+.weightRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.weightInput {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+.weightBtn {
+  padding: 10px 20px;
+  border-radius: 14px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-width: 70px;
+}
+.weightBtn:active {
+  transform: scale(0.95);
+}
+.hint {
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 12px 0;
+}

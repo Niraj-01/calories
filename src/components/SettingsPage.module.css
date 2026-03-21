@@ -57,6 +57,68 @@
   flex-direction: column;
 }
 
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+.sectionHint {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  margin-top: -8px;
+}
+
+.rowGroup {
+  display: flex;
+  gap: 12px;
+}
+
+.halfRow {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.goalPicker {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.goalBtn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.goalBtn:active {
+  transform: scale(0.95);
+}
+
+.goalActive {
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb, 99, 102, 241), 0.1);
+  color: var(--accent);
+}
+
+.goalHint {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  margin-top: 6px;
+}
+
 .signOutBtn {
   margin: 0;
 }
