@@ -63,7 +63,8 @@ export default function CameraModal({ meal, onAdd, onClose }) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || data.message || "Failed to analyze image");
+        setError(data.error || data.message || "Failed to analyze image");
+        return;
       }
 
       setPrediction(data);
@@ -71,8 +72,7 @@ export default function CameraModal({ meal, onAdd, onClose }) {
       setServingUnit("g");
 
     } catch (err) {
-      console.error(err);
-      setError(err.message);
+      setError(err.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -188,6 +188,7 @@ export default function CameraModal({ meal, onAdd, onClose }) {
                 <div className={styles.pulseInner}>🍽️</div>
               </div>
               <p className={styles.loadingText}>Identifying food...</p>
+              <p className={styles.loadingHint}>This may take up to 30s on first use</p>
               {preview && (
                 <img src={preview} alt="Analyzing" className={styles.loadingPreview} />
               )}

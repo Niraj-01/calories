@@ -206,6 +206,11 @@
   color: var(--text-secondary);
 }
 
+.loadingHint {
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
 .loadingPreview {
   width: 120px;
   height: 120px;

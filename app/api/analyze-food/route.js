@@ -15,23 +15,45 @@ export async function POST(request) {
     // 1. Call HuggingFace for Food Recognition
     // We use the nateraw/food101 model
     const buffer = await image.arrayBuffer();
-    const hfResponse = await fetch(
-      "https://api-inference.huggingface.co/models/nateraw/food101",
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-          "Content-Type": "application/octet-stream",
-        },
-        method: "POST",
-        body: buffer,
-      }
-    );
+    
+    // HuggingFace free-tier models may need cold-start time — retry with wait
+    let hfResponse;
+    const maxRetries = 3;
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      hfResponse = await fetch(
+        "https://router.huggingface.co/hf-inference/models/nateraw/food",
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+            "Content-Type": "application/octet-stream",
+            "x-wait-for-model": "true",
+          },
+          method: "POST",
+          body: buffer,
+        }
+      );
 
-    if (!hfResponse.ok) {
+      if (hfResponse.ok) break;
+
+      // Model loading — 503 with estimated_time
+      if (hfResponse.status === 503 && attempt < maxRetries - 1) {
+        try {
+          const body = await hfResponse.json();
+          const waitTime = Math.min((body.estimated_time || 15) * 1000, 30000);
+          console.log(`Model loading, waiting ${waitTime}ms (attempt ${attempt + 1})...`);
+          await new Promise((r) => setTimeout(r, waitTime));
+          continue;
+        } catch {
+          await new Promise((r) => setTimeout(r, 10000));
+          continue;
+        }
+      }
+
+      // Non-retryable error
       const errorText = await hfResponse.text();
       console.error("HuggingFace Error:", hfResponse.status, errorText);
       return NextResponse.json(
-        { error: 'Failed to analyze image with HuggingFace.' },
+        { error: `AI model error (${hfResponse.status}). Please try again in a moment.` },
         { status: 500 }
       );
     }
@@ -61,44 +83,11 @@ export async function POST(request) {
     const topPrediction = hfResult[0];
     const foodName = topPrediction.label.replace(/_/g, " ");
 
-    // 2. Call Nutrition API (e.g., Edamam) to get macros for 100g of the predicted food
-    const edamamAppId = process.env.EDAMAM_APP_ID;
-    const edamamAppKey = process.env.EDAMAM_APP_KEY;
-    
-    if (!edamamAppId || !edamamAppKey) {
-        // Fallback if no Edamam keys are set yet, just return the prediction
-        return NextResponse.json({
-            name: foodName,
-            confidence: topPrediction.score,
-            calories: 0,
-            protein: 0,
-            carbs: 0,
-            fat: 0,
-            message: "Food identified, but Nutrition API keys are missing."
-        });
-    }
+    // 2. Look up nutrition from built-in database (per 100g, USDA-sourced)
+    const { getNutrition } = await import("@/src/data/foodNutrition");
+    const nutrition = getNutrition(foodName);
 
-    const nutritionResponse = await fetch(
-      `https://api.edamam.com/api/nutrition-data?app_id=${edamamAppId}&app_key=${edamamAppKey}&ingr=100g%20${encodeURIComponent(foodName)}`
-    );
-
-    if (!nutritionResponse.ok) {
-        return NextResponse.json({
-            name: foodName,
-            confidence: topPrediction.score,
-            calories: 0,
-            protein: 0,
-            carbs: 0,
-            fat: 0,
-            message: `Nutrition lookup failed (${nutritionResponse.status}).`
-        });
-    }
-
-    let nutritionData;
-    try {
-      nutritionData = await nutritionResponse.json();
-    } catch (parseErr) {
-      console.error("Nutrition parse error", parseErr);
+    if (!nutrition) {
       return NextResponse.json({
         name: foodName,
         confidence: topPrediction.score,
@@ -106,31 +95,20 @@ export async function POST(request) {
         protein: 0,
         carbs: 0,
         fat: 0,
-        message: "Nutrition service returned invalid data."
+        message: "Food identified, but no nutrition data available.",
       });
     }
 
-    // The API might return 0 if it doesn't understand the query or has no data
-    if (!nutritionData.calories) {
-        return NextResponse.json({
-             name: foodName,
-             confidence: topPrediction.score,
-             calories: 0,
-             protein: 0,
-             carbs: 0,
-             fat: 0,
-             message: "Food identified, but no nutrition data found for this item."
-         });
-    }
+    const [calories, protein, carbs, fat] = nutrition;
 
     return NextResponse.json({
       name: foodName,
       confidence: topPrediction.score,
-      calories: Math.round(nutritionData.calories),
-      protein: Math.round(nutritionData.totalNutrients?.PROCNT?.quantity || 0),
-      carbs: Math.round(nutritionData.totalNutrients?.CHOCDF?.quantity || 0),
-      fat: Math.round(nutritionData.totalNutrients?.FAT?.quantity || 0),
-      message: "Success"
+      calories,
+      protein,
+      carbs,
+      fat,
+      message: "Success",
     });
 
   } catch (error) {
