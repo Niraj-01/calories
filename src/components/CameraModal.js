@@ -51,23 +51,68 @@ export default function CameraModal({ meal, onAdd, onClose }) {
     setError(null);
     setPrediction(null);
 
-    const formData = new FormData();
-    formData.append("image", image);
-
     try {
-      const response = await fetch("/api/analyze-food", {
-        method: "POST",
-        body: formData,
-      });
+      // 1. Send image to HuggingFace
+      const buffer = await image.arrayBuffer();
+      let hfResponse;
+      const maxRetries = 3;
+      for (let attempt = 0; attempt < maxRetries; attempt++) {
+        hfResponse = await fetch(
+          "https://router.huggingface.co/hf-inference/models/nateraw/food",
+          {
+            headers: {
+              Authorization: `Bearer ${process.env.NEXT_PUBLIC_HUGGINGFACE_API_KEY}`,
+              "Content-Type": "application/octet-stream",
+              "x-wait-for-model": "true",
+            },
+            method: "POST",
+            body: buffer,
+          }
+        );
 
-      const data = await response.json();
+        if (hfResponse.ok) break;
 
-      if (!response.ok) {
-        setError(data.error || data.message || "Failed to analyze image");
-        return;
+        if (hfResponse.status === 503 && attempt < maxRetries - 1) {
+          try {
+            const body = await hfResponse.json();
+            const waitTime = Math.min((body.estimated_time || 15) * 1000, 30000);
+            await new Promise((r) => setTimeout(r, waitTime));
+            continue;
+          } catch {
+            await new Promise((r) => setTimeout(r, 10000));
+            continue;
+          }
+        }
+        const errorText = await hfResponse.text();
+        throw new Error(`AI model error (${hfResponse.status}). Please try again.`);
       }
 
-      setPrediction(data);
+      const hfText = await hfResponse.text();
+      const hfResult = JSON.parse(hfText);
+
+      if (!Array.isArray(hfResult) || hfResult.length === 0) {
+        throw new Error(typeof hfResult?.error === "string" ? hfResult.error : "Could not identify food.");
+      }
+
+      const topPrediction = hfResult[0];
+      const foodName = topPrediction.label.replace(/_/g, " ");
+
+      // 2. Get local nutrition data
+      const { getNutrition } = await import("@/src/data/foodNutrition");
+      const nutrition = getNutrition(foodName);
+
+      if (!nutrition) {
+        throw new Error("Food identified, but no nutrition data available.");
+      }
+
+      setPrediction({
+        name: foodName,
+        confidence: topPrediction.score,
+        calories: nutrition[0],
+        protein: nutrition[1],
+        carbs: nutrition[2],
+        fat: nutrition[3],
+      });
       setServingAmount(100);
       setServingUnit("g");
 
