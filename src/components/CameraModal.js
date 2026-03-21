@@ -197,11 +197,10 @@ export default function CameraModal({ meal, onAdd, onClose }) {
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <div className={styles.uploadIcon}>📷</div>
-                  <p className={styles.uploadText}>Tap to scan your meal</p>
+                  <p className={styles.uploadText}>Tap to scan or choose photo</p>
                   <input
                     type="file"
                     accept="image/*"
-                    capture="environment"
                     ref={fileInputRef}
                     className={styles.fileInput}
                     onChange={handleImageChange}
