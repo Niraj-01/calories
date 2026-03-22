@@ -64,7 +64,7 @@ export async function getDayRange(uid, startDate, endDate) {
         } catch {
           results[key] = [];
         }
-      })()
+      })(),
     );
   }
 

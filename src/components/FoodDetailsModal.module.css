@@ -60,7 +60,7 @@
 
 .foodBrand {
   font-size: 18px;
-  color: #8E8E93;
+  color: #8e8e93;
 }
 
 .section {
@@ -69,7 +69,7 @@
 }
 
 .stepperBg {
-  background-color: #1C1C1E;
+  background-color: #1c1c1e;
   border-radius: 18px;
   padding: 20px;
   display: flex;
@@ -116,7 +116,7 @@
   -webkit-appearance: none;
   margin: 0;
 }
-.weightValue[type=number] {
+.weightValue[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
@@ -151,7 +151,7 @@
 
 .macroValue {
   font-size: 18px;
-  color: #8E8E93;
+  color: #8e8e93;
 }
 
 .segmentedControl {
@@ -167,7 +167,7 @@
   padding: 8px 0;
   font-size: 14px;
   font-weight: 500;
-  color: #8E8E93;
+  color: #8e8e93;
   cursor: pointer;
   border: none;
   background: transparent;
@@ -176,9 +176,11 @@
 }
 
 .segmentedItem.active {
-  background-color: #3A3A3C;
-  color: #FFFFFF;
-  box-shadow: 0 3px 8px 0 rgba(0,0,0,0.12), 0 3px 1px 0 rgba(0,0,0,0.04);
+  background-color: #3a3a3c;
+  color: #ffffff;
+  box-shadow:
+    0 3px 8px 0 rgba(0, 0, 0, 0.12),
+    0 3px 1px 0 rgba(0, 0, 0, 0.04);
 }
 
 .flexGrow {
@@ -192,8 +194,8 @@
 
 .ctaBtn {
   width: 100%;
-  background-color: #3A3A3C;
-  color: #FFFFFF;
+  background-color: #3a3a3c;
+  color: #ffffff;
   font-weight: 600;
   border-radius: 14px;
   padding: 16px;
@@ -208,6 +210,10 @@
 }
 
 @keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }

@@ -10,17 +10,17 @@ Built as a **Next.js 14 App Router** project, designed to feel like a premium na
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 14 (App Router, `"use client"` where needed) |
-| Styling | CSS Modules + global CSS variables (no Tailwind) |
-| Auth | Firebase Authentication — Google Sign-In |
-| Database | Firebase Cloud Firestore (NoSQL) |
-| AI Vision (Camera) | client-side `Transformers.js` / Hugging Face model |
-| Barcode Scanner | `html5-qrcode` (client-side) |
-| Food Search/Barcode | Open Food Facts REST API |
-| Charts & Viz | `recharts` (Responsive line & bar charts) |
-| Hosting | Firebase App Hosting / Firebase Hosting |
+| Layer               | Technology                                           |
+| ------------------- | ---------------------------------------------------- |
+| Framework           | Next.js 14 (App Router, `"use client"` where needed) |
+| Styling             | CSS Modules + global CSS variables (no Tailwind)     |
+| Auth                | Firebase Authentication — Google Sign-In             |
+| Database            | Firebase Cloud Firestore (NoSQL)                     |
+| AI Vision (Camera)  | client-side `Transformers.js` / Hugging Face model   |
+| Barcode Scanner     | `html5-qrcode` (client-side)                         |
+| Food Search/Barcode | Open Food Facts REST API                             |
+| Charts & Viz        | `recharts` (Responsive line & bar charts)            |
+| Hosting             | Firebase App Hosting / Firebase Hosting              |
 
 ---
 
@@ -127,6 +127,7 @@ users/{uid}/myFoods/{foodId}
 ## Navigation & Routing
 
 `BottomNav.js` provides 5 tabs routed via Next.js `<Link>`:
+
 - `/` → Today (HomePage - Tracking & Streaks)
 - `/dashboard` → Dashboard (Recharts visual progress)
 - `/history` → History (List of past meals)

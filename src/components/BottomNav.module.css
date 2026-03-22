@@ -45,7 +45,9 @@
   justify-content: center;
   color: var(--text-tertiary);
   opacity: 0.5;
-  transition: color 0.2s, opacity 0.2s;
+  transition:
+    color 0.2s,
+    opacity 0.2s;
 }
 
 .label {

@@ -19,7 +19,12 @@ export default function CalorieRing({ consumed = 0, goal = 2000 }) {
   return (
     <div className={styles.container}>
       <div className={`${styles.glow} ${isOver ? styles.glowOver : ""}`} />
-      <svg width="200" height="200" viewBox="0 0 200 200" className={styles.svg}>
+      <svg
+        width="200"
+        height="200"
+        viewBox="0 0 200 200"
+        className={styles.svg}
+      >
         <circle cx="100" cy="100" r="90" className={styles.bg} />
         <circle
           cx="100"
@@ -31,9 +36,13 @@ export default function CalorieRing({ consumed = 0, goal = 2000 }) {
         />
       </svg>
       <div className={styles.center}>
-        <span className={styles.value}>{Math.round(consumed).toLocaleString()}</span>
+        <span className={styles.value}>
+          {Math.round(consumed).toLocaleString()}
+        </span>
         <span className={styles.unit}>kcal</span>
-        <span className={styles.sub}>of {Math.round(goal).toLocaleString()}</span>
+        <span className={styles.sub}>
+          of {Math.round(goal).toLocaleString()}
+        </span>
       </div>
     </div>
   );

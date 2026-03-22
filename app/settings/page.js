@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
 
-const SettingsPage = dynamic(() => import("@/src/components/SettingsPage"), { ssr: false });
+const SettingsPage = dynamic(() => import("@/src/components/SettingsPage"), {
+  ssr: false,
+});
 
 export default function SettingsRoute() {
   const { user, loading } = useAuth();

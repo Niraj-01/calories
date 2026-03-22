@@ -34,7 +34,9 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
       try {
         await html5QrRef.current.stop();
         html5QrRef.current.clear();
-      } catch { /* already stopped */ }
+      } catch {
+        /* already stopped */
+      }
       html5QrRef.current = null;
     }
     setScanning(false);
@@ -54,7 +56,7 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
     setError(null);
     try {
       const res = await fetch(
-        `https://world.openfoodfacts.org/api/v2/product/${code}.json?fields=product_name,brands,nutriments,serving_size`
+        `https://world.openfoodfacts.org/api/v2/product/${code}.json?fields=product_name,brands,nutriments,serving_size`,
       );
       const data = await res.json();
       if (data.status === 1 && data.product) {
@@ -97,7 +99,7 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
           await stopScanner();
           lookupBarcode(decodedText);
         },
-        () => {} // ignore scan errors
+        () => {}, // ignore scan errors
       );
     } catch (err) {
       setError("Camera access denied. Please allow camera permissions.");
@@ -119,7 +121,7 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
         servingAmount,
         servingUnit: "g",
       },
-      meal
+      meal,
     );
     handleClose();
   };
@@ -127,17 +129,30 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
   if (!mounted) return null;
 
   return createPortal(
-    <div className={`${styles.overlay} ${visible ? styles.overlayVisible : ""}`} onClick={handleClose}>
+    <div
+      className={`${styles.overlay} ${visible ? styles.overlayVisible : ""}`}
+      onClick={handleClose}
+    >
       <div
         className={`${styles.sheet} ${visible ? styles.sheetVisible : ""}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className={styles.handleBar}><div className={styles.handle} /></div>
+        <div className={styles.handleBar}>
+          <div className={styles.handle} />
+        </div>
 
         <div className={styles.sheetHeader}>
           <h2 className={styles.sheetTitle}>Scan Barcode</h2>
           <button className={styles.closeBtn} onClick={handleClose}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
           </button>
@@ -149,12 +164,17 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
             <div className={styles.scannerArea}>
               <div id="barcode-reader" className={styles.reader} />
               {!scanning && (
-                <button className="btn btn-primary btn-full" onClick={startScanner}>
+                <button
+                  className="btn btn-primary btn-full"
+                  onClick={startScanner}
+                >
                   📷 Start Scanning
                 </button>
               )}
               {scanning && (
-                <p className={styles.hint}>Point at a barcode on any packaged food</p>
+                <p className={styles.hint}>
+                  Point at a barcode on any packaged food
+                </p>
               )}
             </div>
           )}
@@ -171,7 +191,11 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
           {error && (
             <div className={styles.errorCard}>
               <p className={styles.errorText}>{error}</p>
-              <button className="btn btn-primary btn-full" onClick={startScanner} style={{ marginTop: 12 }}>
+              <button
+                className="btn btn-primary btn-full"
+                onClick={startScanner}
+                style={{ marginTop: 12 }}
+              >
                 Try Again
               </button>
             </div>
@@ -182,24 +206,34 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
             <div className={styles.resultArea}>
               <div className={styles.resultHeader}>
                 <h3 className={styles.productName}>{product.name}</h3>
-                {product.brand && <span className={styles.brandBadge}>{product.brand}</span>}
+                {product.brand && (
+                  <span className={styles.brandBadge}>{product.brand}</span>
+                )}
               </div>
 
               <div className={styles.macroGrid}>
                 <div className={styles.macroItem}>
-                  <span className={styles.macroValue}>{Math.round(product.calories * servingAmount / 100)}</span>
+                  <span className={styles.macroValue}>
+                    {Math.round((product.calories * servingAmount) / 100)}
+                  </span>
                   <span className={styles.macroLabel}>kcal</span>
                 </div>
                 <div className={styles.macroItem}>
-                  <span className={styles.macroValue}>{(product.protein * servingAmount / 100).toFixed(1)}</span>
+                  <span className={styles.macroValue}>
+                    {((product.protein * servingAmount) / 100).toFixed(1)}
+                  </span>
                   <span className={styles.macroLabel}>Protein</span>
                 </div>
                 <div className={styles.macroItem}>
-                  <span className={styles.macroValue}>{(product.carbs * servingAmount / 100).toFixed(1)}</span>
+                  <span className={styles.macroValue}>
+                    {((product.carbs * servingAmount) / 100).toFixed(1)}
+                  </span>
                   <span className={styles.macroLabel}>Carbs</span>
                 </div>
                 <div className={styles.macroItem}>
-                  <span className={styles.macroValue}>{(product.fat * servingAmount / 100).toFixed(1)}</span>
+                  <span className={styles.macroValue}>
+                    {((product.fat * servingAmount) / 100).toFixed(1)}
+                  </span>
                   <span className={styles.macroLabel}>Fat</span>
                 </div>
               </div>
@@ -211,7 +245,9 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
                   type="number"
                   min="1"
                   value={servingAmount}
-                  onChange={(e) => setServingAmount(Math.max(1, parseInt(e.target.value) || 1))}
+                  onChange={(e) =>
+                    setServingAmount(Math.max(1, parseInt(e.target.value) || 1))
+                  }
                 />
               </div>
 
@@ -221,7 +257,10 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
 
               <button
                 className={styles.rescanBtn}
-                onClick={() => { setProduct(null); startScanner(); }}
+                onClick={() => {
+                  setProduct(null);
+                  startScanner();
+                }}
               >
                 Scan Another
               </button>
@@ -230,6 +269,6 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
 
-const MyFoodsPage = dynamic(() => import("@/src/components/MyFoodsPage"), { ssr: false });
+const MyFoodsPage = dynamic(() => import("@/src/components/MyFoodsPage"), {
+  ssr: false,
+});
 
 export default function MyFoodsRoute() {
   const { user, loading } = useAuth();

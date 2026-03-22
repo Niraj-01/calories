@@ -35,7 +35,6 @@ In **Stage 2**, the system adapts dynamically, integrating **real-time nutrition
 
 This hybrid approach not only demonstrates the power of combining sophisticated backend APIs with a responsive frontend but also highlights the challenges of seamless user experience in health tech. Beyond just tracking meals, the project showcases how **integrated AI models and cloud architecture** can be applied to everyday, high-friction domains like personal health—where accuracy and ease-of-use are paramount.
 
-
 <br>
 <br>
 <br>
@@ -66,12 +65,15 @@ The prediction and tracking pipeline consists of **two major stages** connected 
 <i><u><h3>Libraries and API's to be used</h3></u></i>
 
 **Frontend & State Management**
+
 - `Next.js / React` → for component-based UI, routing, and efficient server/client state handling.
 - `CSS Modules` → for scoping modern UI effects (glassmorphism, backdrop filters, spring animations).
 
 **Backend & Database**
+
 - `Firebase / Firestore` → for real-time NoSQL data storage and secure user authentication.
 
 **Data Sources / APIs**
+
 - `Hugging Face Inference API` → to fetch real-time image classification data (using Food-101 or similar vision models).
 - `Edamam API` → for highly accurate, programmatic access to global nutrition and dietary databases.

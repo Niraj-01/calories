@@ -21,7 +21,7 @@ import {
   PieChart,
   Pie,
   Cell,
-  CartesianGrid
+  CartesianGrid,
 } from "recharts";
 import styles from "./DashboardPage.module.css";
 
@@ -48,10 +48,17 @@ export default function DashboardPage() {
   const [goal, setGoal] = useState(2000);
   const [weightInput, setWeightInput] = useState("");
   const [weightSaved, setWeightSaved] = useState(false);
-  
+
   const [activeFilter, setActiveFilter] = useState("1W");
-  
-  const numDays = activeFilter === "1W" ? 7 : activeFilter === "1M" ? 30 : activeFilter === "6M" ? 180 : 365;
+
+  const numDays =
+    activeFilter === "1W"
+      ? 7
+      : activeFilter === "1M"
+        ? 30
+        : activeFilter === "6M"
+          ? 180
+          : 365;
   const days = useMemo(() => getLastNDays(numDays), [numDays]);
   const today = dateKey();
 
@@ -75,7 +82,8 @@ export default function DashboardPage() {
         setDayLogs(logMap);
 
         const todayLog = logMap[today] || {};
-        if (todayLog.loggedWeight) setWeightInput(String(todayLog.loggedWeight));
+        if (todayLog.loggedWeight)
+          setWeightInput(String(todayLog.loggedWeight));
       } catch (err) {
         console.warn("Dashboard load error:", err);
       } finally {
@@ -119,15 +127,19 @@ export default function DashboardPage() {
     totalCarbs += entries.reduce((s, e) => s + (e.carbs || 0), 0);
     totalFat += entries.reduce((s, e) => s + (e.fat || 0), 0);
   });
-  
+
   const macroPieData = [
     { name: "Protein", value: totalProtein, color: "#32d74b" },
     { name: "Carbs", value: totalCarbs, color: "#0a84ff" },
-    { name: "Fat", value: totalFat, color: "#ff9f0a" }
-  ].filter(m => m.value > 0);
+    { name: "Fat", value: totalFat, color: "#ff9f0a" },
+  ].filter((m) => m.value > 0);
 
   if (macroPieData.length === 0) {
-    macroPieData.push({ name: "Empty", value: 1, color: "rgba(255,255,255,0.1)" });
+    macroPieData.push({
+      name: "Empty",
+      value: 1,
+      color: "rgba(255,255,255,0.1)",
+    });
   }
 
   const weightData = days
@@ -137,32 +149,37 @@ export default function DashboardPage() {
     }))
     .filter((d) => d.weight !== null);
 
-  const latestWeight = weightData.length > 0 ? weightData[weightData.length - 1].weight : null;
+  const latestWeight =
+    weightData.length > 0 ? weightData[weightData.length - 1].weight : null;
 
   const waterData = days.map((d) => ({
     day: shortDay(d),
-    water: ((dayLogs[d]?.waterIntake || 0) / 1000),
+    water: (dayLogs[d]?.waterIntake || 0) / 1000,
   }));
 
   const chartTheme = {
     tooltipBg: "rgba(28, 28, 30, 0.9)",
     tooltipBorder: "rgba(255, 255, 255, 0.1)",
     textTertiary: "rgba(255, 255, 255, 0.4)",
-    grid: "rgba(255, 255, 255, 0.05)"
+    grid: "rgba(255, 255, 255, 0.05)",
   };
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div style={{
-          background: chartTheme.tooltipBg,
-          border: `1px solid ${chartTheme.tooltipBorder}`,
-          borderRadius: 12,
-          padding: '8px 12px',
-          backdropFilter: 'blur(10px)',
-          fontSize: '0.85rem'
-        }}>
-          <p style={{ margin: '0 0 4px', color: '#fff', fontWeight: 600 }}>{label}</p>
+        <div
+          style={{
+            background: chartTheme.tooltipBg,
+            border: `1px solid ${chartTheme.tooltipBorder}`,
+            borderRadius: 12,
+            padding: "8px 12px",
+            backdropFilter: "blur(10px)",
+            fontSize: "0.85rem",
+          }}
+        >
+          <p style={{ margin: "0 0 4px", color: "#fff", fontWeight: 600 }}>
+            {label}
+          </p>
           {payload.map((entry, index) => (
             <p key={index} style={{ margin: 0, color: entry.color }}>
               {entry.name}: {entry.value}
@@ -181,7 +198,10 @@ export default function DashboardPage() {
           <h1 className={styles.title}>Nutrition</h1>
         </div>
         <div className={styles.card} style={{ height: 200 }}>
-          <div className={styles.skeleton} style={{ width: "100%", height: "100%", borderRadius: 16 }} />
+          <div
+            className={styles.skeleton}
+            style={{ width: "100%", height: "100%", borderRadius: 16 }}
+          />
         </div>
       </div>
     );
@@ -194,7 +214,7 @@ export default function DashboardPage() {
       </div>
 
       <div className={styles.dateFilters}>
-        {["1W", "1M", "6M", "1Y"].map(f => (
+        {["1W", "1M", "6M", "1Y"].map((f) => (
           <button
             key={f}
             className={`${styles.filterBtn} ${activeFilter === f ? styles.active : ""}`}
@@ -215,12 +235,39 @@ export default function DashboardPage() {
         </div>
         <div className={styles.chartWrapper}>
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={calorieData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={chartTheme.grid} />
-              <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: chartTheme.textTertiary, fontSize: 12 }} dy={10} minTickGap={20} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fill: chartTheme.textTertiary, fontSize: 12 }} />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
-              <Bar dataKey="calories" name="Calories" fill="#1fc11b" radius={[4, 4, 4, 4]} barSize={24} />
+            <BarChart
+              data={calorieData}
+              margin={{ top: 10, right: 0, left: -20, bottom: 0 }}
+            >
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+                stroke={chartTheme.grid}
+              />
+              <XAxis
+                dataKey="day"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: chartTheme.textTertiary, fontSize: 12 }}
+                dy={10}
+                minTickGap={20}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: chartTheme.textTertiary, fontSize: 12 }}
+              />
+              <Tooltip
+                content={<CustomTooltip />}
+                cursor={{ fill: "rgba(255,255,255,0.05)" }}
+              />
+              <Bar
+                dataKey="calories"
+                name="Calories"
+                fill="#1fc11b"
+                radius={[4, 4, 4, 4]}
+                barSize={24}
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -256,21 +303,34 @@ export default function DashboardPage() {
           <div className={styles.macrosList}>
             <div className={styles.macroItem}>
               <div className={styles.macroLabelGroup}>
-                <div className={styles.macroDot} style={{ background: '#32d74b' }} />
+                <div
+                  className={styles.macroDot}
+                  style={{ background: "#32d74b" }}
+                />
                 <span className={styles.macroLabel}>Protein</span>
               </div>
-              <span className={styles.macroValue}>{Math.round(totalProtein)}g</span>
+              <span className={styles.macroValue}>
+                {Math.round(totalProtein)}g
+              </span>
             </div>
             <div className={styles.macroItem}>
               <div className={styles.macroLabelGroup}>
-                <div className={styles.macroDot} style={{ background: '#0a84ff' }} />
+                <div
+                  className={styles.macroDot}
+                  style={{ background: "#0a84ff" }}
+                />
                 <span className={styles.macroLabel}>Carbs</span>
               </div>
-              <span className={styles.macroValue}>{Math.round(totalCarbs)}g</span>
+              <span className={styles.macroValue}>
+                {Math.round(totalCarbs)}g
+              </span>
             </div>
             <div className={styles.macroItem}>
               <div className={styles.macroLabelGroup}>
-                <div className={styles.macroDot} style={{ background: '#ff9f0a' }} />
+                <div
+                  className={styles.macroDot}
+                  style={{ background: "#ff9f0a" }}
+                />
                 <span className={styles.macroLabel}>Fat</span>
               </div>
               <span className={styles.macroValue}>{Math.round(totalFat)}g</span>
@@ -284,7 +344,9 @@ export default function DashboardPage() {
         <div className={styles.cardHeader}>
           <div>
             <div className={styles.cardTitle}>Weight Trend</div>
-            <div className={styles.cardSub}>{latestWeight ? `${latestWeight} kg` : 'No data'}</div>
+            <div className={styles.cardSub}>
+              {latestWeight ? `${latestWeight} kg` : "No data"}
+            </div>
           </div>
         </div>
 
@@ -304,23 +366,52 @@ export default function DashboardPage() {
         {weightData.length > 1 ? (
           <div className={styles.chartWrapper}>
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={weightData} margin={{ top: 10, right: 0, left: -25, bottom: 0 }}>
+              <AreaChart
+                data={weightData}
+                margin={{ top: 10, right: 0, left: -25, bottom: 0 }}
+              >
                 <defs>
                   <linearGradient id="colorWeight" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#bf5af2" stopOpacity={0.3} />
                     <stop offset="95%" stopColor="#bf5af2" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={chartTheme.grid} />
-                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: chartTheme.textTertiary, fontSize: 12 }} dy={10} minTickGap={20} />
-                <YAxis domain={['dataMin - 1', 'dataMax + 1']} axisLine={false} tickLine={false} tick={{ fill: chartTheme.textTertiary, fontSize: 12 }} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke={chartTheme.grid}
+                />
+                <XAxis
+                  dataKey="day"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: chartTheme.textTertiary, fontSize: 12 }}
+                  dy={10}
+                  minTickGap={20}
+                />
+                <YAxis
+                  domain={["dataMin - 1", "dataMax + 1"]}
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: chartTheme.textTertiary, fontSize: 12 }}
+                />
                 <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="weight" name="Weight" stroke="#bf5af2" strokeWidth={3} fillOpacity={1} fill="url(#colorWeight)" />
+                <Area
+                  type="monotone"
+                  dataKey="weight"
+                  name="Weight"
+                  stroke="#bf5af2"
+                  strokeWidth={3}
+                  fillOpacity={1}
+                  fill="url(#colorWeight)"
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         ) : (
-          <p className={styles.hint}>Log your weight for at least 2 days to see the trend.</p>
+          <p className={styles.hint}>
+            Log your weight for at least 2 days to see the trend.
+          </p>
         )}
       </div>
 
@@ -334,12 +425,39 @@ export default function DashboardPage() {
         </div>
         <div className={styles.chartWrapper}>
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={waterData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={chartTheme.grid} />
-              <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: chartTheme.textTertiary, fontSize: 12 }} dy={10} minTickGap={20} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fill: chartTheme.textTertiary, fontSize: 12 }} />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
-              <Bar dataKey="water" name="Water (L)" fill="#0a84ff" radius={[4, 4, 4, 4]} barSize={24} />
+            <BarChart
+              data={waterData}
+              margin={{ top: 10, right: 0, left: -20, bottom: 0 }}
+            >
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+                stroke={chartTheme.grid}
+              />
+              <XAxis
+                dataKey="day"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: chartTheme.textTertiary, fontSize: 12 }}
+                dy={10}
+                minTickGap={20}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: chartTheme.textTertiary, fontSize: 12 }}
+              />
+              <Tooltip
+                content={<CustomTooltip />}
+                cursor={{ fill: "rgba(255,255,255,0.05)" }}
+              />
+              <Bar
+                dataKey="water"
+                name="Water (L)"
+                fill="#0a84ff"
+                radius={[4, 4, 4, 4]}
+                barSize={24}
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>

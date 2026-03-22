@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/src/context/AuthContext";
-import { getUserSettings, setUserSettings } from "@/src/services/firestoreService";
+import {
+  getUserSettings,
+  setUserSettings,
+} from "@/src/services/firestoreService";
 import { useRouter } from "next/navigation";
 import styles from "./SettingsPage.module.css";
 
@@ -69,7 +72,12 @@ export default function SettingsPage() {
 
   // Auto-calculate calorie goal when profile fields change
   useEffect(() => {
-    const bmr = calcBMR(parseFloat(weight), parseFloat(height), parseInt(age), gender);
+    const bmr = calcBMR(
+      parseFloat(weight),
+      parseFloat(height),
+      parseInt(age),
+      gender,
+    );
     if (bmr) {
       const tdee = calcTDEE(bmr, activity);
       const adjusted = goalAdjust(tdee, weightGoal);
@@ -118,7 +126,12 @@ export default function SettingsPage() {
     );
   }
 
-  const currentBMR = calcBMR(parseFloat(weight), parseFloat(height), parseInt(age), gender);
+  const currentBMR = calcBMR(
+    parseFloat(weight),
+    parseFloat(height),
+    parseInt(age),
+    gender,
+  );
   const currentTDEE = currentBMR ? calcTDEE(currentBMR, activity) : null;
 
   return (
@@ -126,7 +139,8 @@ export default function SettingsPage() {
       {/* Header Section */}
       <header className={styles.header}>
         <h1 className={styles.title}>
-          User Profile and <br />Settings
+          User Profile and <br />
+          Settings
         </h1>
         <div className={styles.profileInfo}>
           <div className={styles.avatar}>
@@ -137,11 +151,11 @@ export default function SettingsPage() {
               .toUpperCase()
               .slice(0, 2)}
           </div>
-          <input 
-            type="text" 
-            className={styles.nameInput} 
-            value={displayName} 
-            onChange={(e) => setDisplayName(e.target.value)} 
+          <input
+            type="text"
+            className={styles.nameInput}
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
             placeholder="Your Name"
           />
         </div>
@@ -151,42 +165,80 @@ export default function SettingsPage() {
       <section className={styles.frostedGlass}>
         <div className={styles.listRow}>
           <label className={styles.rowLabel}>Age</label>
-          <input className={styles.rowInput} type="number" placeholder="25" value={age} onChange={(e) => setAge(e.target.value)} />
+          <input
+            className={styles.rowInput}
+            type="number"
+            placeholder="25"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+          />
         </div>
         <div className={styles.listRow}>
           <label className={styles.rowLabel}>Gender</label>
-          <select className={styles.rowSelect} value={gender} onChange={(e) => setGender(e.target.value)}>
+          <select
+            className={styles.rowSelect}
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+          >
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
         </div>
         <div className={styles.listRow}>
           <label className={styles.rowLabel}>Height (cm)</label>
-          <input className={styles.rowInput} type="number" placeholder="175" value={height} onChange={(e) => setHeight(e.target.value)} />
+          <input
+            className={styles.rowInput}
+            type="number"
+            placeholder="175"
+            value={height}
+            onChange={(e) => setHeight(e.target.value)}
+          />
         </div>
         <div className={styles.listRow}>
           <label className={styles.rowLabel}>Weight (kg)</label>
-          <input className={styles.rowInput} type="number" placeholder="70" value={weight} onChange={(e) => setWeight(e.target.value)} />
+          <input
+            className={styles.rowInput}
+            type="number"
+            placeholder="70"
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
+          />
         </div>
         <div className={styles.listRow}>
           <label className={styles.rowLabel}>Activity Level</label>
-          <select className={styles.rowSelect} value={activity} onChange={(e) => setActivity(parseFloat(e.target.value))}>
+          <select
+            className={styles.rowSelect}
+            value={activity}
+            onChange={(e) => setActivity(parseFloat(e.target.value))}
+          >
             {ACTIVITY_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
             ))}
           </select>
         </div>
         <div className={styles.listRow}>
           <label className={styles.rowLabel}>Goal</label>
-          <select className={styles.rowSelect} value={weightGoal} onChange={(e) => setWeightGoal(e.target.value)}>
-             <option value="lose">Lose Weight</option>
-             <option value="maintain">Maintain Weight</option>
-             <option value="gain">Gain Weight</option>
+          <select
+            className={styles.rowSelect}
+            value={weightGoal}
+            onChange={(e) => setWeightGoal(e.target.value)}
+          >
+            <option value="lose">Lose Weight</option>
+            <option value="maintain">Maintain Weight</option>
+            <option value="gain">Gain Weight</option>
           </select>
         </div>
         <div className={styles.listRow}>
           <label className={styles.rowLabel}>Daily Target</label>
-          <input className={styles.rowInput} type="number" placeholder="2000" value={calorieGoal} onChange={(e) => setCalorieGoal(e.target.value)} />
+          <input
+            className={styles.rowInput}
+            type="number"
+            placeholder="2000"
+            value={calorieGoal}
+            onChange={(e) => setCalorieGoal(e.target.value)}
+          />
         </div>
       </section>
 
@@ -208,14 +260,18 @@ export default function SettingsPage() {
 
       {/* Actions */}
       <section>
-        <button 
-          className={styles.saveBtn} 
-          onClick={handleSave} 
+        <button
+          className={styles.saveBtn}
+          onClick={handleSave}
           disabled={saving}
         >
           {saved ? "✓ Saved" : saving ? "Saving..." : "Save Changes"}
         </button>
-        <button type="button" className={styles.signOutBtn} onClick={handleSignOut}>
+        <button
+          type="button"
+          className={styles.signOutBtn}
+          onClick={handleSignOut}
+        >
           Sign Out
         </button>
       </section>

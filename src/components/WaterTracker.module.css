@@ -38,7 +38,7 @@
 }
 
 .amount {
-  color: var(--text-secondary, #8E8E93);
+  color: var(--text-secondary, #8e8e93);
   font-size: 0.9rem;
 }
 
@@ -85,9 +85,16 @@
 }
 
 @keyframes bgPulse {
-  0% { transform: scaleY(1); }
-  50% { transform: scaleY(1.2); background: rgba(255, 255, 255, 0.4); }
-  100% { transform: scaleY(1); }
+  0% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.2);
+    background: rgba(255, 255, 255, 0.4);
+  }
+  100% {
+    transform: scaleY(1);
+  }
 }
 
 .buttons {

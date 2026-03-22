@@ -28,7 +28,10 @@ export default function WaterTracker({ intake, onAdd }) {
           <span className={styles.amount}>
             {(intake / 1000).toFixed(1)}L / {(GOAL / 1000).toFixed(1)}L
           </span>
-          <button className={styles.addBtn} onClick={() => setExpanded(!expanded)}>
+          <button
+            className={styles.addBtn}
+            onClick={() => setExpanded(!expanded)}
+          >
             +
           </button>
         </div>

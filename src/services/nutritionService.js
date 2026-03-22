@@ -29,10 +29,20 @@ export async function searchFoods(query) {
       brand: p.brands || "",
       servingSize: p.serving_size || "100g",
       imageUrl: p.image_small_url || null,
-      calories: Math.round(p.nutriments["energy-kcal_100g"] || p.nutriments["energy-kcal"] || 0),
-      protein: Math.round((p.nutriments.proteins_100g || p.nutriments.proteins || 0) * 10) / 10,
-      carbs: Math.round((p.nutriments.carbohydrates_100g || p.nutriments.carbohydrates || 0) * 10) / 10,
-      fat: Math.round((p.nutriments.fat_100g || p.nutriments.fat || 0) * 10) / 10,
+      calories: Math.round(
+        p.nutriments["energy-kcal_100g"] || p.nutriments["energy-kcal"] || 0,
+      ),
+      protein:
+        Math.round(
+          (p.nutriments.proteins_100g || p.nutriments.proteins || 0) * 10,
+        ) / 10,
+      carbs:
+        Math.round(
+          (p.nutriments.carbohydrates_100g || p.nutriments.carbohydrates || 0) *
+            10,
+        ) / 10,
+      fat:
+        Math.round((p.nutriments.fat_100g || p.nutriments.fat || 0) * 10) / 10,
     }))
     .filter((f) => f.calories > 0);
 }

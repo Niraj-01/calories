@@ -1,52 +1,74 @@
 .overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.45);
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
   z-index: 1000;
   opacity: 0;
-  transition: opacity .3s ease;
+  transition: opacity 0.3s ease;
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }
-.overlayVisible { opacity: 1; }
+.overlayVisible {
+  opacity: 1;
+}
 .sheet {
-  position: fixed; left: 0; right: 0; bottom: 0;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: var(--bg-primary);
   border-radius: 24px 24px 0 0;
   max-height: 92vh;
   overflow-y: auto;
   transform: translateY(100%);
-  transition: transform .35s cubic-bezier(.22,1,.36,1);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 1001;
   padding-bottom: env(safe-area-inset-bottom, 20px);
 }
-.sheetVisible { transform: translateY(0); }
+.sheetVisible {
+  transform: translateY(0);
+}
 .handleBar {
-  display: flex; justify-content: center; padding: 10px 0 4px;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 4px;
 }
 .handle {
-  width: 36px; height: 4px;
+  width: 36px;
+  height: 4px;
   border-radius: 2px;
   background: var(--border);
 }
 .sheetHeader {
-  display: flex; justify-content: space-between; align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 8px 20px 12px;
 }
 .sheetTitle {
-  font-size: 1.15rem; font-weight: 700;
+  font-size: 1.15rem;
+  font-weight: 700;
 }
 .closeBtn {
-  background: none; border: none; color: var(--text-secondary);
-  cursor: pointer; padding: 4px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
 }
-.content { padding: 0 20px 24px; }
+.content {
+  padding: 0 20px 24px;
+}
 
 /* Scanner */
 .scannerArea {
-  display: flex; flex-direction: column; gap: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 .reader {
-  border-radius: 16px; overflow: hidden;
+  border-radius: 16px;
+  overflow: hidden;
   min-height: 260px;
   background: #000;
 }
@@ -58,38 +80,55 @@
 
 /* Loading */
 .loadingArea {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 14px; padding: 40px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 40px 0;
 }
 .spinner {
-  width: 40px; height: 40px;
+  width: 40px;
+  height: 40px;
   border: 3px solid var(--bg-secondary);
   border-top-color: var(--accent);
   border-radius: 50%;
-  animation: spin .8s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 .loadingText {
-  font-size: 0.95rem; color: var(--text-secondary);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
 }
 
 /* Error */
 .errorCard {
-  background: rgba(239,68,68,.08);
-  padding: 16px; border-radius: 16px;
+  background: rgba(239, 68, 68, 0.08);
+  padding: 16px;
+  border-radius: 16px;
   text-align: center;
 }
 .errorText {
-  color: #ef4444; font-weight: 600; font-size: 0.9rem;
+  color: #ef4444;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 /* Result */
 .resultArea {
-  display: flex; flex-direction: column; gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
-.resultHeader { text-align: center; }
+.resultHeader {
+  text-align: center;
+}
 .productName {
-  font-size: 1.2rem; font-weight: 700;
+  font-size: 1.2rem;
+  font-weight: 700;
 }
 .brandBadge {
   display: inline-block;
@@ -101,26 +140,35 @@
   color: var(--text-secondary);
 }
 .macroGrid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
 }
 .macroItem {
-  display: flex; flex-direction: column; align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 10px 4px;
   border-radius: 14px;
   background: var(--bg-secondary);
 }
 .macroValue {
-  font-weight: 700; font-size: 1.05rem;
+  font-weight: 700;
+  font-size: 1.05rem;
 }
 .macroLabel {
-  font-size: 0.7rem; color: var(--text-secondary); margin-top: 2px;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
 }
 .servingRow {
-  display: flex; align-items: center; gap: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 .servingLabel {
-  font-weight: 600; font-size: 0.9rem;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 .servingInput {
   flex: 1;

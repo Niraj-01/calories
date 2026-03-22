@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/src/context/AuthContext";
-import { getDayRange, getUserSettings, dateKey } from "@/src/services/firestoreService";
+import {
+  getDayRange,
+  getUserSettings,
+  dateKey,
+} from "@/src/services/firestoreService";
 import styles from "./HistoryPage.module.css";
 
 export default function HistoryPage() {
@@ -35,7 +39,7 @@ export default function HistoryPage() {
                 carbs: acc.carbs + (e.carbs || 0),
                 fat: acc.fat + (e.fat || 0),
               }),
-              { calories: 0, protein: 0, carbs: 0, fat: 0 }
+              { calories: 0, protein: 0, carbs: 0, fat: 0 },
             );
             return { date, entries: entries.length, ...totals };
           })
@@ -69,7 +73,10 @@ export default function HistoryPage() {
     return (
       <div className="page container fade-in">
         <div className={styles.header}>
-          <div className="skeleton" style={{ width: 100, height: 32, marginBottom: 8 }} />
+          <div
+            className="skeleton"
+            style={{ width: 100, height: 32, marginBottom: 8 }}
+          />
           <div className="skeleton" style={{ width: 120, height: 20 }} />
         </div>
         <div className={styles.list}>
@@ -80,7 +87,10 @@ export default function HistoryPage() {
                 <div className="skeleton" style={{ width: 50, height: 20 }} />
               </div>
               <div className={styles.barTrack}>
-                <div className="skeleton" style={{ width: "100%", height: "100%" }} />
+                <div
+                  className="skeleton"
+                  style={{ width: "100%", height: "100%" }}
+                />
               </div>
               <div className={styles.dayMeta} style={{ marginTop: 12 }}>
                 <div className="skeleton" style={{ width: 180, height: 16 }} />
@@ -147,7 +157,9 @@ export default function HistoryPage() {
                       {day.fat.toFixed(0)}g
                     </span>
                     <span className={styles.metaGoal}>
-                      {isOver ? `+${day.calories - goal}` : `${goal - day.calories} left`}
+                      {isOver
+                        ? `+${day.calories - goal}`
+                        : `${goal - day.calories} left`}
                     </span>
                   </div>
                 </>

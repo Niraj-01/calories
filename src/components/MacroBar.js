@@ -4,9 +4,33 @@ import { useEffect, useState } from "react";
 import styles from "./MacroBar.module.css";
 
 const macroConfig = [
-  { key: "protein", label: "Protein", icon: "🍗", color: "#22c55e", bg: "rgba(34, 197, 94, 0.4)", shadow: "rgba(34, 197, 94, 0.2)", max: 150 },
-  { key: "carbs", label: "Carbs", icon: "🍞", color: "#eab308", bg: "rgba(234, 179, 8, 0.4)", shadow: "rgba(234, 179, 8, 0.2)", max: 250 },
-  { key: "fat", label: "Fat", icon: "🥑", color: "#ef4444", bg: "rgba(239, 68, 68, 0.4)", shadow: "rgba(239, 68, 68, 0.2)", max: 80 },
+  {
+    key: "protein",
+    label: "Protein",
+    icon: "🍗",
+    color: "#22c55e",
+    bg: "rgba(34, 197, 94, 0.4)",
+    shadow: "rgba(34, 197, 94, 0.2)",
+    max: 150,
+  },
+  {
+    key: "carbs",
+    label: "Carbs",
+    icon: "🍞",
+    color: "#eab308",
+    bg: "rgba(234, 179, 8, 0.4)",
+    shadow: "rgba(234, 179, 8, 0.2)",
+    max: 250,
+  },
+  {
+    key: "fat",
+    label: "Fat",
+    icon: "🥑",
+    color: "#ef4444",
+    bg: "rgba(239, 68, 68, 0.4)",
+    shadow: "rgba(239, 68, 68, 0.2)",
+    max: 80,
+  },
 ];
 
 export default function MacroBar({ protein = 0, carbs = 0, fat = 0 }) {
@@ -14,7 +38,7 @@ export default function MacroBar({ protein = 0, carbs = 0, fat = 0 }) {
   const maxVals = {
     protein: Math.max(protein, 150),
     carbs: Math.max(carbs, 250),
-    fat: Math.max(fat, 80)
+    fat: Math.max(fat, 80),
   };
   const [mounted, setMounted] = useState(false);
 
@@ -33,9 +57,7 @@ export default function MacroBar({ protein = 0, carbs = 0, fat = 0 }) {
               <span className={styles.icon}>{m.icon}</span>
               <span className={styles.label}>{m.label}</span>
             </div>
-            <span className={styles.value}>
-              {values[m.key].toFixed(0)}g
-            </span>
+            <span className={styles.value}>{values[m.key].toFixed(0)}g</span>
             <div className={styles.track}>
               <div
                 className={styles.fill}

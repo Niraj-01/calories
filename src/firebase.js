@@ -32,7 +32,10 @@ if (typeof window !== "undefined") {
       }),
     });
   } catch (err) {
-    console.warn("Persistent cache unavailable, falling back to memory cache", err);
+    console.warn(
+      "Persistent cache unavailable, falling back to memory cache",
+      err,
+    );
     db = getFirestore(app, { localCache: memoryLocalCache() });
   }
   googleProvider = new GoogleAuthProvider();

@@ -84,10 +84,19 @@ export default function HomePage() {
       const entry = {
         name: food.name,
         brand: food.brand || "",
-        calories: Math.round(food.calories * (food.servingAmount || 100) / 100),
-        protein: Math.round(food.protein * (food.servingAmount || 100) / 100 * 10) / 10,
-        carbs: Math.round(food.carbs * (food.servingAmount || 100) / 100 * 10) / 10,
-        fat: Math.round(food.fat * (food.servingAmount || 100) / 100 * 10) / 10,
+        calories: Math.round(
+          (food.calories * (food.servingAmount || 100)) / 100,
+        ),
+        protein:
+          Math.round(
+            ((food.protein * (food.servingAmount || 100)) / 100) * 10,
+          ) / 10,
+        carbs:
+          Math.round(((food.carbs * (food.servingAmount || 100)) / 100) * 10) /
+          10,
+        fat:
+          Math.round(((food.fat * (food.servingAmount || 100)) / 100) * 10) /
+          10,
         meal,
         servingAmount: food.servingAmount || 100,
         servingUnit: food.servingUnit || "g",
@@ -128,7 +137,7 @@ export default function HomePage() {
       carbs: acc.carbs + (e.carbs || 0),
       fat: acc.fat + (e.fat || 0),
     }),
-    { calories: 0, protein: 0, carbs: 0, fat: 0 }
+    { calories: 0, protein: 0, carbs: 0, fat: 0 },
   );
 
   // Group by meal
@@ -154,15 +163,27 @@ export default function HomePage() {
       <div className="page container fade-in">
         <div className={styles.header}>
           <div>
-            <div className="skeleton" style={{ width: 100, height: 16, marginBottom: 6 }} />
+            <div
+              className="skeleton"
+              style={{ width: 100, height: 16, marginBottom: 6 }}
+            />
             <div className="skeleton" style={{ width: 140, height: 24 }} />
           </div>
         </div>
-        <div className={styles.section} style={{ display: 'flex', justifyContent: 'center' }}>
-          <div className="skeleton" style={{ width: 200, height: 200, borderRadius: "50%" }} />
+        <div
+          className={styles.section}
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          <div
+            className="skeleton"
+            style={{ width: 200, height: 200, borderRadius: "50%" }}
+          />
         </div>
         <div className={styles.section}>
-          <div className="skeleton" style={{ width: "100%", height: 100, borderRadius: 20 }} />
+          <div
+            className="skeleton"
+            style={{ width: "100%", height: 100, borderRadius: 20 }}
+          />
         </div>
       </div>
     );

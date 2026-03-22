@@ -1,7 +1,11 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, signInWithPopup, signOut as firebaseSignOut } from "firebase/auth";
+import {
+  onAuthStateChanged,
+  signInWithPopup,
+  signOut as firebaseSignOut,
+} from "firebase/auth";
 import { auth, googleProvider } from "@/src/firebase";
 
 const AuthContext = createContext(null);
@@ -22,7 +26,10 @@ export function AuthProvider({ children }) {
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (err) {
-      if (err.code === "auth/cancelled-popup-request" || err.code === "auth/popup-closed-by-user") {
+      if (
+        err.code === "auth/cancelled-popup-request" ||
+        err.code === "auth/popup-closed-by-user"
+      ) {
         return; // user dismissed the popup — not an error
       }
       console.error("Sign-in error:", err);
@@ -38,7 +45,9 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut: signOutUser }}>
+    <AuthContext.Provider
+      value={{ user, loading, signIn, signOut: signOutUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

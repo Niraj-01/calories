@@ -1,123 +1,229 @@
-<!DOCTYPE html>
+<!doctype html>
 
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-<title>Add Food Selection</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<style data-purpose="typography">
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-    
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      letter-spacing: -0.02em;
-      background-color: #000000;
-      color: #FFFFFF;
-    }
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      name="viewport"
+    />
+    <title>Add Food Selection</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style data-purpose="typography">
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
 
-    .tight-tracking {
-      letter-spacing: -0.025em;
-    }
-  </style>
-<style data-purpose="glassmorphism">
-    .glass-modal {
-      background: rgba(28, 28, 30, 0.85);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      border-left: 1px solid rgba(255, 255, 255, 0.05);
-      border-right: 1px solid rgba(255, 255, 255, 0.05);
-    }
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          Helvetica,
+          Arial,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        letter-spacing: -0.02em;
+        background-color: #000000;
+        color: #ffffff;
+      }
 
-    .glass-card {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: background 0.2s ease;
-    }
+      .tight-tracking {
+        letter-spacing: -0.025em;
+      }
+    </style>
+    <style data-purpose="glassmorphism">
+      .glass-modal {
+        background: rgba(28, 28, 30, 0.85);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-left: 1px solid rgba(255, 255, 255, 0.05);
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+      }
 
-    .glass-card:active {
-      background: rgba(255, 255, 255, 0.12);
-    }
-  </style>
-</head>
-<body class="overflow-hidden h-screen w-screen flex flex-col justify-end">
-<!-- BEGIN: Blurred Background Dashboard -->
-<!-- This section simulates the blurred "Today" dashboard visible in the original screenshot -->
-<div class="fixed inset-0 z-0 p-6 opacity-30 blur-xl pointer-events-none" data-purpose="background-mockup">
-<h1 class="text-4xl font-bold mt-12 mb-8">Cal</h1>
-<div class="bg-zinc-800/50 rounded-2xl p-6 mb-4 h-32 w-full"></div>
-<div class="bg-zinc-800/50 rounded-2xl p-6 mb-4 h-64 w-full"></div>
-<div class="bg-zinc-800/50 rounded-2xl p-6 mb-4 h-32 w-full"></div>
-</div>
-<!-- END: Blurred Background Dashboard -->
-<!-- BEGIN: Bottom Sheet Modal -->
-<main class="relative z-10 w-full glass-modal rounded-t-[40px] px-6 pt-3 pb-12 shadow-2xl" data-purpose="add-food-modal">
-<!-- Drag Handle -->
-<div class="flex justify-center mb-6">
-<div class="w-10 h-1.5 bg-zinc-600/50 rounded-full" data-purpose="drag-handle"></div>
-</div>
-<!-- Modal Title -->
-<header class="text-center mb-8">
-<h2 class="text-2xl font-semibold tight-tracking">Add Food</h2>
-</header>
-<!-- Selection Options -->
-<nav class="space-y-4" data-purpose="action-list">
-<!-- Option: Scan with Camera -->
-<button aria-label="Scan with Camera" class="w-full glass-card rounded-[22px] p-6 flex items-center group">
-<div class="flex-shrink-0 mr-5" data-purpose="icon-container">
-<!-- Camera Icon -->
-<svg class="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-<circle cx="12" cy="13" r="4"></circle>
-</svg>
-</div>
-<span class="flex-grow text-left text-xl font-medium text-zinc-200">Scan with Camera</span>
-<div class="flex-shrink-0 ml-2">
-<!-- Chevron Right -->
-<svg class="w-6 h-6 text-zinc-500" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-<path d="9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-</svg>
-</div>
-</button>
-<!-- Option: Search Food -->
-<button aria-label="Search Food" class="w-full glass-card rounded-[22px] p-6 flex items-center group">
-<div class="flex-shrink-0 mr-5" data-purpose="icon-container">
-<!-- Search Icon -->
-<svg class="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-<circle cx="11" cy="11" r="8"></circle>
-<line x1="21" x2="16.65" y1="21" y2="16.65"></line>
-</svg>
-</div>
-<span class="flex-grow text-left text-xl font-medium text-zinc-200">Search Food</span>
-<div class="flex-shrink-0 ml-2">
-<!-- Chevron Right -->
-<svg class="w-6 h-6 text-zinc-500" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-<path d="9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-</svg>
-</div>
-</button>
-<!-- Option: Scan Barcode -->
-<button aria-label="Scan Barcode" class="w-full glass-card rounded-[22px] p-6 flex items-center group">
-<div class="flex-shrink-0 mr-5" data-purpose="icon-container">
-<!-- Barcode Icon -->
-<svg class="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-<path d="M3 5v14M8 5v14M12 5v14M17 5v14M21 5v14M3 5h2M3 19h2M19 5h2M19 19h2"></path>
-<!-- Scanner brackets corners -->
-<path d="M5 5h3M5 19h3M16 5h3M16 19h3" opacity="0.3" stroke="white" stroke-width="2"></path>
-</svg>
-</div>
-<span class="flex-grow text-left text-xl font-medium text-zinc-200">Scan Barcode</span>
-<div class="flex-shrink-0 ml-2">
-<!-- Chevron Right -->
-<svg class="w-6 h-6 text-zinc-500" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-<path d="9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-</svg>
-</div>
-</button>
-</nav>
-<!-- Safe area spacing for mobile home indicator -->
-<div aria-hidden="true" class="h-8"></div>
-</main>
-<!-- END: Bottom Sheet Modal -->
-</body></html>
+      .glass-card {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: background 0.2s ease;
+      }
+
+      .glass-card:active {
+        background: rgba(255, 255, 255, 0.12);
+      }
+    </style>
+  </head>
+  <body class="overflow-hidden h-screen w-screen flex flex-col justify-end">
+    <!-- BEGIN: Blurred Background Dashboard -->
+    <!-- This section simulates the blurred "Today" dashboard visible in the original screenshot -->
+    <div
+      class="fixed inset-0 z-0 p-6 opacity-30 blur-xl pointer-events-none"
+      data-purpose="background-mockup"
+    >
+      <h1 class="text-4xl font-bold mt-12 mb-8">Cal</h1>
+      <div class="bg-zinc-800/50 rounded-2xl p-6 mb-4 h-32 w-full"></div>
+      <div class="bg-zinc-800/50 rounded-2xl p-6 mb-4 h-64 w-full"></div>
+      <div class="bg-zinc-800/50 rounded-2xl p-6 mb-4 h-32 w-full"></div>
+    </div>
+    <!-- END: Blurred Background Dashboard -->
+    <!-- BEGIN: Bottom Sheet Modal -->
+    <main
+      class="relative z-10 w-full glass-modal rounded-t-[40px] px-6 pt-3 pb-12 shadow-2xl"
+      data-purpose="add-food-modal"
+    >
+      <!-- Drag Handle -->
+      <div class="flex justify-center mb-6">
+        <div
+          class="w-10 h-1.5 bg-zinc-600/50 rounded-full"
+          data-purpose="drag-handle"
+        ></div>
+      </div>
+      <!-- Modal Title -->
+      <header class="text-center mb-8">
+        <h2 class="text-2xl font-semibold tight-tracking">Add Food</h2>
+      </header>
+      <!-- Selection Options -->
+      <nav class="space-y-4" data-purpose="action-list">
+        <!-- Option: Scan with Camera -->
+        <button
+          aria-label="Scan with Camera"
+          class="w-full glass-card rounded-[22px] p-6 flex items-center group"
+        >
+          <div class="flex-shrink-0 mr-5" data-purpose="icon-container">
+            <!-- Camera Icon -->
+            <svg
+              class="w-8 h-8 text-zinc-400"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              viewbox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
+              ></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+          </div>
+          <span class="flex-grow text-left text-xl font-medium text-zinc-200"
+            >Scan with Camera</span
+          >
+          <div class="flex-shrink-0 ml-2">
+            <!-- Chevron Right -->
+            <svg
+              class="w-6 h-6 text-zinc-500"
+              fill="none"
+              stroke="currentColor"
+              viewbox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="9 5l7 7-7 7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+          </div>
+        </button>
+        <!-- Option: Search Food -->
+        <button
+          aria-label="Search Food"
+          class="w-full glass-card rounded-[22px] p-6 flex items-center group"
+        >
+          <div class="flex-shrink-0 mr-5" data-purpose="icon-container">
+            <!-- Search Icon -->
+            <svg
+              class="w-8 h-8 text-zinc-400"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              viewbox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" x2="16.65" y1="21" y2="16.65"></line>
+            </svg>
+          </div>
+          <span class="flex-grow text-left text-xl font-medium text-zinc-200"
+            >Search Food</span
+          >
+          <div class="flex-shrink-0 ml-2">
+            <!-- Chevron Right -->
+            <svg
+              class="w-6 h-6 text-zinc-500"
+              fill="none"
+              stroke="currentColor"
+              viewbox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="9 5l7 7-7 7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+          </div>
+        </button>
+        <!-- Option: Scan Barcode -->
+        <button
+          aria-label="Scan Barcode"
+          class="w-full glass-card rounded-[22px] p-6 flex items-center group"
+        >
+          <div class="flex-shrink-0 mr-5" data-purpose="icon-container">
+            <!-- Barcode Icon -->
+            <svg
+              class="w-8 h-8 text-zinc-400"
+              fill="none"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              viewbox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3 5v14M8 5v14M12 5v14M17 5v14M21 5v14M3 5h2M3 19h2M19 5h2M19 19h2"
+              ></path>
+              <!-- Scanner brackets corners -->
+              <path
+                d="M5 5h3M5 19h3M16 5h3M16 19h3"
+                opacity="0.3"
+                stroke="white"
+                stroke-width="2"
+              ></path>
+            </svg>
+          </div>
+          <span class="flex-grow text-left text-xl font-medium text-zinc-200"
+            >Scan Barcode</span
+          >
+          <div class="flex-shrink-0 ml-2">
+            <!-- Chevron Right -->
+            <svg
+              class="w-6 h-6 text-zinc-500"
+              fill="none"
+              stroke="currentColor"
+              viewbox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="9 5l7 7-7 7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+          </div>
+        </button>
+      </nav>
+      <!-- Safe area spacing for mobile home indicator -->
+      <div aria-hidden="true" class="h-8"></div>
+    </main>
+    <!-- END: Bottom Sheet Modal -->
+  </body>
+</html>

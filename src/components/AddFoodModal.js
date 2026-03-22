@@ -1,7 +1,13 @@
 import { useEffect } from "react";
 import styles from "./AddFoodModal.module.css";
 
-export default function AddFoodModal({ open, onClose, onCamera, onSearch, onBarcode }) {
+export default function AddFoodModal({
+  open,
+  onClose,
+  onCamera,
+  onSearch,
+  onBarcode,
+}) {
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -14,7 +20,7 @@ export default function AddFoodModal({ open, onClose, onCamera, onSearch, onBarc
 
   return (
     <div className={styles.overlay} onClick={onClose}>
-      <main 
+      <main
         className={`${styles.modal} glass-modal`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -28,61 +34,129 @@ export default function AddFoodModal({ open, onClose, onCamera, onSearch, onBarc
 
         <nav className={styles.actionList}>
           {/* Scan with Camera */}
-          <button 
-            className={`${styles.actionButton} glass-card`} 
-            onClick={() => { onClose(); onCamera(); }}
+          <button
+            className={`${styles.actionButton} glass-card`}
+            onClick={() => {
+              onClose();
+              onCamera();
+            }}
             aria-label="Scan with Camera"
           >
             <div className={styles.iconContainer}>
-              <svg className={styles.icon} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24">
+              <svg
+                className={styles.icon}
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+              >
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
                 <circle cx="12" cy="13" r="4"></circle>
               </svg>
             </div>
             <span className={styles.actionText}>Scan with Camera</span>
             <div className={styles.chevronContainer}>
-              <svg className={styles.chevron} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
+              <svg
+                className={styles.chevron}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M9 5l7 7-7 7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                ></path>
               </svg>
             </div>
           </button>
 
           {/* Search Food */}
-          <button 
-            className={`${styles.actionButton} glass-card`} 
-            onClick={() => { onClose(); onSearch(); }}
+          <button
+            className={`${styles.actionButton} glass-card`}
+            onClick={() => {
+              onClose();
+              onSearch();
+            }}
             aria-label="Search Food"
           >
             <div className={styles.iconContainer}>
-              <svg className={styles.icon} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24">
+              <svg
+                className={styles.icon}
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+              >
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" x2="16.65" y1="21" y2="16.65"></line>
               </svg>
             </div>
             <span className={styles.actionText}>Search Food</span>
             <div className={styles.chevronContainer}>
-              <svg className={styles.chevron} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
+              <svg
+                className={styles.chevron}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M9 5l7 7-7 7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                ></path>
               </svg>
             </div>
           </button>
 
           {/* Scan Barcode */}
-          <button 
-            className={`${styles.actionButton} glass-card`} 
-            onClick={() => { onClose(); onBarcode(); }}
+          <button
+            className={`${styles.actionButton} glass-card`}
+            onClick={() => {
+              onClose();
+              onBarcode();
+            }}
             aria-label="Scan Barcode"
           >
             <div className={styles.iconContainer}>
-              <svg className={styles.icon} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24">
+              <svg
+                className={styles.icon}
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+              >
                 <path d="M3 5v14M8 5v14M12 5v14M17 5v14M21 5v14M3 5h2M3 19h2M19 5h2M19 19h2"></path>
-                <path d="M5 5h3M5 19h3M16 5h3M16 19h3" opacity="0.3" stroke="white" strokeWidth="2"></path>
+                <path
+                  d="M5 5h3M5 19h3M16 5h3M16 19h3"
+                  opacity="0.3"
+                  stroke="white"
+                  strokeWidth="2"
+                ></path>
               </svg>
             </div>
             <span className={styles.actionText}>Scan Barcode</span>
             <div className={styles.chevronContainer}>
-              <svg className={styles.chevron} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
+              <svg
+                className={styles.chevron}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M9 5l7 7-7 7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                ></path>
               </svg>
             </div>
           </button>

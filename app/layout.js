@@ -2,7 +2,8 @@ import "./globals.css";
 
 export const metadata = {
   title: "Calories — Daily Nutrition Tracker",
-  description: "A clean, fast personal calorie and macro tracker. Track what fuels you every day.",
+  description:
+    "A clean, fast personal calorie and macro tracker. Track what fuels you every day.",
 };
 
 export function generateViewport() {

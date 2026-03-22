@@ -1,214 +1,281 @@
-<!DOCTYPE html>
+<!doctype html>
 
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-<title>Food Details and Logging</title>
-<!-- Tailwind CSS v3 CDN -->
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Custom Font Simulation for SF Pro (System Fonts) -->
-<style data-purpose="typography">
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      background-color: #000000;
-      color: #FFFFFF;
-    }
-    .font-display {
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-    .font-text {
-      font-weight: 400;
-      letter-spacing: -0.01em;
-      line-height: 1.5;
-    }
-  </style>
-<style data-purpose="custom-ui-components">
-    .glass-card {
-      background-color: rgba(28, 28, 30, 0.8);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-    }
-    .stepper-bg {
-      background-color: #1C1C1E;
-      border-radius: 18px;
-    }
-    .stepper-button {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background-color 0.2s;
-    }
-    .stepper-button:active {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-    .segmented-control {
-      background-color: rgba(118, 118, 128, 0.24);
-      border-radius: 12px;
-      padding: 2px;
-    }
-    .segmented-item {
-      flex: 1;
-      text-align: center;
-      padding: 8px 0;
-      font-size: 14px;
-      font-weight: 500;
-      color: #8E8E93;
-      cursor: pointer;
-    }
-    .segmented-item.active {
-      background-color: #3A3A3C;
-      color: #FFFFFF;
-      border-radius: 10px;
-      box-shadow: 0 3px 8px 0 rgba(0,0,0,0.12), 0 3px 1px 0 rgba(0,0,0,0.04);
-    }
-    .separator {
-      border-bottom: 0.5px solid rgba(255, 255, 255, 0.15);
-    }
-    .cta-button {
-      background-color: #3A3A3C;
-      color: #FFFFFF;
-      font-weight: 600;
-      border-radius: 14px;
-      transition: opacity 0.2s;
-    }
-    .cta-button:active {
-      opacity: 0.8;
-    }
-  </style>
-</head>
-<body class="flex flex-col items-center justify-start min-h-screen overflow-hidden">
-<!-- BEGIN: Main Container (Mobile Viewport) -->
-<main class="w-full max-w-[390px] min-h-screen flex flex-col p-4 space-y-6">
-<!-- BEGIN: Navigation Header -->
-<header class="flex items-center justify-between pt-2 pb-4">
-<button aria-label="Back" class="p-2">
-<!-- SF Symbol style chevron.left -->
-<svg class="text-white/60" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24" width="24">
-<polyline points="15 18 9 12 15 6"></polyline>
-</svg>
-</button>
-<h1 class="text-[17px] font-semibold tracking-tight">Food Details</h1>
-<button aria-label="Share" class="p-2">
-<!-- SF Symbol style square.and.arrow.up -->
-<svg class="text-white/60" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24">
-<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-<polyline points="16 6 12 2 8 6"></polyline>
-<line x1="12" x2="12" y1="2" y2="15"></line>
-</svg>
-</button>
-</header>
-<!-- END: Navigation Header -->
-<!-- BEGIN: Title Section -->
-<section class="text-center space-y-1 py-4">
-<h2 class="text-3xl font-display text-white">Grilled Chicken Breast</h2>
-<p class="text-lg font-text text-[#8E8E93]">Applegate Organics</p>
-</section>
-<!-- END: Title Section -->
-<!-- BEGIN: Serving Stepper Card -->
-<section class="w-full">
-<div class="stepper-bg p-5 flex items-center justify-between" data-purpose="serving-stepper">
-<button aria-label="Decrease quantity" class="stepper-button w-14 h-14" id="btn-minus">
-<svg fill="none" height="2" viewbox="0 0 24 2" width="24" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#8E8E93" height="2" rx="1" width="24"></rect>
-</svg>
-</button>
-<div class="flex items-baseline space-x-1">
-<span class="text-[52px] font-display text-white" id="weight-value">150</span>
-<span class="text-[32px] font-display text-white/70">g</span>
-</div>
-<button aria-label="Increase quantity" class="stepper-button w-14 h-14" id="btn-plus">
-<svg fill="none" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-<rect fill="#8E8E93" height="24" rx="1" width="2" x="11" y="0"></rect>
-<rect fill="#8E8E93" height="2" rx="1" width="24" y="11"></rect>
-</svg>
-</button>
-</div>
-</section>
-<!-- END: Serving Stepper Card -->
-<!-- BEGIN: Macro Table Card -->
-<section class="w-full">
-<div class="glass-card overflow-hidden">
-<div class="flex flex-col">
-<!-- Calories Row -->
-<div class="flex justify-between items-center px-5 py-4 separator">
-<span class="text-lg font-text text-white">Calories</span>
-<span class="text-lg font-text text-[#8E8E93]">240 kcal</span>
-</div>
-<!-- Protein Row -->
-<div class="flex justify-between items-center px-5 py-4 separator">
-<span class="text-lg font-text text-white">Protein</span>
-<span class="text-lg font-text text-[#8E8E93]">45g</span>
-</div>
-<!-- Carbs Row -->
-<div class="flex justify-between items-center px-5 py-4 separator">
-<span class="text-lg font-text text-white">Carbs</span>
-<span class="text-lg font-text text-[#8E8E93]">0g</span>
-</div>
-<!-- Fat Row -->
-<div class="flex justify-between items-center px-5 py-4">
-<span class="text-lg font-text text-white">Fat</span>
-<span class="text-lg font-text text-[#8E8E93]">5g</span>
-</div>
-</div>
-</div>
-</section>
-<!-- END: Macro Table Card -->
-<!-- BEGIN: Meal Selector -->
-<section class="w-full pt-4">
-<div class="segmented-control flex">
-<div class="segmented-item">Breakfast</div>
-<div class="segmented-item active">Lunch</div>
-<div class="segmented-item">Dinner</div>
-<div class="segmented-item">Snacks</div>
-</div>
-</section>
-<!-- END: Meal Selector -->
-<!-- Spacer to push button to bottom -->
-<div class="flex-grow"></div>
-<!-- BEGIN: Footer Actions -->
-<footer class="w-full pb-8">
-<button class="cta-button w-full py-4 text-[19px]" data-purpose="submit-log">
-        Add to Log
-      </button>
-</footer>
-<!-- END: Footer Actions -->
-</main>
-<!-- END: Main Container -->
-<!-- BEGIN: Interactive Logic -->
-<script data-purpose="stepper-logic">
-    const weightEl = document.getElementById('weight-value');
-    const minusBtn = document.getElementById('btn-minus');
-    const plusBtn = document.getElementById('btn-plus');
-    
-    let currentWeight = 150;
-
-    minusBtn.addEventListener('click', () => {
-      if (currentWeight > 0) {
-        currentWeight -= 5;
-        weightEl.textContent = currentWeight;
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      name="viewport"
+    />
+    <title>Food Details and Logging</title>
+    <!-- Tailwind CSS v3 CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Custom Font Simulation for SF Pro (System Fonts) -->
+    <style data-purpose="typography">
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+          "Segoe UI Symbol";
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #000000;
+        color: #ffffff;
       }
-    });
+      .font-display {
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .font-text {
+        font-weight: 400;
+        letter-spacing: -0.01em;
+        line-height: 1.5;
+      }
+    </style>
+    <style data-purpose="custom-ui-components">
+      .glass-card {
+        background-color: rgba(28, 28, 30, 0.8);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+      }
+      .stepper-bg {
+        background-color: #1c1c1e;
+        border-radius: 18px;
+      }
+      .stepper-button {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s;
+      }
+      .stepper-button:active {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      .segmented-control {
+        background-color: rgba(118, 118, 128, 0.24);
+        border-radius: 12px;
+        padding: 2px;
+      }
+      .segmented-item {
+        flex: 1;
+        text-align: center;
+        padding: 8px 0;
+        font-size: 14px;
+        font-weight: 500;
+        color: #8e8e93;
+        cursor: pointer;
+      }
+      .segmented-item.active {
+        background-color: #3a3a3c;
+        color: #ffffff;
+        border-radius: 10px;
+        box-shadow:
+          0 3px 8px 0 rgba(0, 0, 0, 0.12),
+          0 3px 1px 0 rgba(0, 0, 0, 0.04);
+      }
+      .separator {
+        border-bottom: 0.5px solid rgba(255, 255, 255, 0.15);
+      }
+      .cta-button {
+        background-color: #3a3a3c;
+        color: #ffffff;
+        font-weight: 600;
+        border-radius: 14px;
+        transition: opacity 0.2s;
+      }
+      .cta-button:active {
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <body
+    class="flex flex-col items-center justify-start min-h-screen overflow-hidden"
+  >
+    <!-- BEGIN: Main Container (Mobile Viewport) -->
+    <main class="w-full max-w-[390px] min-h-screen flex flex-col p-4 space-y-6">
+      <!-- BEGIN: Navigation Header -->
+      <header class="flex items-center justify-between pt-2 pb-4">
+        <button aria-label="Back" class="p-2">
+          <!-- SF Symbol style chevron.left -->
+          <svg
+            class="text-white/60"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2.5"
+            viewbox="0 0 24 24"
+            width="24"
+          >
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <h1 class="text-[17px] font-semibold tracking-tight">Food Details</h1>
+        <button aria-label="Share" class="p-2">
+          <!-- SF Symbol style square.and.arrow.up -->
+          <svg
+            class="text-white/60"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewbox="0 0 24 24"
+            width="24"
+          >
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+            <polyline points="16 6 12 2 8 6"></polyline>
+            <line x1="12" x2="12" y1="2" y2="15"></line>
+          </svg>
+        </button>
+      </header>
+      <!-- END: Navigation Header -->
+      <!-- BEGIN: Title Section -->
+      <section class="text-center space-y-1 py-4">
+        <h2 class="text-3xl font-display text-white">Grilled Chicken Breast</h2>
+        <p class="text-lg font-text text-[#8E8E93]">Applegate Organics</p>
+      </section>
+      <!-- END: Title Section -->
+      <!-- BEGIN: Serving Stepper Card -->
+      <section class="w-full">
+        <div
+          class="stepper-bg p-5 flex items-center justify-between"
+          data-purpose="serving-stepper"
+        >
+          <button
+            aria-label="Decrease quantity"
+            class="stepper-button w-14 h-14"
+            id="btn-minus"
+          >
+            <svg
+              fill="none"
+              height="2"
+              viewbox="0 0 24 2"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect fill="#8E8E93" height="2" rx="1" width="24"></rect>
+            </svg>
+          </button>
+          <div class="flex items-baseline space-x-1">
+            <span class="text-[52px] font-display text-white" id="weight-value"
+              >150</span
+            >
+            <span class="text-[32px] font-display text-white/70">g</span>
+          </div>
+          <button
+            aria-label="Increase quantity"
+            class="stepper-button w-14 h-14"
+            id="btn-plus"
+          >
+            <svg
+              fill="none"
+              height="24"
+              viewbox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                fill="#8E8E93"
+                height="24"
+                rx="1"
+                width="2"
+                x="11"
+                y="0"
+              ></rect>
+              <rect fill="#8E8E93" height="2" rx="1" width="24" y="11"></rect>
+            </svg>
+          </button>
+        </div>
+      </section>
+      <!-- END: Serving Stepper Card -->
+      <!-- BEGIN: Macro Table Card -->
+      <section class="w-full">
+        <div class="glass-card overflow-hidden">
+          <div class="flex flex-col">
+            <!-- Calories Row -->
+            <div class="flex justify-between items-center px-5 py-4 separator">
+              <span class="text-lg font-text text-white">Calories</span>
+              <span class="text-lg font-text text-[#8E8E93]">240 kcal</span>
+            </div>
+            <!-- Protein Row -->
+            <div class="flex justify-between items-center px-5 py-4 separator">
+              <span class="text-lg font-text text-white">Protein</span>
+              <span class="text-lg font-text text-[#8E8E93]">45g</span>
+            </div>
+            <!-- Carbs Row -->
+            <div class="flex justify-between items-center px-5 py-4 separator">
+              <span class="text-lg font-text text-white">Carbs</span>
+              <span class="text-lg font-text text-[#8E8E93]">0g</span>
+            </div>
+            <!-- Fat Row -->
+            <div class="flex justify-between items-center px-5 py-4">
+              <span class="text-lg font-text text-white">Fat</span>
+              <span class="text-lg font-text text-[#8E8E93]">5g</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- END: Macro Table Card -->
+      <!-- BEGIN: Meal Selector -->
+      <section class="w-full pt-4">
+        <div class="segmented-control flex">
+          <div class="segmented-item">Breakfast</div>
+          <div class="segmented-item active">Lunch</div>
+          <div class="segmented-item">Dinner</div>
+          <div class="segmented-item">Snacks</div>
+        </div>
+      </section>
+      <!-- END: Meal Selector -->
+      <!-- Spacer to push button to bottom -->
+      <div class="flex-grow"></div>
+      <!-- BEGIN: Footer Actions -->
+      <footer class="w-full pb-8">
+        <button
+          class="cta-button w-full py-4 text-[19px]"
+          data-purpose="submit-log"
+        >
+          Add to Log
+        </button>
+      </footer>
+      <!-- END: Footer Actions -->
+    </main>
+    <!-- END: Main Container -->
+    <!-- BEGIN: Interactive Logic -->
+    <script data-purpose="stepper-logic">
+      const weightEl = document.getElementById("weight-value");
+      const minusBtn = document.getElementById("btn-minus");
+      const plusBtn = document.getElementById("btn-plus");
 
-    plusBtn.addEventListener('click', () => {
-      currentWeight += 5;
-      weightEl.textContent = currentWeight;
-    });
-  </script>
-<script data-purpose="segmented-control-logic">
-    const items = document.querySelectorAll('.segmented-item');
-    items.forEach(item => {
-      item.addEventListener('click', () => {
-        items.forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
+      let currentWeight = 150;
+
+      minusBtn.addEventListener("click", () => {
+        if (currentWeight > 0) {
+          currentWeight -= 5;
+          weightEl.textContent = currentWeight;
+        }
       });
-    });
-  </script>
-<!-- END: Interactive Logic -->
-</body></html>
+
+      plusBtn.addEventListener("click", () => {
+        currentWeight += 5;
+        weightEl.textContent = currentWeight;
+      });
+    </script>
+    <script data-purpose="segmented-control-logic">
+      const items = document.querySelectorAll(".segmented-item");
+      items.forEach((item) => {
+        item.addEventListener("click", () => {
+          items.forEach((i) => i.classList.remove("active"));
+          item.classList.add("active");
+        });
+      });
+    </script>
+    <!-- END: Interactive Logic -->
+  </body>
+</html>

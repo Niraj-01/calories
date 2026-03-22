@@ -111,7 +111,10 @@ export default function SearchModal({ meal, onAdd, onClose }) {
   if (!mounted) return null;
 
   return createPortal(
-    <div className={`${styles.overlay} ${visible ? styles.overlayVisible : ""}`} onClick={handleClose}>
+    <div
+      className={`${styles.overlay} ${visible ? styles.overlayVisible : ""}`}
+      onClick={handleClose}
+    >
       <div
         className={`${styles.sheet} ${visible ? styles.sheetVisible : ""}`}
         onClick={(e) => e.stopPropagation()}
@@ -125,7 +128,15 @@ export default function SearchModal({ meal, onAdd, onClose }) {
         <div className={styles.sheetHeader}>
           <h2 className={styles.sheetTitle}>Add to {mealLabel}</h2>
           <button className={styles.closeBtn} onClick={handleClose}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
           </button>
@@ -152,7 +163,15 @@ export default function SearchModal({ meal, onAdd, onClose }) {
           <>
             <div className={styles.searchWrap}>
               <div className={styles.searchIcon}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
                   <circle cx="11" cy="11" r="8" />
                   <path d="M21 21l-4.35-4.35" />
                 </svg>
@@ -171,11 +190,16 @@ export default function SearchModal({ meal, onAdd, onClose }) {
             <div className={styles.resultsList}>
               {error && <p className={styles.error}>{error}</p>}
 
-              {!loading && query.length >= 2 && results.length === 0 && !error && (
-                <div className="empty-state">
-                  <p className="empty-state-text">No results for &ldquo;{query}&rdquo;</p>
-                </div>
-              )}
+              {!loading &&
+                query.length >= 2 &&
+                results.length === 0 &&
+                !error && (
+                  <div className="empty-state">
+                    <p className="empty-state-text">
+                      No results for &ldquo;{query}&rdquo;
+                    </p>
+                  </div>
+                )}
 
               {results.map((food, i) => (
                 <button
@@ -212,7 +236,8 @@ export default function SearchModal({ meal, onAdd, onClose }) {
               <div className="empty-state">
                 <p className="empty-state-icon">★</p>
                 <p className="empty-state-text">
-                  No custom foods yet.<br />
+                  No custom foods yet.
+                  <br />
                   Go to My Foods to add some.
                 </p>
               </div>
@@ -240,6 +265,6 @@ export default function SearchModal({ meal, onAdd, onClose }) {
         )}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

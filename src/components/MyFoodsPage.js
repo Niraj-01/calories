@@ -2,10 +2,23 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/src/context/AuthContext";
-import { getMyFoods, addMyFood, updateMyFood, deleteMyFood } from "@/src/services/firestoreService";
+import {
+  getMyFoods,
+  addMyFood,
+  updateMyFood,
+  deleteMyFood,
+} from "@/src/services/firestoreService";
 import styles from "./MyFoodsPage.module.css";
 
-const emptyForm = { name: "", calories: "", protein: "", carbs: "", fat: "", defaultAmount: "100", defaultUnit: "g" };
+const emptyForm = {
+  name: "",
+  calories: "",
+  protein: "",
+  carbs: "",
+  fat: "",
+  defaultAmount: "100",
+  defaultUnit: "g",
+};
 
 export default function MyFoodsPage() {
   const { user } = useAuth();
@@ -57,7 +70,7 @@ export default function MyFoodsPage() {
       if (editingId) {
         await updateMyFood(user.uid, editingId, foodData);
         setFoods((prev) =>
-          prev.map((f) => (f.id === editingId ? { ...f, ...foodData } : f))
+          prev.map((f) => (f.id === editingId ? { ...f, ...foodData } : f)),
         );
       } else {
         const id = await addMyFood(user.uid, foodData);
@@ -107,7 +120,10 @@ export default function MyFoodsPage() {
                 <div className="skeleton" style={{ width: 120, height: 18 }} />
                 <div className="skeleton" style={{ width: 50, height: 18 }} />
               </div>
-              <div className="skeleton" style={{ width: 200, height: 14, marginTop: 8 }} />
+              <div
+                className="skeleton"
+                style={{ width: 200, height: 14, marginTop: 8 }}
+              />
             </div>
           ))}
         </div>
@@ -133,7 +149,9 @@ export default function MyFoodsPage() {
       {/* Add / Edit form */}
       {showForm && (
         <div className={`card ${styles.formCard}`}>
-          <h3 className={styles.formTitle}>{editingId ? "Edit Food" : "Add Food"}</h3>
+          <h3 className={styles.formTitle}>
+            {editingId ? "Edit Food" : "Add Food"}
+          </h3>
           <div className={styles.formGrid}>
             <div className={styles.fieldFull}>
               <label className="label">Name</label>
@@ -192,7 +210,9 @@ export default function MyFoodsPage() {
                 type="number"
                 placeholder="100"
                 value={form.defaultAmount}
-                onChange={(e) => handleFormChange("defaultAmount", e.target.value)}
+                onChange={(e) =>
+                  handleFormChange("defaultAmount", e.target.value)
+                }
               />
             </div>
             <div className={styles.fieldHalf}>
@@ -200,7 +220,9 @@ export default function MyFoodsPage() {
               <select
                 className="input"
                 value={form.defaultUnit}
-                onChange={(e) => handleFormChange("defaultUnit", e.target.value)}
+                onChange={(e) =>
+                  handleFormChange("defaultUnit", e.target.value)
+                }
               >
                 <option value="g">g</option>
                 <option value="ml">ml</option>
@@ -224,7 +246,8 @@ export default function MyFoodsPage() {
         <div className="empty-state">
           <p className="empty-state-icon">★</p>
           <p className="empty-state-text">
-            Create custom foods you eat often<br />
+            Create custom foods you eat often
+            <br />
             for quick logging.
           </p>
         </div>
@@ -241,14 +264,22 @@ export default function MyFoodsPage() {
                 </span>
               </div>
               <span className={styles.foodCals}>
-                {food.calories}<span className={styles.foodUnit}>kcal</span>
+                {food.calories}
+                <span className={styles.foodUnit}>kcal</span>
               </span>
             </div>
             <div className={styles.foodActions}>
-              <button className="btn btn-ghost btn-sm" onClick={() => handleEdit(food)}>
+              <button
+                className="btn btn-ghost btn-sm"
+                onClick={() => handleEdit(food)}
+              >
                 Edit
               </button>
-              <button className="btn btn-ghost btn-sm" style={{ color: "var(--danger)" }} onClick={() => handleDelete(food.id)}>
+              <button
+                className="btn btn-ghost btn-sm"
+                style={{ color: "var(--danger)" }}
+                onClick={() => handleDelete(food.id)}
+              >
                 Delete
               </button>
             </div>
