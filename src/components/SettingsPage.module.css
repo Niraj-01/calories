@@ -2,7 +2,7 @@
   width: 100%;
   max-width: 430px;
   margin: 0 auto;
-  padding: 24px 24px 48px;
+  padding: 24px 24px 100px;
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -15,11 +15,12 @@
 }
 
 .title {
-  font-size: 36px;
+  font-size: 28px;
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.1;
   color: #fff;
+  font-family: inherit;
 }
 
 .profileInfo {
@@ -43,13 +44,14 @@
 }
 
 .nameInput {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 500;
   background: transparent;
   border: none;
   color: #fff;
   outline: none;
   width: 100%;
+  font-family: inherit;
 }
 
 .nameInput::placeholder {
@@ -78,23 +80,28 @@
 }
 
 .rowLabel {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 400;
   color: #fff;
   flex-shrink: 0;
+  white-space: nowrap;
+  font-family: inherit;
 }
 
 .rowInput {
   background: transparent;
   border: none;
   color: #8E8E93;
-  font-size: 18px;
+  font-size: 15px;
   text-align: right;
   outline: none;
   width: 100%;
   margin-left: 16px;
   -moz-appearance: textfield;
   appearance: textfield;
+  font-family: inherit;
+  flex: 1;
+  min-width: 0;
 }
 
 .rowInput::-webkit-outer-spin-button,
@@ -107,11 +114,14 @@
   background: transparent;
   border: none;
   color: #8E8E93;
-  font-size: 18px;
+  font-size: 15px;
   text-align: right;
   outline: none;
   direction: rtl;
   margin-left: 16px;
+  font-family: inherit;
+  flex: 1;
+  min-width: 0;
 }
 
 .rowSelect option {
@@ -134,10 +144,11 @@
 }
 
 .glowLabel {
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: 0.1em;
   color: #A1A1AA;
   text-transform: uppercase;
+  font-family: inherit;
 }
 
 .glowStats {
@@ -149,30 +160,33 @@
 }
 
 .glowStatValue {
-  font-size: 30px;
+  font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: #fff;
+  font-family: inherit;
 }
 
 .glowStatHint {
-  font-size: 14px;
+  font-size: 13px;
   color: #71717A;
   margin-top: 8px;
+  font-family: inherit;
 }
 
 .saveBtn {
   width: 100%;
-  background-color: #A7C080;
-  color: #000;
+  background-color: var(--accent);
+  color: #fff;
   font-weight: 600;
   border-radius: 16px;
   padding: 16px;
-  font-size: 18px;
+  font-size: 16px;
   border: none;
   cursor: pointer;
   transition: opacity 0.2s;
   margin-bottom: 8px;
+  font-family: inherit;
 }
 
 .saveBtn:disabled {
@@ -188,9 +202,10 @@
   font-weight: 500;
   border-radius: 16px;
   padding: 16px;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.2s;
+  font-family: inherit;
 }
 
 .signOutBtn:active {

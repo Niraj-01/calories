@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/src/context/AuthContext";
 import { getUserSettings, setUserSettings } from "@/src/services/firestoreService";
+import { useRouter } from "next/navigation";
 import styles from "./SettingsPage.module.css";
 
 // Mifflin-St Jeor Equation
@@ -31,7 +32,8 @@ const ACTIVITY_OPTIONS = [
 ];
 
 export default function SettingsPage() {
-  const { user, signOutUser } = useAuth();
+  const { user, signOut } = useAuth();
+  const router = useRouter();
   const [displayName, setDisplayName] = useState("");
   const [calorieGoal, setCalorieGoal] = useState(2000);
   const [age, setAge] = useState("");
@@ -96,6 +98,15 @@ export default function SettingsPage() {
       console.warn("Failed to save settings:", err);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      router.replace("/");
+    } catch (err) {
+      console.error("Manual sign out failed", err);
     }
   };
 
@@ -204,7 +215,7 @@ export default function SettingsPage() {
         >
           {saved ? "✓ Saved" : saving ? "Saving..." : "Save Changes"}
         </button>
-        <button className={styles.signOutBtn} onClick={signOutUser}>
+        <button type="button" className={styles.signOutBtn} onClick={handleSignOut}>
           Sign Out
         </button>
       </section>
