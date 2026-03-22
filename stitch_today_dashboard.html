@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Cal - Today Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style data-purpose="typography">
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background-color: #000000;
+      color: #ffffff;
+    }
+  </style>
+<style data-purpose="custom-layout">
+    /* Glassmorphism and subtle borders */
+    .glass-panel {
+      background: rgba(28, 28, 30, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+    }
+    
+    .macro-pill {
+      background: rgba(44, 44, 46, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+    }
+
+    /* Calorie Ring Glow */
+    .ring-glow {
+      box-shadow: 0 0 40px rgba(255, 255, 255, 0.03);
+    }
+
+    /* Hide scrollbar but allow scrolling */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Progress Bar Styles */
+    .progress-bg {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+    }
+    .progress-fill-protein { background: #8fa38b; width: 65%; }
+    .progress-fill-carbs { background: #dcdcdc; width: 45%; }
+    .progress-fill-fat { background: #a8a8a8; width: 30%; }
+    .progress-fill-water { background: #f2f2f2; width: 48%; }
+  </style>
+</head>
+<body class="h-full overflow-hidden flex flex-col">
+<!-- BEGIN: MainContent -->
+<main class="flex-1 overflow-y-auto no-scrollbar px-5 pt-12 pb-24">
+<!-- BEGIN: Header -->
+<header class="flex justify-between items-center mb-8" data-purpose="top-navigation">
+<h1 class="text-4xl font-bold tracking-tight">Cal</h1>
+<div class="flex items-center space-x-2 bg-zinc-900/50 px-3 py-1.5 rounded-full border border-white/10">
+<span class="text-sm">🔥</span>
+<span class="text-sm font-medium text-zinc-400">7 day <span class="text-zinc-500">streak</span></span>
+</div>
+</header>
+<!-- END: Header -->
+<!-- BEGIN: CalorieProgressCircle -->
+<section class="flex flex-col items-center justify-center mb-10" data-purpose="main-calorie-counter">
+<div class="relative w-64 h-64 flex items-center justify-center ring-glow rounded-full">
+<!-- SVG Ring -->
+<svg class="absolute w-full h-full transform -rotate-90">
+<circle class="text-zinc-800" cx="128" cy="128" fill="transparent" r="110" stroke="currentColor" stroke-width="12"></circle>
+<circle class="text-zinc-300 opacity-90" cx="128" cy="128" fill="transparent" r="110" stroke="currentColor" stroke-dasharray="690.8" stroke-dashoffset="250" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<!-- Centered Text -->
+<div class="text-center">
+<div class="text-5xl font-bold tracking-tight">1,340</div>
+<div class="text-xl font-medium text-zinc-400 mt-1">kcal</div>
+<div class="text-xs font-semibold text-zinc-600 mt-2 uppercase tracking-widest">of 2,100</div>
+</div>
+</div>
+</section>
+<!-- END: CalorieProgressCircle -->
+<!-- BEGIN: MacrosGrid -->
+<section class="grid grid-cols-3 gap-3 mb-4" data-purpose="macro-nutrients">
+<!-- Protein -->
+<div class="macro-pill p-3">
+<div class="flex items-center space-x-2 mb-2">
+<span class="text-sm">🍗</span>
+<span class="text-xs font-medium text-zinc-300">Protein <span class="text-zinc-500">85g</span></span>
+</div>
+<div class="h-1.5 progress-bg overflow-hidden">
+<div class="h-full progress-fill-protein"></div>
+</div>
+</div>
+<!-- Carbs -->
+<div class="macro-pill p-3">
+<div class="flex items-center space-x-2 mb-2">
+<span class="text-sm">🍞</span>
+<span class="text-xs font-medium text-zinc-300">Carbs <span class="text-zinc-500">150g</span></span>
+</div>
+<div class="h-1.5 progress-bg overflow-hidden">
+<div class="h-full progress-fill-carbs"></div>
+</div>
+</div>
+<!-- Fat -->
+<div class="macro-pill p-3">
+<div class="flex items-center space-x-2 mb-2">
+<span class="text-sm">🥑</span>
+<span class="text-xs font-medium text-zinc-300">Fat <span class="text-zinc-500">40g</span></span>
+</div>
+<div class="h-1.5 progress-bg overflow-hidden">
+<div class="h-full progress-fill-fat"></div>
+</div>
+</div>
+</section>
+<!-- END: MacrosGrid -->
+<!-- BEGIN: WaterTracker -->
+<section class="glass-panel p-5 mb-4" data-purpose="hydration-tracking">
+<div class="flex justify-between items-center mb-4">
+<div class="flex items-center space-x-3">
+<span class="text-lg opacity-80">💧</span>
+<span class="font-medium text-zinc-200">Water</span>
+</div>
+<div class="text-sm text-zinc-400 font-medium tracking-tight">
+          1.2L <span class="text-zinc-600">/ 2.5L</span>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<div class="flex-1 h-2.5 progress-bg overflow-hidden">
+<div class="h-full progress-fill-water"></div>
+</div>
+<button class="w-10 h-10 flex items-center justify-center bg-zinc-800 rounded-xl border border-white/5 active:scale-95 transition-transform">
+<svg class="w-5 h-5 text-zinc-300" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+</button>
+</div>
+</section>
+<!-- END: WaterTracker -->
+<!-- BEGIN: MealSections -->
+<section class="space-y-3" data-purpose="daily-meals">
+<!-- Breakfast -->
+<div class="glass-panel p-4 flex items-center justify-between">
+<div class="flex items-center space-x-4">
+<span class="text-2xl">🌅</span>
+<div>
+<span class="font-semibold text-zinc-100">Breakfast</span>
+<span class="text-zinc-500 ml-2 text-sm">450 kcal</span>
+</div>
+<svg class="w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+</div>
+<button class="bg-[#8fa38b]/30 text-[#e0e7df] px-4 py-2 rounded-xl text-sm font-semibold flex items-center border border-[#8fa38b]/20">
+<svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+          Add Food
+        </button>
+</div>
+<!-- Lunch -->
+<div class="glass-panel p-4 flex items-center justify-between">
+<div class="flex items-center space-x-4">
+<span class="text-2xl">☀️</span>
+<div>
+<span class="font-semibold text-zinc-100">Lunch</span>
+<span class="text-zinc-500 ml-2 text-sm">580 kcal</span>
+</div>
+<svg class="w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+</div>
+<button class="bg-[#8fa38b]/30 text-[#e0e7df] px-4 py-2 rounded-xl text-sm font-semibold flex items-center border border-[#8fa38b]/20">
+<svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+          Add Food
+        </button>
+</div>
+<!-- Dinner -->
+<div class="glass-panel p-4 flex items-center justify-between">
+<div class="flex items-center space-x-4">
+<span class="text-2xl">🌙</span>
+<div>
+<span class="font-semibold text-zinc-100">Dinner</span>
+<span class="text-zinc-500 ml-2 text-sm">310 kcal</span>
+</div>
+<svg class="w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+</div>
+<button class="bg-[#8fa38b]/30 text-[#e0e7df] px-4 py-2 rounded-xl text-sm font-semibold flex items-center border border-[#8fa38b]/20">
+<svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+          Add Food
+        </button>
+</div>
+<!-- Snacks -->
+<div class="glass-panel p-4 flex items-center justify-between">
+<div class="flex items-center space-x-4">
+<span class="text-2xl">🍿</span>
+<div>
+<span class="font-semibold text-zinc-100">Snacks</span>
+<span class="text-zinc-500 ml-2 text-sm">0 kcal</span>
+</div>
+<svg class="w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+</div>
+<button class="bg-[#8fa38b]/30 text-[#e0e7df] px-4 py-2 rounded-xl text-sm font-semibold flex items-center border border-[#8fa38b]/20">
+<svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+          Add Food
+        </button>
+</div>
+</section>
+<!-- END: MealSections -->
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: BottomNavigation -->
+<nav class="fixed bottom-0 left-0 right-0 glass-panel !rounded-none border-t border-white/5 pb-8 pt-3 px-6" data-purpose="tab-bar">
+<div class="flex justify-between items-center max-w-md mx-auto">
+<div class="flex flex-col items-center space-y-1">
+<div class="w-6 h-6 rounded-md bg-zinc-200"></div>
+<span class="text-[10px] font-bold text-zinc-200">Today</span>
+</div>
+<div class="flex flex-col items-center space-y-1 opacity-40">
+<div class="w-6 h-6 rounded-md border-2 border-zinc-400"></div>
+<span class="text-[10px] font-bold text-zinc-400">Dashboard</span>
+</div>
+<div class="flex flex-col items-center space-y-1 opacity-40">
+<div class="w-6 h-6 rounded-md border-2 border-zinc-400"></div>
+<span class="text-[10px] font-bold text-zinc-400">History</span>
+</div>
+<div class="flex flex-col items-center space-y-1 opacity-40">
+<div class="w-6 h-6 rounded-md border-2 border-zinc-400"></div>
+<span class="text-[10px] font-bold text-zinc-400">My Foods</span>
+</div>
+<div class="flex flex-col items-center space-y-1 opacity-40">
+<div class="w-6 h-6 rounded-md border-2 border-zinc-400"></div>
+<span class="text-[10px] font-bold text-zinc-400">Settings</span>
+</div>
+</div>
+</nav>
+<!-- END: BottomNavigation -->
+</body></html>

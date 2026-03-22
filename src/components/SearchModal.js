@@ -26,9 +26,6 @@ export default function SearchModal({ meal, onAdd, onClose }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedFood, setSelectedFood] = useState(null);
-  const [servingAmount, setServingAmount] = useState(100);
-  const [unit, setUnit] = useState("g");
   const [error, setError] = useState(null);
   const [myFoods, setMyFoods] = useState([]);
   const [myFoodsLoading, setMyFoodsLoading] = useState(false);
@@ -102,45 +99,11 @@ export default function SearchModal({ meal, onAdd, onClose }) {
   const handleInputChange = (e) => {
     const val = e.target.value;
     setQuery(val);
-    setSelectedFood(null);
     handleSearch(val);
   };
 
   const handleSelect = (food) => {
-    setSelectedFood(food);
-    const defaultAmount = Math.max(1, parseFloat(food.defaultAmount) || 100);
-    const defaultUnit = food.defaultUnit || "g";
-    setServingAmount(defaultAmount);
-    setUnit(defaultUnit);
-  };
-
-  const gramsEquiv = servingAmount * UNIT_FACTORS[unit];
-
-  const scaledCals = selectedFood
-    ? Math.round((selectedFood.calories * gramsEquiv) / 100)
-    : 0;
-  const scaledProtein = selectedFood
-    ? Math.round((selectedFood.protein * gramsEquiv) / 100 * 10) / 10
-    : 0;
-  const scaledCarbs = selectedFood
-    ? Math.round((selectedFood.carbs * gramsEquiv) / 100 * 10) / 10
-    : 0;
-  const scaledFat = selectedFood
-    ? Math.round((selectedFood.fat * gramsEquiv) / 100 * 10) / 10
-    : 0;
-
-  const handleAdd = () => {
-    if (!selectedFood) return;
-    onAdd({
-      ...selectedFood,
-      servingAmount: gramsEquiv,
-      servingUnit: unit,
-      servingDisplay: servingAmount,
-    });
-    setSelectedFood(null);
-    setQuery("");
-    setResults([]);
-    handleClose();
+    onAdd(food);
   };
 
   const mealLabel = meal.charAt(0).toUpperCase() + meal.slice(1);
@@ -172,77 +135,20 @@ export default function SearchModal({ meal, onAdd, onClose }) {
         <div className={styles.tabs}>
           <button
             className={`${styles.tab} ${activeTab === "search" ? styles.tabActive : ""}`}
-            onClick={() => { setActiveTab("search"); setSelectedFood(null); }}
+            onClick={() => setActiveTab("search")}
           >
             Search
           </button>
           <button
             className={`${styles.tab} ${activeTab === "myfoods" ? styles.tabActive : ""}`}
-            onClick={() => { setActiveTab("myfoods"); setSelectedFood(null); }}
+            onClick={() => setActiveTab("myfoods")}
           >
             My Foods
           </button>
         </div>
 
-        {/* Selected food detail */}
-        {selectedFood && (
-          <div className={styles.selectedCard}>
-            <div className={styles.selectedInfo}>
-              <p className={styles.selectedName}>{selectedFood.name}</p>
-              {selectedFood.brand && (
-                <p className={styles.selectedBrand}>{selectedFood.brand}</p>
-              )}
-            </div>
-
-            {/* Macros chips */}
-            <div className={styles.macroRow}>
-              <div className={styles.macroChip}>
-                <span className={styles.macroDot} data-type="protein" />
-                <span className={styles.macroVal}>{scaledProtein}g</span>
-              </div>
-              <div className={styles.macroChip}>
-                <span className={styles.macroDot} data-type="carbs" />
-                <span className={styles.macroVal}>{scaledCarbs}g</span>
-              </div>
-              <div className={styles.macroChip}>
-                <span className={styles.macroDot} data-type="fat" />
-                <span className={styles.macroVal}>{scaledFat}g</span>
-              </div>
-            </div>
-
-            {/* Serving */}
-            <div className={styles.servingSection}>
-              <span className={styles.servingLabel}>Serving</span>
-              <div className={styles.servingGroup}>
-                <input
-                  type="number"
-                  className={`input ${styles.servingInput}`}
-                  value={servingAmount}
-                  min={1}
-                  onChange={(e) => setServingAmount(Math.max(1, parseInt(e.target.value) || 1))}
-                />
-                <div className={styles.unitPills}>
-                  {UNITS.map((u) => (
-                    <button
-                      key={u}
-                      className={`${styles.unitPill} ${unit === u ? styles.unitPillActive : ""}`}
-                      onClick={() => setUnit(u)}
-                    >
-                      {u}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <button className="btn btn-primary btn-full" onClick={handleAdd}>
-              Add — <span className="num">{scaledCals} kcal</span>
-            </button>
-          </div>
-        )}
-
         {/* SEARCH TAB */}
-        {activeTab === "search" && !selectedFood && (
+        {activeTab === "search" && (
           <>
             <div className={styles.searchWrap}>
               <div className={styles.searchIcon}>
@@ -294,7 +200,7 @@ export default function SearchModal({ meal, onAdd, onClose }) {
         )}
 
         {/* MY FOODS TAB */}
-        {activeTab === "myfoods" && !selectedFood && (
+        {activeTab === "myfoods" && (
           <div className={styles.resultsList}>
             {myFoodsLoading && (
               <div className="empty-state">

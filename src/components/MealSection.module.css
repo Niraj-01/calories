@@ -1,198 +1,128 @@
-.section {
-  padding: 0 !important;
-  overflow: hidden;
+.card {
+  background: rgba(28, 28, 30, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 12px;
 }
 
-.header {
+.headerRow {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding: 16px 20px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  align-items: center;
 }
 
-.headerLeft {
+.leftPair {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
 }
 
 .icon {
-  font-size: 20px;
-  line-height: 1;
+  font-size: 1.5rem;
+}
+
+.nameBlock {
+  display: flex;
+  flex-direction: column;
 }
 
 .mealName {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.headerRight {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.totalCals {
-  font-size: 15px;
   font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-primary);
+  color: #fff;
+  text-transform: capitalize;
 }
 
-.kcalUnit {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-tertiary);
-  margin-left: 2px;
+.mealCalories {
+  color: var(--text-secondary, #8e8e93);
+  font-size: 0.85rem;
+}
+
+.addBtn {
+  background: rgba(167, 192, 128, 0.2);
+  color: #A7C080;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid rgba(167, 192, 128, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addBtn:active {
+  transform: scale(0.95);
 }
 
 .chevron {
-  font-size: 18px;
-  color: var(--text-tertiary);
-  transition: transform 300ms var(--ease-smooth);
-  transform: rotate(-90deg);
-  display: flex;
-  align-items: center;
+  width: 16px;
+  height: 16px;
+  color: var(--text-secondary, #8e8e93);
+  margin-left: 4px;
+  display: inline-block;
+  vertical-align: middle;
+  transition: transform 0.2s;
 }
-
 .chevronOpen {
   transform: rotate(90deg);
 }
 
-/* Body */
-.body {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 300ms var(--ease-smooth);
-}
-
-.bodyOpen {
-  max-height: 1000px;
-}
-
-.empty {
-  text-align: center;
-  padding: 16px 20px;
-  font-size: 14px;
-  color: var(--text-tertiary);
-}
-
-/* Entry list */
-.list {
-  padding: 0 20px;
-}
-
-.entry {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-top: 0.5px solid var(--border-subtle);
-  margin-left: 0;
-}
-
-.entry:first-child {
-  border-top: 0.5px solid var(--border-subtle);
-}
-
-.entryInfo {
+.itemsList {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  min-width: 0;
-  flex: 1;
+  gap: 12px;
 }
 
-.entryName {
-  font-size: 15px;
+.itemRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.itemName {
   font-weight: 500;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 0.95rem;
+  color: #fff;
 }
 
-.entryBrand {
-  font-size: 13px;
-  color: var(--text-tertiary);
+.itemSub {
+  font-size: 0.85rem;
+  color: var(--text-tertiary, rgba(255,255,255,0.4));
 }
 
-.entryRight {
+.itemRight {
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-shrink: 0;
 }
 
-.entryCals {
-  font-size: 15px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-primary);
-}
-
-.entryUnit {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-tertiary);
-  margin-left: 2px;
+.itemCals {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #fff;
 }
 
 .deleteBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
   background: none;
-  color: var(--text-tertiary);
   border: none;
+  color: var(--danger, #ef4444);
+  font-size: 1.2rem;
   cursor: pointer;
-  transition: all 0.15s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.deleteBtn:hover {
-  color: var(--danger);
-  background: var(--danger-dim);
-}
-
-/* Actions */
-.actions {
-  display: flex;
-  gap: 8px;
-  padding: 12px 20px 16px;
-}
-
-.addBtn {
-  flex: 1;
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 8px 12px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--accent);
-  background: var(--accent-dim);
-  border: none;
-  border-radius: var(--radius-pill);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  -webkit-tap-highlight-color: transparent;
 }
-
-.addBtn:active {
-  transform: scale(0.96);
-}
-
-.addBtn:hover {
-  background: rgba(48, 209, 88, 0.18);
+.deleteBtn:active {
+  opacity: 0.6;
 }

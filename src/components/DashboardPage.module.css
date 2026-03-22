@@ -1,46 +1,195 @@
-.chartCard {
-  margin-bottom: 16px;
-  padding: 16px;
-}
-.chartTitle {
-  font-size: 0.95rem;
-  font-weight: 700;
-  margin-bottom: 14px;
+.container {
+  padding: env(safe-area-inset-top, 20px) 20px 100px;
+  min-height: 100vh;
+  color: #fff;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-/* Weight */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Date Filters */
+.dateFilters {
+  display: flex;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+}
+
+.filterBtn {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterBtn.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Cards */
+.card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  padding: 20px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.cardTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.cardValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.cardSub {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Macros Breakdown Area */
+.macrosRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.macrosChart {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.macrosList {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.macroItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.macroLabelGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.macroDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.macroLabel {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.macroValue {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Weight Row */
 .weightRow {
   display: flex;
   gap: 10px;
   margin-bottom: 16px;
 }
+
 .weightInput {
   flex: 1;
-  padding: 10px 14px;
-  border-radius: 14px;
-  border: 1.5px solid var(--border);
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
   font-size: 0.95rem;
 }
+
+.weightInput::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
 .weightBtn {
-  padding: 10px 20px;
-  border-radius: 14px;
+  padding: 12px 24px;
+  border-radius: 16px;
   border: none;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.9rem;
+  background: #32d74b;
+  color: #000;
+  font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: transform 0.15s ease;
-  min-width: 70px;
 }
+
 .weightBtn:active {
   transform: scale(0.95);
 }
+
 .hint {
   font-size: 0.82rem;
   color: var(--text-tertiary);
   text-align: center;
   padding: 12px 0;
+}
+
+/* Skeleton */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+  background-size: 200% 100%;
+  animation: shine 1.5s infinite;
+}
+
+@keyframes shine {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.chartWrapper {
+  width: 100%;
+  height: 200px;
+  margin-top: 20px;
 }

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cal - Today Dashboard</title>
+<!-- Tailwind CSS v3 CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts for a SF Pro like appearance -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="typography">
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      letter-spacing: -0.02em;
+      -webkit-font-smoothing: antialiased;
+      background-color: #000000;
+      color: #FFFFFF;
+    }
+    .text-secondary {
+      color: #8E8E93;
+    }
+  </style>
+<style data-purpose="glass-effect">
+    .glass-card {
+      background: rgba(28, 28, 30, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+    }
+    .glass-pill {
+      background: rgba(44, 44, 46, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 999px;
+    }
+  </style>
+<style data-purpose="calorie-ring">
+    .ring-container {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto;
+    }
+    .ring-svg {
+      transform: rotate(-90deg);
+    }
+    .ring-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.05);
+      stroke-width: 12;
+    }
+    .ring-progress {
+      fill: none;
+      stroke: #FFFFFF;
+      stroke-width: 12;
+      stroke-linecap: round;
+      stroke-dasharray: 565.48; /* 2 * PI * 90 */
+      stroke-dashoffset: 204.6; /* (1 - (1340/2100)) * 565.48 */
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+    }
+    .ring-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 70%);
+      z-index: -1;
+    }
+  </style>
+<style data-purpose="custom-animations">
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+    .animate-pulse-slow {
+      animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body class="max-w-[390px] mx-auto min-h-screen pb-24 overflow-x-hidden">
+<!-- BEGIN: Header -->
+<header class="flex justify-between items-center px-6 pt-12 pb-6" data-purpose="app-header">
+<h1 class="text-3xl font-bold tracking-tight">Cal</h1>
+<div class="flex items-center space-x-2 bg-[#1C1C1E] px-3 py-1.5 rounded-full border border-white/5" data-purpose="streak-badge">
+<svg class="w-4 h-4 text-orange-500" fill="currentColor" viewbox="0 0 24 24">
+<path d="M17.55 5.64C17.3 5.39 16.92 5.33 16.61 5.48C15.86 5.86 15.02 6.09 14.12 6.13C13.25 4.3 11.41 3 9.25 3C6.35 3 4 5.35 4 8.25C4 9.17 4.24 10.04 4.67 10.79C3.65 11.53 3 12.69 3 14C3 16.21 4.79 18 7 18C7.45 18 7.88 17.93 8.28 17.79C9.27 18.57 10.51 19 11.88 19C13.88 19 15.65 18.06 16.78 16.59C18.66 16.14 20 14.47 20 12.5C20 11.39 19.55 10.38 18.82 9.66C19.55 8.79 20 7.68 20 6.5C20 6.16 19.96 5.84 19.89 5.53C19.82 5.22 19.63 4.96 19.36 4.81L17.55 5.64Z"></path>
+</svg>
+<span class="text-sm font-medium"><span class="text-white">7 day</span> <span class="text-secondary">streak</span></span>
+</div>
+</header>
+<!-- END: Header -->
+<!-- BEGIN: Calorie Section -->
+<section class="mb-10" data-purpose="calorie-summary">
+<div class="ring-container">
+<div class="ring-glow"></div>
+<svg class="ring-svg" height="200" viewbox="0 0 200 200" width="200">
+<circle class="ring-bg" cx="100" cy="100" r="90"></circle>
+<circle class="ring-progress" cx="100" cy="100" r="90"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+<span class="text-5xl font-bold">1,340</span>
+<span class="text-xl font-semibold mt-1">kcal</span>
+<span class="text-secondary text-sm mt-1">of 2,100</span>
+</div>
+</div>
+</section>
+<!-- END: Calorie Section -->
+<!-- BEGIN: Macros Section -->
+<section class="grid grid-cols-3 gap-3 px-4 mb-6" data-purpose="macro-pills">
+<!-- Protein -->
+<div class="glass-card p-3 flex flex-col items-center">
+<div class="flex items-center gap-1.5 mb-2">
+<span>🍗</span>
+<span class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Protein</span>
+</div>
+<span class="text-sm font-bold mb-2">85g</span>
+<div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-green-900/40 w-[65%]" style="box-shadow: 0 0 5px rgba(34, 197, 94, 0.2);"></div>
+</div>
+</div>
+<!-- Carbs -->
+<div class="glass-card p-3 flex flex-col items-center">
+<div class="flex items-center gap-1.5 mb-2">
+<span>🍞</span>
+<span class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Carbs</span>
+</div>
+<span class="text-sm font-bold mb-2">150g</span>
+<div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-yellow-900/40 w-[50%]" style="box-shadow: 0 0 5px rgba(234, 179, 8, 0.2);"></div>
+</div>
+</div>
+<!-- Fat -->
+<div class="glass-card p-3 flex flex-col items-center">
+<div class="flex items-center gap-1.5 mb-2">
+<span>🥑</span>
+<span class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Fat</span>
+</div>
+<span class="text-sm font-bold mb-240g">40g</span>
+<div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-red-900/40 w-[40%]" style="box-shadow: 0 0 5px rgba(239, 68, 68, 0.2);"></div>
+</div>
+</div>
+</section>
+<!-- END: Macros Section -->
+<!-- BEGIN: Water Section -->
+<section class="px-4 mb-6" data-purpose="water-tracker">
+<div class="glass-card p-4">
+<div class="flex justify-between items-center mb-4">
+<div class="flex items-center gap-2">
+<span class="text-blue-400">💧</span>
+<span class="font-semibold">Water</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-secondary text-sm">1.2L / 2.5L</span>
+<button class="w-8 h-8 flex items-center justify-center glass-pill text-white/80 hover:bg-white/10 transition-colors">
+<span class="text-lg">+</span>
+</button>
+</div>
+</div>
+<div class="w-full h-4 bg-white/5 rounded-full overflow-hidden relative">
+<div class="h-full bg-white/20 w-[48%]" style="border-radius: 999px;"></div>
+</div>
+</div>
+</section>
+<!-- END: Water Section -->
+<!-- BEGIN: Meals Section -->
+<section class="px-4 space-y-3" data-purpose="meal-logs">
+<!-- Breakfast -->
+<div class="glass-card p-4 flex justify-between items-center">
+<div class="flex items-center gap-4">
+<span class="text-2xl">🌅</span>
+<div>
+<span class="font-bold block">Breakfast</span>
+<span class="text-secondary text-sm">450 kcal</span>
+</div>
+<svg class="w-4 h-4 text-secondary ml-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<button class="bg-[#A7C080]/20 text-[#A7C080] px-4 py-2 rounded-xl text-sm font-bold border border-[#A7C080]/20">
+        + Add Food
+      </button>
+</div>
+<!-- Lunch -->
+<div class="glass-card p-4 flex justify-between items-center">
+<div class="flex items-center gap-4">
+<span class="text-2xl">☀️</span>
+<div>
+<span class="font-bold block">Lunch</span>
+<span class="text-secondary text-sm">580 kcal</span>
+</div>
+<svg class="w-4 h-4 text-secondary ml-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<button class="bg-[#A7C080]/20 text-[#A7C080] px-4 py-2 rounded-xl text-sm font-bold border border-[#A7C080]/20">
+        + Add Food
+      </button>
+</div>
+<!-- Dinner -->
+<div class="glass-card p-4 flex justify-between items-center">
+<div class="flex items-center gap-4">
+<span class="text-2xl">🌙</span>
+<div>
+<span class="font-bold block">Dinner</span>
+<span class="text-secondary text-sm">310 kcal</span>
+</div>
+<svg class="w-4 h-4 text-secondary ml-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<button class="bg-[#A7C080]/20 text-[#A7C080] px-4 py-2 rounded-xl text-sm font-bold border border-[#A7C080]/20">
+        + Add Food
+      </button>
+</div>
+<!-- Snacks -->
+<div class="glass-card p-4 flex justify-between items-center">
+<div class="flex items-center gap-4">
+<span class="text-2xl">🍿</span>
+<div>
+<span class="font-bold block">Snacks</span>
+<span class="text-secondary text-sm">0 kcal</span>
+</div>
+<svg class="w-4 h-4 text-secondary ml-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<button class="bg-[#A7C080]/20 text-[#A7C080] px-4 py-2 rounded-xl text-sm font-bold border border-[#A7C080]/20">
+        + Add Food
+      </button>
+</div>
+</section>
+<!-- END: Meals Section -->
+<!-- BEGIN: Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 max-w-[390px] mx-auto bg-black/80 backdrop-blur-xl border-t border-white/5 py-3 px-6" data-purpose="bottom-nav">
+<div class="flex justify-between items-center">
+<!-- Dashboard (Active) -->
+<button class="flex flex-col items-center gap-1">
+<div class="w-6 h-6 text-white">
+<svg fill="currentColor" viewbox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"></path></svg>
+</div>
+<span class="text-[10px] font-medium text-white">Dashboard</span>
+</button>
+<!-- Log -->
+<button class="flex flex-col items-center gap-1">
+<div class="w-6 h-6 text-secondary">
+<svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round"></path></svg>
+</div>
+<span class="text-[10px] font-medium text-secondary">Log</span>
+</button>
+<!-- Analytics -->
+<button class="flex flex-col items-center gap-1">
+<div class="w-6 h-6 text-secondary">
+<svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" stroke-linecap="round"></path></svg>
+</div>
+<span class="text-[10px] font-medium text-secondary">Analytics</span>
+</button>
+<!-- Profile -->
+<button class="flex flex-col items-center gap-1">
+<div class="w-6 h-6 text-secondary">
+<svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" stroke-linecap="round"></path></svg>
+</div>
+<span class="text-[10px] font-medium text-secondary">Profile</span>
+</button>
+</div>
+</nav>
+<!-- END: Navigation Bar -->
+</body></html>

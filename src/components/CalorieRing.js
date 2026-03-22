@@ -4,56 +4,36 @@ import { useEffect, useState } from "react";
 import styles from "./CalorieRing.module.css";
 
 export default function CalorieRing({ consumed = 0, goal = 2000 }) {
-  const radius = 100;
-  const stroke = 10;
-  const normalizedRadius = radius - stroke / 2;
-  const circumference = 2 * Math.PI * normalizedRadius;
-
+  const radius = 90;
+  const circumference = 2 * Math.PI * radius;
   const [offset, setOffset] = useState(circumference);
   const isOver = consumed > goal;
 
   useEffect(() => {
-    const ratio = Math.min(consumed / Math.max(goal, 1), 1.5);
+    const ratio = Math.min(consumed / Math.max(goal, 1), 1);
     const targetOffset = circumference - ratio * circumference;
     const timer = setTimeout(() => setOffset(targetOffset), 80);
     return () => clearTimeout(timer);
   }, [consumed, goal, circumference]);
 
   return (
-    <div className={styles.wrapper}>
-      <svg
-        width={radius * 2}
-        height={radius * 2}
-        viewBox={`0 0 ${radius * 2} ${radius * 2}`}
-        className={styles.svg}
-      >
-        {/* Background track */}
+    <div className={styles.container}>
+      <div className={`${styles.glow} ${isOver ? styles.glowOver : ""}`} />
+      <svg width="200" height="200" viewBox="0 0 200 200" className={styles.svg}>
+        <circle cx="100" cy="100" r="90" className={styles.bg} />
         <circle
-          cx={radius}
-          cy={radius}
-          r={normalizedRadius}
-          fill="none"
-          className={styles.track}
-          strokeWidth={stroke}
-        />
-        {/* Progress arc */}
-        <circle
-          cx={radius}
-          cy={radius}
-          r={normalizedRadius}
-          fill="none"
-          className={`${styles.progress} ${isOver ? styles.over : ""}`}
-          strokeWidth={stroke}
-          strokeLinecap="round"
+          cx="100"
+          cy="100"
+          r="90"
+          className={`${styles.progress} ${isOver ? styles.progressOver : ""}`}
           strokeDasharray={circumference}
           strokeDashoffset={offset}
-          transform={`rotate(-90 ${radius} ${radius})`}
         />
       </svg>
       <div className={styles.center}>
-        <span className={styles.consumed}>{consumed}</span>
-        <span className={styles.kcalLabel}>kcal</span>
-        <span className={styles.goalLabel}>of {goal}</span>
+        <span className={styles.value}>{Math.round(consumed).toLocaleString()}</span>
+        <span className={styles.unit}>kcal</span>
+        <span className={styles.sub}>of {Math.round(goal).toLocaleString()}</span>
       </div>
     </div>
   );

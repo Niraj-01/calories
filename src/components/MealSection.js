@@ -1,86 +1,70 @@
-"use client";
-
 import { useState } from "react";
 import styles from "./MealSection.module.css";
 
-const mealIcons = {
+const ICONS = {
   breakfast: "🌅",
   lunch: "☀️",
   dinner: "🌙",
   snacks: "🍿",
 };
 
-export default function MealSection({ meal, entries = [], onAdd, onScan, onBarcode, onDelete }) {
-  const [expanded, setExpanded] = useState(true);
-
-  const totalCals = entries.reduce((sum, e) => sum + (e.calories || 0), 0);
+export default function MealSection({ meal, entries = [], onAdd, onDelete }) {
+  const [expanded, setExpanded] = useState(false);
+  const totalCals = entries.reduce((s, e) => s + (e.calories || 0), 0);
 
   return (
-    <div className={`card ${styles.section}`}>
-      <button
-        className={styles.header}
-        onClick={() => setExpanded(!expanded)}
-      >
-        <div className={styles.headerLeft}>
-          <span className={styles.icon}>{mealIcons[meal] || "🍽️"}</span>
-          <span className={styles.mealName}>
-            {meal.charAt(0).toUpperCase() + meal.slice(1)}
-          </span>
+    <div className={styles.card}>
+      <div className={styles.headerRow}>
+        <div 
+          className={styles.leftPair} 
+          onClick={() => setExpanded(!expanded)} 
+          style={{ cursor: entries.length > 0 ? 'pointer' : 'default', flex: 1 }}
+        >
+          <span className={styles.icon}>{ICONS[meal] || "🍽️"}</span>
+          <div className={styles.nameBlock}>
+            <span className={styles.mealName}>{meal}</span>
+            <span className={styles.mealCalories}>
+              {totalCals} kcal
+              {entries.length > 0 && (
+                <svg className={`${styles.chevron} ${expanded ? styles.chevronOpen : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                </svg>
+              )}
+            </span>
+          </div>
         </div>
-        <div className={styles.headerRight}>
-          <span className={styles.totalCals}>
-            {totalCals > 0 && <>{totalCals}<span className={styles.kcalUnit}>kcal</span></>}
-          </span>
-          <span className={`${styles.chevron} ${expanded ? styles.chevronOpen : ""}`}>
-            ‹
-          </span>
-        </div>
-      </button>
-
-      <div className={`${styles.body} ${expanded ? styles.bodyOpen : ""}`}>
-        {entries.length === 0 ? (
-          <p className={styles.empty}>Nothing logged yet</p>
-        ) : (
-          <ul className={styles.list}>
-            {entries.map((entry) => (
-              <li key={entry.id} className={styles.entry}>
-                <div className={styles.entryInfo}>
-                  <span className={styles.entryName}>{entry.name}</span>
-                  <span className={styles.entryBrand}>
-                    {entry.brand || `${entry.servingAmount || 100}${entry.servingUnit || "g"}`}
-                  </span>
-                </div>
-                <div className={styles.entryRight}>
-                  <span className={styles.entryCals}>
-                    {entry.calories}
-                    <span className={styles.entryUnit}>kcal</span>
-                  </span>
-                  <button
-                    className={styles.deleteBtn}
-                    onClick={() => onDelete(entry.id)}
-                    aria-label="Remove"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                      <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14" />
-                    </svg>
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-        <div className={styles.actions}>
-          <button className={styles.addBtn} onClick={onAdd}>
-            + Add Food
-          </button>
-          <button className={styles.addBtn} onClick={onScan}>
-            📷 Scan
-          </button>
-          <button className={styles.addBtn} onClick={onBarcode}>
-            ▮▮▯ Barcode
-          </button>
-        </div>
+        <button className={styles.addBtn} onClick={onAdd}>
+          + Add Food
+        </button>
       </div>
+
+      {expanded && entries.length > 0 && (
+        <div className={styles.itemsList}>
+          {entries.map((e) => (
+            <div key={e.id} className={styles.itemRow}>
+              <div className={styles.itemInfo}>
+                <span className={styles.itemName}>{e.name}</span>
+                <span className={styles.itemSub}>
+                  {e.servingAmount} {e.servingUnit} {e.brand ? `· ${e.brand}` : ""}
+                </span>
+              </div>
+              <div className={styles.itemRight}>
+                <span className={styles.itemCals}>{e.calories} kcal</span>
+                <button
+                  className={styles.deleteBtn}
+                  onClick={(ev) => {
+                    ev.stopPropagation();
+                    onDelete(e.id);
+                  }}
+                  title="Remove"
+                >
+                  &times;
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

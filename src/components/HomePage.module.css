@@ -2,125 +2,67 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  padding: 12px 24px 24px;
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
 }
 
 .greeting {
-  font-size: 14px;
+  font-size: 0.9rem;
   color: var(--text-secondary);
-  margin-bottom: 2px;
+  font-weight: 500;
 }
 
 .userName {
-  font-family: var(--font-display);
-  font-size: 22px;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-display, Inter, sans-serif);
+  font-size: 1.75rem;
   font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.3px;
-}
-
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--text-inverse);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-/* Hero Card */
-.heroCard {
-  margin-bottom: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 24px 20px;
-}
-
-.ringWrap {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.statRow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  width: 100%;
-}
-
-.statPill {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 8px 4px;
-}
-
-.statValue {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-primary);
-}
-
-.statOver {
-  color: var(--danger);
-}
-
-.statLabel {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.statDivider {
-  width: 1px;
-  height: 32px;
-  background: var(--border-subtle);
-  flex-shrink: 0;
-}
-
-/* Macro Card */
-.macroCard {
-  margin-bottom: 16px;
-}
-
-/* Meals */
-.meals {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Streak Badge */
-.streakBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  margin-left: 8px;
-  padding: 2px 8px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #ff6b35, #f7931a);
   color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-  vertical-align: middle;
-  animation: streakPop 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  letter-spacing: -0.02em;
+  margin-top: 2px;
 }
 
-@keyframes streakPop {
-  0% { transform: scale(0.6); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+.streakBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(28, 28, 30, 0.8);
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.streakIcon {
+  color: #f97316;
+  font-size: 1rem;
+}
+
+.streakText {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.streakValue {
+  color: #fff;
+}
+
+.streakLabel {
+  color: var(--text-secondary, #8e8e93);
+}
+
+/* Sections */
+.section {
+  padding: 0 16px;
+  margin-bottom: 24px;
+}
+
+.meals {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
 }

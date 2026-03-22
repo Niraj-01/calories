@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Food Details - Cal App</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'ios-black': '#000000',
+            'ios-card': '#1C1C1E',
+            'ios-gray': '#8E8E93',
+            'ios-active': '#2C2C2E',
+            'ios-divider': '#38383A'
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="ios-specifics">
+    body {
+      background-color: #000000;
+      color: white;
+      -webkit-font-smoothing: antialiased;
+    }
+    .glass-card {
+      background-color: rgba(28, 28, 30, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .segmented-control {
+      background-color: #1C1C1E;
+      border-radius: 12px;
+      padding: 2px;
+    }
+    .segmented-item {
+      padding: 8px 0;
+      font-size: 15px;
+      font-weight: 500;
+      flex: 1;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .segmented-item.active {
+      background-color: #3A3A3C;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+<!-- BEGIN: Status Bar Placeholder (iOS Style) -->
+<header class="w-full flex justify-between items-center px-6 pt-4 pb-2">
+<div class="text-[15px] font-semibold">3:37 AM</div>
+<div class="flex items-center gap-1.5">
+<!-- Signal, Wifi, Battery Icons (Mocked) -->
+<svg fill="white" height="11" viewbox="0 0 17 11" width="17"><path d="M1 11h15V0H1v11z" opacity="0.3"></path><rect fill="white" height="7" width="3" x="1" y="4"></rect><rect fill="white" height="9" width="3" x="5" y="2"></rect><rect fill="white" height="11" width="3" x="9" y="0"></rect></svg>
+<svg fill="white" height="11" viewbox="0 0 15 11" width="15"><path d="M7.5 11L0 3.5a10.6 10.6 0 0115 0L7.5 11z"></path></svg>
+<div class="w-6 h-3 border border-white/50 rounded-sm relative ml-1">
+<div class="h-2 bg-white m-[1px] w-[80%] rounded-sm"></div>
+</div>
+</div>
+</header>
+<!-- END: Status Bar Placeholder -->
+<!-- BEGIN: Navigation Header -->
+<nav class="flex justify-between items-center px-4 py-2" data-purpose="navigation-bar">
+<button class="p-2 text-white/90">
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="m15 18-6-6 6-6"></path></svg>
+</button>
+<h1 class="text-[17px] font-semibold tracking-tight">Food Details</h1>
+<button class="p-2 text-white/90">
+<svg fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="22" xmlns="http://www.w3.org/2000/svg"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" x2="12" y1="2" y2="15"></line></svg>
+</button>
+</nav>
+<!-- END: Navigation Header -->
+<!-- BEGIN: Main Content Container -->
+<main class="flex-grow px-6 pt-8 pb-24 overflow-y-auto">
+<!-- Title Section -->
+<div class="text-center mb-8" data-purpose="food-identity">
+<h2 class="text-[34px] font-bold tracking-tight leading-tight">Grilled Chicken Breast</h2>
+<p class="text-ios-gray text-[20px] font-medium mt-1">Applegate Organics</p>
+</div>
+<!-- Serving Stepper Card -->
+<div class="bg-ios-card rounded-2xl p-4 flex items-center justify-between mb-8" data-purpose="serving-selector">
+<button class="w-12 h-12 flex items-center justify-center bg-[#2C2C2E] rounded-xl text-white/80 active:bg-ios-gray/20">
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-width="3" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="5" x2="19" y1="12" y2="12"></line></svg>
+</button>
+<div class="text-white text-[48px] font-bold tracking-tight">150g</div>
+<button class="w-12 h-12 flex items-center justify-center bg-[#2C2C2E] rounded-xl text-white/80 active:bg-ios-gray/20">
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-width="3" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg>
+</button>
+</div>
+<!-- Nutrition Table -->
+<section class="glass-card rounded-2xl mb-10 overflow-hidden" data-purpose="nutrition-facts">
+<div class="flex justify-between items-center px-5 py-4 border-b border-white/10">
+<span class="text-[17px] text-white/90">Calories</span>
+<span class="text-[17px] text-ios-gray">240 kcal</span>
+</div>
+<div class="flex justify-between items-center px-5 py-4 border-b border-white/10">
+<span class="text-[17px] text-white/90">Protein</span>
+<span class="text-[17px] text-ios-gray">45g</span>
+</div>
+<div class="flex justify-between items-center px-5 py-4 border-b border-white/10">
+<span class="text-[17px] text-white/90">Carbs</span>
+<span class="text-[17px] text-ios-gray">0g</span>
+</div>
+<div class="flex justify-between items-center px-5 py-4">
+<span class="text-[17px] text-white/90">Fat</span>
+<span class="text-[17px] text-ios-gray">5g</span>
+</div>
+</section>
+<!-- Meal Time Selector -->
+<div class="segmented-control flex p-1 mb-8" data-purpose="meal-selector">
+<button class="segmented-item text-white/60">Breakfast</button>
+<button class="segmented-item active text-white">Lunch</button>
+<button class="segmented-item text-white/60">Dinner</button>
+<div class="w-[1px] h-4 bg-ios-divider self-center"></div>
+<button class="segmented-item text-white/60">Snacks</button>
+</div>
+</main>
+<!-- END: Main Content Container -->
+<!-- BEGIN: Bottom CTA -->
+<footer class="fixed bottom-0 left-0 right-0 p-6 pb-10 bg-gradient-to-t from-ios-black via-ios-black to-transparent">
+<button class="w-full bg-[#3A3A3C] text-white py-4 rounded-2xl text-[19px] font-semibold active:opacity-80 transition-opacity">
+      Add to Log
+    </button>
+</footer>
+<!-- END: Bottom CTA -->
+</body></html>

@@ -101,29 +101,23 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="page container fade-in">
-        <div style={{ marginBottom: 20 }}>
-          <div className="skeleton" style={{ width: 100, height: 32 }} />
-        </div>
-        <div className={`card ${styles.group}`}>
-          {[1, 2].map((i) => (
-            <div key={i} className={styles.row}>
-              <div className="skeleton" style={{ width: 80, height: 14, marginBottom: 8 }} />
-              <div className="skeleton" style={{ width: "100%", height: 48, borderRadius: 16 }} />
-            </div>
-          ))}
-        </div>
+      <div className={`page container fade-in ${styles.container}`}>
+        <div className="spinner" style={{ margin: "auto" }}></div>
       </div>
     );
   }
 
-  return (
-    <div className="page container fade-in">
-      <h1 className="page-title" style={{ marginBottom: 24 }}>Settings</h1>
+  const currentBMR = calcBMR(parseFloat(weight), parseFloat(height), parseInt(age), gender);
+  const currentTDEE = currentBMR ? calcTDEE(currentBMR, activity) : null;
 
-      {/* Profile section */}
-      <div className={`card ${styles.group}`}>
-        <div className={styles.profileHeader}>
+  return (
+    <div className={`page fade-in ${styles.container}`}>
+      {/* Header Section */}
+      <header className={styles.header}>
+        <h1 className={styles.title}>
+          User Profile and <br />Settings
+        </h1>
+        <div className={styles.profileInfo}>
           <div className={styles.avatar}>
             {(displayName || user?.email || "U")
               .split(" ")
@@ -132,126 +126,88 @@ export default function SettingsPage() {
               .toUpperCase()
               .slice(0, 2)}
           </div>
-          <div className={styles.profileInfo}>
-            <span className={styles.profileName}>
-              {displayName || "No name set"}
-            </span>
-            <span className={styles.profileEmail}>{user?.email}</span>
-          </div>
-        </div>
-
-        <div className={styles.divider} />
-
-        <div className={styles.row}>
-          <label className="label">Display Name</label>
-          <input
-            className="input"
-            type="text"
-            placeholder="Your name"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
+          <input 
+            type="text" 
+            className={styles.nameInput} 
+            value={displayName} 
+            onChange={(e) => setDisplayName(e.target.value)} 
+            placeholder="Your Name"
           />
         </div>
-      </div>
+      </header>
 
-      {/* Body Profile */}
-      <div className={`card ${styles.group}`} style={{ marginTop: 12 }}>
-        <h3 className={styles.sectionTitle}>⚖️ Body Profile</h3>
-        <p className={styles.sectionHint}>We use this to calculate your daily calorie goal automatically.</p>
-
-        <div className={styles.rowGroup}>
-          <div className={styles.halfRow}>
-            <label className="label">Age</label>
-            <input className="input" type="number" placeholder="25" value={age} onChange={(e) => setAge(e.target.value)} />
-          </div>
-          <div className={styles.halfRow}>
-            <label className="label">Gender</label>
-            <select className="input" value={gender} onChange={(e) => setGender(e.target.value)}>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
-          </div>
+      {/* Profile Data Form */}
+      <section className={styles.frostedGlass}>
+        <div className={styles.listRow}>
+          <label className={styles.rowLabel}>Age</label>
+          <input className={styles.rowInput} type="number" placeholder="25" value={age} onChange={(e) => setAge(e.target.value)} />
         </div>
-
-        <div className={styles.rowGroup}>
-          <div className={styles.halfRow}>
-            <label className="label">Height (cm)</label>
-            <input className="input" type="number" placeholder="175" value={height} onChange={(e) => setHeight(e.target.value)} />
-          </div>
-          <div className={styles.halfRow}>
-            <label className="label">Weight (kg)</label>
-            <input className="input" type="number" placeholder="70" value={weight} onChange={(e) => setWeight(e.target.value)} />
-          </div>
+        <div className={styles.listRow}>
+          <label className={styles.rowLabel}>Gender</label>
+          <select className={styles.rowSelect} value={gender} onChange={(e) => setGender(e.target.value)}>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
         </div>
-
-        <div className={styles.row}>
-          <label className="label">Activity Level</label>
-          <select className="input" value={activity} onChange={(e) => setActivity(parseFloat(e.target.value))}>
+        <div className={styles.listRow}>
+          <label className={styles.rowLabel}>Height (cm)</label>
+          <input className={styles.rowInput} type="number" placeholder="175" value={height} onChange={(e) => setHeight(e.target.value)} />
+        </div>
+        <div className={styles.listRow}>
+          <label className={styles.rowLabel}>Weight (kg)</label>
+          <input className={styles.rowInput} type="number" placeholder="70" value={weight} onChange={(e) => setWeight(e.target.value)} />
+        </div>
+        <div className={styles.listRow}>
+          <label className={styles.rowLabel}>Activity Level</label>
+          <select className={styles.rowSelect} value={activity} onChange={(e) => setActivity(parseFloat(e.target.value))}>
             {ACTIVITY_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
         </div>
+        <div className={styles.listRow}>
+          <label className={styles.rowLabel}>Goal</label>
+          <select className={styles.rowSelect} value={weightGoal} onChange={(e) => setWeightGoal(e.target.value)}>
+             <option value="lose">Lose Weight</option>
+             <option value="maintain">Maintain Weight</option>
+             <option value="gain">Gain Weight</option>
+          </select>
+        </div>
+        <div className={styles.listRow}>
+          <label className={styles.rowLabel}>Daily Target</label>
+          <input className={styles.rowInput} type="number" placeholder="2000" value={calorieGoal} onChange={(e) => setCalorieGoal(e.target.value)} />
+        </div>
+      </section>
 
-        <div className={styles.row}>
-          <label className="label">Goal</label>
-          <div className={styles.goalPicker}>
-            {[
-              { value: "lose", label: "Lose", emoji: "📉" },
-              { value: "maintain", label: "Maintain", emoji: "⚖️" },
-              { value: "gain", label: "Gain", emoji: "📈" },
-            ].map((g) => (
-              <button
-                key={g.value}
-                className={`${styles.goalBtn} ${weightGoal === g.value ? styles.goalActive : ""}`}
-                onClick={() => setWeightGoal(g.value)}
-              >
-                <span>{g.emoji}</span>
-                <span>{g.label}</span>
-              </button>
-            ))}
+      {/* BMR/TDEE Stat Card */}
+      {currentBMR && currentTDEE && (
+        <section className={styles.glowCard}>
+          <p className={styles.glowLabel}>BMR / TDEE</p>
+          <div className={styles.glowStats}>
+            <span className={styles.glowStatValue}>
+              {Math.round(currentBMR).toLocaleString()} kcal
+            </span>
+            <span className={styles.glowStatValue}>
+              {Math.round(currentTDEE).toLocaleString()} kcal
+            </span>
           </div>
-        </div>
-      </div>
+          <p className={styles.glowStatHint}>Daily Estimate</p>
+        </section>
+      )}
 
-      {/* Calorie Goal */}
-      <div className={`card ${styles.group}`} style={{ marginTop: 12 }}>
-        <div className={styles.row}>
-          <label className="label">Daily Calorie Goal</label>
-          <input
-            className="input"
-            type="number"
-            placeholder="2000"
-            value={calorieGoal}
-            onChange={(e) => setCalorieGoal(e.target.value)}
-          />
-          <p className={styles.goalHint}>
-            {age && weight && height
-              ? "✨ Auto-calculated from your profile"
-              : "Fill in your Body Profile above to auto-calculate"}
-          </p>
-        </div>
-
-        <button
-          className="btn btn-primary btn-full"
+      {/* Actions */}
+      <section>
+        <button 
+          className={styles.saveBtn} 
+          onClick={handleSave} 
           disabled={saving}
-          onClick={handleSave}
         >
           {saved ? "✓ Saved" : saving ? "Saving..." : "Save Changes"}
         </button>
-      </div>
-
-      {/* Sign out */}
-      <div className={`card ${styles.group}`} style={{ marginTop: 12 }}>
-        <button
-          className={`btn btn-danger btn-full ${styles.signOutBtn}`}
-          onClick={signOutUser}
-        >
+        <button className={styles.signOutBtn} onClick={signOutUser}>
           Sign Out
         </button>
-      </div>
-
-      <p className={styles.version}>CALORIES v2.0</p>
+      </section>
     </div>
   );
 }

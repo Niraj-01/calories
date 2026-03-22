@@ -1,0 +1,213 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.main {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  padding-bottom: 16px;
+}
+
+.iconButton {
+  padding: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerTitle {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.titleSection {
+  text-align: center;
+  margin-top: 16px;
+  margin-bottom: 24px;
+}
+
+.foodName {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.foodBrand {
+  font-size: 18px;
+  color: #8E8E93;
+}
+
+.section {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.stepperBg {
+  background-color: #1C1C1E;
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stepperBtn {
+  width: 56px;
+  height: 56px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.stepperBtn:active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.weightContainer {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.weightValue {
+  font-size: 52px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+  min-width: 90px;
+  text-align: center;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+.weightValue::-webkit-outer-spin-button,
+.weightValue::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.weightValue[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.weightUnit {
+  font-size: 32px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.macroCard {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.macroRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+}
+
+.macroRow.separator {
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.15);
+}
+
+.macroLabel {
+  font-size: 18px;
+  color: #fff;
+}
+
+.macroValue {
+  font-size: 18px;
+  color: #8E8E93;
+}
+
+.segmentedControl {
+  background-color: rgba(118, 118, 128, 0.24);
+  border-radius: 12px;
+  padding: 2px;
+  display: flex;
+}
+
+.segmentedItem {
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #8E8E93;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+
+.segmentedItem.active {
+  background-color: #3A3A3C;
+  color: #FFFFFF;
+  box-shadow: 0 3px 8px 0 rgba(0,0,0,0.12), 0 3px 1px 0 rgba(0,0,0,0.04);
+}
+
+.flexGrow {
+  flex-grow: 1;
+}
+
+.footer {
+  width: 100%;
+  padding-bottom: 32px;
+}
+
+.ctaBtn {
+  width: 100%;
+  background-color: #3A3A3C;
+  color: #FFFFFF;
+  font-weight: 600;
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 19px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.ctaBtn:active {
+  opacity: 0.8;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}

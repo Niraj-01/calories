@@ -18,6 +18,8 @@ import MealSection from "@/src/components/MealSection";
 import SearchModal from "@/src/components/SearchModal";
 import CameraModal from "@/src/components/CameraModal";
 import BarcodeScannerModal from "@/src/components/BarcodeScannerModal";
+import AddFoodModal from "@/src/components/AddFoodModal";
+import FoodDetailsModal from "@/src/components/FoodDetailsModal";
 import WaterTracker from "@/src/components/WaterTracker";
 import styles from "./HomePage.module.css";
 
@@ -36,6 +38,8 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [goal, setGoal] = useState(2000);
   const [displayName, setDisplayName] = useState("");
+  const [addFoodMeal, setAddFoodMeal] = useState(null);
+  const [foodDetail, setFoodDetail] = useState(null); // { food, meal }
   const [searchMeal, setSearchMeal] = useState(null);
   const [cameraMeal, setCameraMeal] = useState(null);
   const [barcodeMeal, setBarcodeMeal] = useState(null);
@@ -127,20 +131,23 @@ export default function HomePage() {
     { calories: 0, protein: 0, carbs: 0, fat: 0 }
   );
 
-  const remaining = goal - totals.calories;
-
   // Group by meal
   const mealEntries = {};
   MEALS.forEach((m) => {
     mealEntries[m] = entries.filter((e) => e.meal === m);
   });
 
-  const initials = (displayName || user?.email || "U")
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
+  const handleStageFood = (food, targetMeal) => {
+    const stagedFood = {
+      ...food,
+      defaultAmount: food.defaultAmount || 100,
+      defaultUnit: food.defaultUnit || "g",
+    };
+    setFoodDetail({ food: stagedFood, meal: targetMeal });
+    setSearchMeal(null);
+    setCameraMeal(null);
+    setBarcodeMeal(null);
+  };
 
   if (loading) {
     return (
@@ -150,43 +157,12 @@ export default function HomePage() {
             <div className="skeleton" style={{ width: 100, height: 16, marginBottom: 6 }} />
             <div className="skeleton" style={{ width: 140, height: 24 }} />
           </div>
-          <div className="skeleton" style={{ width: 36, height: 36, borderRadius: "50%" }} />
         </div>
-        <div className={styles.heroCard}>
-          <div className={styles.ringWrap}>
-            <div className="skeleton" style={{ width: 200, height: 200, borderRadius: "50%" }} />
-          </div>
-          <div className={styles.statRow}>
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="skeleton" style={{ width: 80, height: 48, borderRadius: 12 }} />
-            ))}
-          </div>
+        <div className={styles.section} style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className="skeleton" style={{ width: 200, height: 200, borderRadius: "50%" }} />
         </div>
-        <div className="card" style={{ marginTop: 16 }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 20, padding: 4 }}>
-            {[1, 2, 3].map((i) => (
-              <div key={i}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                  <div className="skeleton" style={{ width: 60, height: 14 }} />
-                  <div className="skeleton" style={{ width: 40, height: 20 }} />
-                </div>
-                <div className="skeleton" style={{ width: "100%", height: 4, borderRadius: 100 }} />
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className={styles.meals}>
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="card" style={{ padding: 0, marginTop: 12 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "16px 20px" }}>
-                <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                  <div className="skeleton" style={{ width: 24, height: 24, borderRadius: "50%" }} />
-                  <div className="skeleton" style={{ width: 80, height: 16 }} />
-                </div>
-                <div className="skeleton" style={{ width: 40, height: 16 }} />
-              </div>
-            </div>
-          ))}
+        <div className={styles.section}>
+          <div className="skeleton" style={{ width: "100%", height: 100, borderRadius: 20 }} />
         </div>
       </div>
     );
@@ -196,49 +172,27 @@ export default function HomePage() {
     <div className="page container fade-in">
       {/* Header */}
       <div className={styles.header}>
-        <div>
-          <p className={styles.greeting}>{getGreeting()}</p>
-          <h1 className={styles.userName}>
-            {displayName || "Hi there"}
-            {streak > 1 && (
-              <span className={styles.streakBadge} title={`${streak} day streak!`}>
-                🔥 {streak}
-              </span>
-            )}
-          </h1>
+        <div className={styles.titleGroup}>
+          <h1 className={styles.userName}>Cal</h1>
         </div>
-        <div className={styles.avatar}>
-          {initials}
-        </div>
+        {streak > 0 && (
+          <div className={styles.streakBadge} title={`${streak} day streak!`}>
+            <span className={styles.streakIcon}>🔥</span>
+            <span className={styles.streakText}>
+              <span className={styles.streakValue}>{streak} day</span>{" "}
+              <span className={styles.streakLabel}>streak</span>
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Hero Card — Calorie Ring + Stats */}
-      <div className={`card ${styles.heroCard}`}>
-        <div className={styles.ringWrap}>
-          <CalorieRing consumed={totals.calories} goal={goal} />
-        </div>
-        <div className={styles.statRow}>
-          <div className={styles.statPill}>
-            <span className={styles.statValue}>{goal}</span>
-            <span className={styles.statLabel}>Goal</span>
-          </div>
-          <div className={styles.statDivider} />
-          <div className={styles.statPill}>
-            <span className={styles.statValue}>{totals.calories}</span>
-            <span className={styles.statLabel}>Eaten</span>
-          </div>
-          <div className={styles.statDivider} />
-          <div className={styles.statPill}>
-            <span className={`${styles.statValue} ${remaining < 0 ? styles.statOver : ""}`}>
-              {Math.abs(remaining)}
-            </span>
-            <span className={styles.statLabel}>{remaining < 0 ? "Over" : "Left"}</span>
-          </div>
-        </div>
+      {/* Hero Card — Calorie Ring */}
+      <div className={styles.section}>
+        <CalorieRing consumed={totals.calories} goal={goal} />
       </div>
 
       {/* Macros Card */}
-      <div className={`card ${styles.macroCard}`}>
+      <div className={styles.section}>
         <MacroBar
           protein={totals.protein}
           carbs={totals.carbs}
@@ -247,7 +201,9 @@ export default function HomePage() {
       </div>
 
       {/* Water Tracker */}
-      <WaterTracker intake={waterIntake} onAdd={handleAddWater} />
+      <div className={styles.section}>
+        <WaterTracker intake={waterIntake} onAdd={handleAddWater} />
+      </div>
 
       {/* Meals */}
       <div className={styles.meals}>
@@ -256,19 +212,36 @@ export default function HomePage() {
             key={meal}
             meal={meal}
             entries={mealEntries[meal]}
-            onAdd={() => setSearchMeal(meal)}
-            onScan={() => setCameraMeal(meal)}
-            onBarcode={() => setBarcodeMeal(meal)}
+            onAdd={() => setAddFoodMeal(meal)}
             onDelete={handleDelete}
           />
         ))}
       </div>
 
+      {/* Add Food Selection Modal (Stitch UI) */}
+      <AddFoodModal
+        open={!!addFoodMeal}
+        onClose={() => setAddFoodMeal(null)}
+        onCamera={() => setCameraMeal(addFoodMeal)}
+        onSearch={() => setSearchMeal(addFoodMeal)}
+        onBarcode={() => setBarcodeMeal(addFoodMeal)}
+      />
+
+      {/* Selected Food Details / Logging Modal */}
+      {foodDetail && (
+        <FoodDetailsModal
+          food={foodDetail.food}
+          initialMeal={foodDetail.meal}
+          onClose={() => setFoodDetail(null)}
+          onAdd={handleAddFood}
+        />
+      )}
+
       {/* Search Modal */}
       {searchMeal && (
         <SearchModal
           meal={searchMeal}
-          onAdd={(food) => handleAddFood(food, searchMeal)}
+          onAdd={(food) => handleStageFood(food, searchMeal)}
           onClose={() => setSearchMeal(null)}
         />
       )}
@@ -277,7 +250,7 @@ export default function HomePage() {
       {cameraMeal && (
         <CameraModal
           meal={cameraMeal}
-          onAdd={(food) => handleAddFood(food, cameraMeal)}
+          onAdd={(food) => handleStageFood(food, cameraMeal)}
           onClose={() => setCameraMeal(null)}
         />
       )}
@@ -286,7 +259,7 @@ export default function HomePage() {
       <BarcodeScannerModal
         open={!!barcodeMeal}
         meal={barcodeMeal || ""}
-        onAdd={handleAddFood}
+        onAdd={handleStageFood}
         onClose={() => setBarcodeMeal(null)}
       />
     </div>
