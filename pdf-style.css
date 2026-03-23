@@ -1,0 +1,12 @@
+body {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12pt;
+  text-align: justify;
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 14pt;
+  font-weight: bold;
+}
