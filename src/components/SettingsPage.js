@@ -34,6 +34,20 @@ const ACTIVITY_OPTIONS = [
   { value: 1.9, label: "Extremely active (athlete)" },
 ];
 
+const IN_TO_CM = 2.54;
+const LB_TO_KG = 0.45359237;
+
+function toNumber(value) {
+  const num = parseFloat(value);
+  return Number.isFinite(num) ? num : null;
+}
+
+function formatOneDecimal(value) {
+  if (value === null) return "";
+  const rounded = Math.round(value * 10) / 10;
+  return `${rounded}`;
+}
+
 export default function SettingsPage() {
   const { user, signOut } = useAuth();
   const router = useRouter();
@@ -41,8 +55,10 @@ export default function SettingsPage() {
   const [calorieGoal, setCalorieGoal] = useState(2000);
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("male");
-  const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
+  const [heightValue, setHeightValue] = useState("");
+  const [heightUnit, setHeightUnit] = useState("cm");
+  const [weightValue, setWeightValue] = useState("");
+  const [weightUnit, setWeightUnit] = useState("kg");
   const [activity, setActivity] = useState(1.55);
   const [weightGoal, setWeightGoal] = useState("maintain");
   const [loading, setLoading] = useState(true);
@@ -58,8 +74,10 @@ export default function SettingsPage() {
         setCalorieGoal(s.calorieGoal || 2000);
         setAge(s.age || "");
         setGender(s.gender || "male");
-        setHeight(s.height || "");
-        setWeight(s.weight || "");
+        setHeightValue(s.height || "");
+        setHeightUnit("cm");
+        setWeightValue(s.weight || "");
+        setWeightUnit("kg");
         setActivity(s.activityLevel || 1.55);
         setWeightGoal(s.weightGoal || "maintain");
       } catch (err) {
@@ -70,20 +88,60 @@ export default function SettingsPage() {
     })();
   }, [user]);
 
+  const numericHeight = toNumber(heightValue);
+  const numericWeight = toNumber(weightValue);
+  const heightCm =
+    numericHeight === null
+      ? null
+      : heightUnit === "cm"
+        ? numericHeight
+        : numericHeight * IN_TO_CM;
+  const weightKg =
+    numericWeight === null
+      ? null
+      : weightUnit === "kg"
+        ? numericWeight
+        : numericWeight * LB_TO_KG;
+
   // Auto-calculate calorie goal when profile fields change
   useEffect(() => {
-    const bmr = calcBMR(
-      parseFloat(weight),
-      parseFloat(height),
-      parseInt(age),
-      gender,
-    );
+    const bmr = calcBMR(weightKg, heightCm, parseInt(age), gender);
     if (bmr) {
       const tdee = calcTDEE(bmr, activity);
       const adjusted = goalAdjust(tdee, weightGoal);
       setCalorieGoal(adjusted);
     }
-  }, [weight, height, age, gender, activity, weightGoal]);
+  }, [weightKg, heightCm, age, gender, activity, weightGoal]);
+
+  const handleHeightUnitChange = (nextUnit) => {
+    if (nextUnit === heightUnit) return;
+    const cmValue =
+      numericHeight === null
+        ? null
+        : heightUnit === "cm"
+          ? numericHeight
+          : numericHeight * IN_TO_CM;
+    setHeightUnit(nextUnit);
+    if (cmValue !== null) {
+      const nextValue = nextUnit === "cm" ? cmValue : cmValue / IN_TO_CM;
+      setHeightValue(formatOneDecimal(nextValue));
+    }
+  };
+
+  const handleWeightUnitChange = (nextUnit) => {
+    if (nextUnit === weightUnit) return;
+    const kgValue =
+      numericWeight === null
+        ? null
+        : weightUnit === "kg"
+          ? numericWeight
+          : numericWeight * LB_TO_KG;
+    setWeightUnit(nextUnit);
+    if (kgValue !== null) {
+      const nextValue = nextUnit === "kg" ? kgValue : kgValue / LB_TO_KG;
+      setWeightValue(formatOneDecimal(nextValue));
+    }
+  };
 
   const handleSave = async () => {
     if (!user) return;
@@ -95,8 +153,8 @@ export default function SettingsPage() {
         calorieGoal: parseInt(calorieGoal) || 2000,
         age: parseInt(age) || null,
         gender,
-        height: parseFloat(height) || null,
-        weight: parseFloat(weight) || null,
+        height: heightCm || null,
+        weight: weightKg || null,
         activityLevel: activity,
         weightGoal,
       });
@@ -126,12 +184,7 @@ export default function SettingsPage() {
     );
   }
 
-  const currentBMR = calcBMR(
-    parseFloat(weight),
-    parseFloat(height),
-    parseInt(age),
-    gender,
-  );
+  const currentBMR = calcBMR(weightKg, heightCm, parseInt(age), gender);
   const currentTDEE = currentBMR ? calcTDEE(currentBMR, activity) : null;
 
   return (
@@ -185,24 +238,44 @@ export default function SettingsPage() {
           </select>
         </div>
         <div className={styles.listRow}>
-          <label className={styles.rowLabel}>Height (cm)</label>
-          <input
-            className={styles.rowInput}
-            type="number"
-            placeholder="175"
-            value={height}
-            onChange={(e) => setHeight(e.target.value)}
-          />
+          <label className={styles.rowLabel}>Height</label>
+          <div className={styles.rowInputGroup}>
+            <input
+              className={styles.rowInput}
+              type="number"
+              placeholder={heightUnit === "cm" ? "175" : "69"}
+              value={heightValue}
+              onChange={(e) => setHeightValue(e.target.value)}
+            />
+            <select
+              className={styles.rowUnitSelect}
+              value={heightUnit}
+              onChange={(e) => handleHeightUnitChange(e.target.value)}
+            >
+              <option value="cm">cm</option>
+              <option value="in">in</option>
+            </select>
+          </div>
         </div>
         <div className={styles.listRow}>
-          <label className={styles.rowLabel}>Weight (kg)</label>
-          <input
-            className={styles.rowInput}
-            type="number"
-            placeholder="70"
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-          />
+          <label className={styles.rowLabel}>Weight</label>
+          <div className={styles.rowInputGroup}>
+            <input
+              className={styles.rowInput}
+              type="number"
+              placeholder={weightUnit === "kg" ? "70" : "154"}
+              value={weightValue}
+              onChange={(e) => setWeightValue(e.target.value)}
+            />
+            <select
+              className={styles.rowUnitSelect}
+              value={weightUnit}
+              onChange={(e) => handleWeightUnitChange(e.target.value)}
+            >
+              <option value="kg">kg</option>
+              <option value="lbs">lbs</option>
+            </select>
+          </div>
         </div>
         <div className={styles.listRow}>
           <label className={styles.rowLabel}>Activity Level</label>
@@ -245,7 +318,7 @@ export default function SettingsPage() {
       {/* BMR/TDEE Stat Card */}
       {currentBMR && currentTDEE && (
         <section className={styles.glowCard}>
-          <p className={styles.glowLabel}>BMR / TDEE</p>
+          <p className={styles.glowLabel}>BMR / TDEE*</p>
           <div className={styles.glowStats}>
             <span className={styles.glowStatValue}>
               {Math.round(currentBMR).toLocaleString()} kcal
@@ -255,6 +328,9 @@ export default function SettingsPage() {
             </span>
           </div>
           <p className={styles.glowStatHint}>Daily Estimate</p>
+          <p className={styles.glowStatFootnote}>
+            * Basal Metabolic Rate / Total Daily Energy Expenditure
+          </p>
         </section>
       )}
 
