@@ -1,5 +1,7 @@
 const BASE_URL = "https://world.openfoodfacts.org/cgi/search.pl";
 
+let indianFoodsCache = null;
+
 export async function searchFoods(query) {
   if (!query || query.trim().length < 2) return [];
 
@@ -27,6 +29,7 @@ export async function searchFoods(query) {
     .map((p) => ({
       name: p.product_name,
       brand: p.brands || "",
+      source: "open-food-facts",
       servingSize: p.serving_size || "100g",
       imageUrl: p.image_small_url || null,
       calories: Math.round(
@@ -45,6 +48,35 @@ export async function searchFoods(query) {
         Math.round((p.nutriments.fat_100g || p.nutriments.fat || 0) * 10) / 10,
     }))
     .filter((f) => f.calories > 0);
+}
+
+export async function loadIndianFoodsDB() {
+  if (indianFoodsCache) return indianFoodsCache;
+
+  const res = await fetch("/indian-foods.json");
+  if (!res.ok) throw new Error("Failed to load Indian foods");
+
+  const data = await res.json();
+  indianFoodsCache = Array.isArray(data) ? data : [];
+  return indianFoodsCache;
+}
+
+export async function searchIndianFoods(query) {
+  if (!query || query.trim().length < 2) return [];
+  try {
+    const foods = await loadIndianFoodsDB();
+    const q = query.trim().toLowerCase();
+    return foods
+      .filter((f) => f.name && f.name.toLowerCase().includes(q))
+      .map((food) => ({
+        ...food,
+        source: food.source || "indian-food-db",
+      }))
+      .slice(0, 30);
+  } catch (err) {
+    console.warn("Indian foods search failed", err);
+    return [];
+  }
 }
 
 // Debounce helper

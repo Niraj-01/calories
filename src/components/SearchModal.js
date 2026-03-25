@@ -3,7 +3,10 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useAuth } from "@/src/context/AuthContext";
-import { searchFoods } from "@/src/services/nutritionService";
+import {
+  searchFoods,
+  searchIndianFoods,
+} from "@/src/services/nutritionService";
 import { getMyFoods } from "@/src/services/firestoreService";
 import styles from "./SearchModal.module.css";
 
@@ -85,8 +88,11 @@ export default function SearchModal({ meal, onAdd, onClose }) {
       setLoading(true);
       setError(null);
       try {
-        const data = await searchFoods(q);
-        setResults(data);
+        const [indian, global] = await Promise.all([
+          searchIndianFoods(q),
+          searchFoods(q),
+        ]);
+        setResults([...indian, ...global]);
       } catch (err) {
         console.warn(err);
         setError("Search failed. Try again.");
@@ -209,9 +215,16 @@ export default function SearchModal({ meal, onAdd, onClose }) {
                 >
                   <div className={styles.resultInfo}>
                     <span className={styles.resultName}>{food.name}</span>
-                    {food.brand && (
-                      <span className={styles.resultBrand}>{food.brand}</span>
-                    )}
+                    <div className={styles.resultMeta}>
+                      {food.brand && (
+                        <span className={styles.resultBrand}>{food.brand}</span>
+                      )}
+                      <span className={styles.sourceBadge}>
+                        {food.source === "indian-food-db"
+                          ? "🇮🇳 Indian DB"
+                          : "🌐 Open Food Facts"}
+                      </span>
+                    </div>
                   </div>
                   <div className={styles.resultCals}>
                     <span className={styles.resultCalNum}>{food.calories}</span>

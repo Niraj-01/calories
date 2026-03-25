@@ -1,0 +1,222 @@
+[
+  {
+    "id": "ind-1",
+    "name": "Chapati",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 297,
+    "protein": 9.1,
+    "carbs": 46.4,
+    "fat": 7.5
+  },
+  {
+    "id": "ind-2",
+    "name": "Roti",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 264,
+    "protein": 8.2,
+    "carbs": 50.6,
+    "fat": 3.7
+  },
+  {
+    "id": "ind-3",
+    "name": "Plain Rice",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 130,
+    "protein": 2.7,
+    "carbs": 28.2,
+    "fat": 0.3
+  },
+  {
+    "id": "ind-4",
+    "name": "Jeera Rice",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 168,
+    "protein": 3.1,
+    "carbs": 28.4,
+    "fat": 4.8
+  },
+  {
+    "id": "ind-5",
+    "name": "Dal Tadka",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 152,
+    "protein": 7.2,
+    "carbs": 18.6,
+    "fat": 5.2
+  },
+  {
+    "id": "ind-6",
+    "name": "Rajma Curry",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 140,
+    "protein": 6.8,
+    "carbs": 19.1,
+    "fat": 4.0
+  },
+  {
+    "id": "ind-7",
+    "name": "Chole",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 164,
+    "protein": 7.9,
+    "carbs": 21.5,
+    "fat": 4.7
+  },
+  {
+    "id": "ind-8",
+    "name": "Paneer Butter Masala",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 265,
+    "protein": 9.4,
+    "carbs": 8.1,
+    "fat": 21.2
+  },
+  {
+    "id": "ind-9",
+    "name": "Palak Paneer",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 186,
+    "protein": 8.7,
+    "carbs": 7.9,
+    "fat": 13.4
+  },
+  {
+    "id": "ind-10",
+    "name": "Butter Chicken",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 237,
+    "protein": 15.6,
+    "carbs": 6.3,
+    "fat": 16.8
+  },
+  {
+    "id": "ind-11",
+    "name": "Chicken Curry",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 185,
+    "protein": 16.4,
+    "carbs": 5.8,
+    "fat": 10.2
+  },
+  {
+    "id": "ind-12",
+    "name": "Chicken Biryani",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 222,
+    "protein": 10.2,
+    "carbs": 25.9,
+    "fat": 8.7
+  },
+  {
+    "id": "ind-13",
+    "name": "Veg Biryani",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 176,
+    "protein": 4.1,
+    "carbs": 28.6,
+    "fat": 5.1
+  },
+  {
+    "id": "ind-14",
+    "name": "Idli",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 146,
+    "protein": 4.5,
+    "carbs": 28.0,
+    "fat": 1.1
+  },
+  {
+    "id": "ind-15",
+    "name": "Dosa",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 184,
+    "protein": 4.9,
+    "carbs": 30.8,
+    "fat": 4.2
+  },
+  {
+    "id": "ind-16",
+    "name": "Masala Dosa",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 211,
+    "protein": 5.6,
+    "carbs": 31.4,
+    "fat": 6.7
+  },
+  {
+    "id": "ind-17",
+    "name": "Poha",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 180,
+    "protein": 4.0,
+    "carbs": 31.2,
+    "fat": 4.8
+  },
+  {
+    "id": "ind-18",
+    "name": "Upma",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 176,
+    "protein": 4.7,
+    "carbs": 27.6,
+    "fat": 5.3
+  },
+  {
+    "id": "ind-19",
+    "name": "Samosa",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 308,
+    "protein": 5.0,
+    "carbs": 31.0,
+    "fat": 18.0
+  },
+  {
+    "id": "ind-20",
+    "name": "Aloo Paratha",
+    "brand": "Indian Food DB",
+    "source": "indian-food-db",
+    "servingSize": "100g",
+    "calories": 265,
+    "protein": 6.1,
+    "carbs": 34.7,
+    "fat": 10.6
+  }
+]

@@ -16,6 +16,7 @@
 # next.js
 /.next/
 /out/
+/.firebase/
 
 # production
 /build
@@ -23,6 +24,8 @@
 # misc
 .DS_Store
 *.pem
+.venv/
+/kaggle/
 
 # debug
 npm-debug.log*
