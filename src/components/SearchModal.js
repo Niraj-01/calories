@@ -3,11 +3,8 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useAuth } from "@/src/context/AuthContext";
-import {
-  searchFoods,
-  searchIndianFoods,
-} from "@/src/services/nutritionService";
 import { getMyFoods } from "@/src/services/firestoreService";
+import { resolveFood } from "@/src/services/foodDataService";
 import styles from "./SearchModal.module.css";
 
 const UNIT_FACTORS = {
@@ -88,11 +85,8 @@ export default function SearchModal({ meal, onAdd, onClose }) {
       setLoading(true);
       setError(null);
       try {
-        const [indian, global] = await Promise.all([
-          searchIndianFoods(q),
-          searchFoods(q),
-        ]);
-        setResults([...indian, ...global]);
+        const found = await resolveFood(q, { type: "search" });
+        setResults(found || []);
       } catch (err) {
         console.warn(err);
         setError("Search failed. Try again.");
@@ -108,8 +102,29 @@ export default function SearchModal({ meal, onAdd, onClose }) {
     handleSearch(val);
   };
 
+  const toStagedFood = (food) => {
+    const per100g = food.per_100g || {
+      calories: food.calories || 0,
+      protein: food.protein || 0,
+      carbs: food.carbs || 0,
+      fat: food.fat || 0,
+      fiber: food.fiber || 0,
+    };
+    const firstServing = food.common_servings?.[0];
+    return {
+      ...food,
+      per_100g: per100g,
+      defaultAmount:
+        (firstServing && firstServing.grams) ||
+        food.defaultAmount ||
+        food.servingAmount ||
+        100,
+      defaultUnit: food.defaultUnit || food.servingUnit || "g",
+    };
+  };
+
   const handleSelect = (food) => {
-    onAdd(food);
+    onAdd(toStagedFood(food));
   };
 
   const mealLabel = meal.charAt(0).toUpperCase() + meal.slice(1);
@@ -207,31 +222,37 @@ export default function SearchModal({ meal, onAdd, onClose }) {
                   </div>
                 )}
 
-              {results.map((food, i) => (
-                <button
-                  key={`${food.name}-${i}`}
-                  className={styles.resultItem}
-                  onClick={() => handleSelect(food)}
-                >
-                  <div className={styles.resultInfo}>
-                    <span className={styles.resultName}>{food.name}</span>
-                    <div className={styles.resultMeta}>
-                      {food.brand && (
-                        <span className={styles.resultBrand}>{food.brand}</span>
-                      )}
-                      <span className={styles.sourceBadge}>
-                        {food.source === "indian-food-db"
-                          ? "🇮🇳 Indian DB"
-                          : "🌐 Open Food Facts"}
-                      </span>
+              {results.map((food, i) => {
+                const per100g = food.per_100g || {
+                  calories: food.calories || 0,
+                  protein: food.protein || 0,
+                  carbs: food.carbs || 0,
+                  fat: food.fat || 0,
+                };
+                return (
+                  <button
+                    key={`${food.id || food.name}-${i}`}
+                    className={styles.resultItem}
+                    onClick={() => handleSelect(food)}
+                  >
+                    <div className={styles.resultInfo}>
+                      <span className={styles.resultName}>{food.name}</span>
+                      <div className={styles.resultMeta}>
+                        {food.brand && (
+                          <span className={styles.resultBrand}>{food.brand}</span>
+                        )}
+                        <span className={styles.sourceBadge}>
+                          {food.source === "local" ? "🏠 Local DB" : "🌐 Open Food Facts"}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div className={styles.resultCals}>
-                    <span className={styles.resultCalNum}>{food.calories}</span>
-                    <span className={styles.resultCalUnit}>kcal</span>
-                  </div>
-                </button>
-              ))}
+                    <div className={styles.resultCals}>
+                      <span className={styles.resultCalNum}>{per100g.calories}</span>
+                      <span className={styles.resultCalUnit}>kcal /100g</span>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </>
         )}

@@ -12,6 +12,7 @@ import {
   setWaterIntake,
   updateStreak,
 } from "@/src/services/firestoreService";
+import { scaleMacros } from "@/src/services/foodDataService";
 import CalorieRing from "@/src/components/CalorieRing";
 import MacroBar from "@/src/components/MacroBar";
 import MealSection from "@/src/components/MealSection";
@@ -81,25 +82,27 @@ export default function HomePage() {
   const handleAddFood = async (food, meal) => {
     if (!user) return;
     try {
+      const per100g = food.per_100g || {
+        calories: food.calories || 0,
+        protein: food.protein || 0,
+        carbs: food.carbs || 0,
+        fat: food.fat || 0,
+        fiber: food.fiber || 0,
+      };
+      const servingAmount = food.servingAmount || food.defaultAmount || 100;
+      const servingUnit = food.servingUnit || food.defaultUnit || "g";
+      const scaled = scaleMacros(per100g, servingAmount);
       const entry = {
         name: food.name,
         brand: food.brand || "",
-        calories: Math.round(
-          (food.calories * (food.servingAmount || 100)) / 100,
-        ),
-        protein:
-          Math.round(
-            ((food.protein * (food.servingAmount || 100)) / 100) * 10,
-          ) / 10,
-        carbs:
-          Math.round(((food.carbs * (food.servingAmount || 100)) / 100) * 10) /
-          10,
-        fat:
-          Math.round(((food.fat * (food.servingAmount || 100)) / 100) * 10) /
-          10,
+        calories: scaled.calories,
+        protein: scaled.protein,
+        carbs: scaled.carbs,
+        fat: scaled.fat,
         meal,
-        servingAmount: food.servingAmount || 100,
-        servingUnit: food.servingUnit || "g",
+        servingAmount,
+        servingUnit,
+        source: food.source,
       };
       const id = await addFoodEntry(user.uid, today, entry);
       setEntries((prev) => [...prev, { id, ...entry }]);
@@ -147,10 +150,23 @@ export default function HomePage() {
   });
 
   const handleStageFood = (food, targetMeal) => {
+    const per100g = food.per_100g || {
+      calories: food.calories || 0,
+      protein: food.protein || 0,
+      carbs: food.carbs || 0,
+      fat: food.fat || 0,
+      fiber: food.fiber || 0,
+    };
+    const defaultServing =
+      food.common_servings?.[0]?.grams ||
+      food.defaultAmount ||
+      food.servingAmount ||
+      100;
     const stagedFood = {
       ...food,
-      defaultAmount: food.defaultAmount || 100,
-      defaultUnit: food.defaultUnit || "g",
+      per_100g: per100g,
+      defaultAmount: defaultServing,
+      defaultUnit: food.defaultUnit || food.servingUnit || "g",
     };
     setFoodDetail({ food: stagedFood, meal: targetMeal });
     setSearchMeal(null);

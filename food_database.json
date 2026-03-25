@@ -1,0 +1,1795 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "total_items": 75,
+    "description": "Common diet & calorie-tracked foods with macros per 100g and common serving sizes",
+    "macros_unit": "grams",
+    "calories_unit": "kcal",
+    "categories": ["Protein", "Grains & Carbs", "Fruits", "Vegetables", "Dairy", "Fats & Oils", "Nuts & Seeds", "Legumes", "Beverages", "Snacks & Other"],
+    "diet_goals": ["fat_loss", "muscle_gain", "maintenance"],
+    "note": "All values are approximate. Cooked weights are used for cooked items. Raw weights for raw items."
+  },
+  "foods": [
+
+    {
+      "id": 1,
+      "name": "Chicken Breast",
+      "category": "Protein",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 165,
+        "protein": 31.0,
+        "carbs": 0.0,
+        "fat": 3.6,
+        "fiber": 0.0,
+        "sugar": 0.0,
+        "sodium_mg": 74
+      },
+      "common_servings": [
+        { "label": "Small piece (85g)", "grams": 85, "calories": 140, "protein": 26.4, "carbs": 0.0, "fat": 3.1, "fiber": 0.0 },
+        { "label": "1 serving (100g)", "grams": 100, "calories": 165, "protein": 31.0, "carbs": 0.0, "fat": 3.6, "fiber": 0.0 },
+        { "label": "Medium piece (150g)", "grams": 150, "calories": 248, "protein": 46.5, "carbs": 0.0, "fat": 5.4, "fiber": 0.0 },
+        { "label": "Large piece (200g)", "grams": 200, "calories": 330, "protein": 62.0, "carbs": 0.0, "fat": 7.2, "fiber": 0.0 },
+        { "label": "250g", "grams": 250, "calories": 413, "protein": 77.5, "carbs": 0.0, "fat": 9.0, "fiber": 0.0 },
+        { "label": "500g", "grams": 500, "calories": 825, "protein": 155.0, "carbs": 0.0, "fat": 18.0, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 2,
+      "name": "Egg (Whole)",
+      "category": "Protein",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 155,
+        "protein": 13.0,
+        "carbs": 1.1,
+        "fat": 11.0,
+        "fiber": 0.0,
+        "sugar": 1.1,
+        "sodium_mg": 124
+      },
+      "common_servings": [
+        { "label": "1 large egg (50g)", "grams": 50, "calories": 78, "protein": 6.5, "carbs": 0.6, "fat": 5.5, "fiber": 0.0 },
+        { "label": "2 large eggs (100g)", "grams": 100, "calories": 155, "protein": 13.0, "carbs": 1.1, "fat": 11.0, "fiber": 0.0 },
+        { "label": "3 large eggs (150g)", "grams": 150, "calories": 233, "protein": 19.5, "carbs": 1.7, "fat": 16.5, "fiber": 0.0 },
+        { "label": "4 large eggs (200g)", "grams": 200, "calories": 310, "protein": 26.0, "carbs": 2.2, "fat": 22.0, "fiber": 0.0 },
+        { "label": "250g", "grams": 250, "calories": 388, "protein": 32.5, "carbs": 2.8, "fat": 27.5, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 3,
+      "name": "Egg Whites",
+      "category": "Protein",
+      "diet_goal": ["fat_loss", "muscle_gain"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 52,
+        "protein": 10.9,
+        "carbs": 0.7,
+        "fat": 0.2,
+        "fiber": 0.0,
+        "sugar": 0.7,
+        "sodium_mg": 166
+      },
+      "common_servings": [
+        { "label": "1 egg white (33g)", "grams": 33, "calories": 17, "protein": 3.6, "carbs": 0.2, "fat": 0.1, "fiber": 0.0 },
+        { "label": "2 egg whites (66g)", "grams": 66, "calories": 34, "protein": 7.2, "carbs": 0.5, "fat": 0.1, "fiber": 0.0 },
+        { "label": "100g", "grams": 100, "calories": 52, "protein": 10.9, "carbs": 0.7, "fat": 0.2, "fiber": 0.0 },
+        { "label": "250g", "grams": 250, "calories": 130, "protein": 27.3, "carbs": 1.8, "fat": 0.5, "fiber": 0.0 },
+        { "label": "500g", "grams": 500, "calories": 260, "protein": 54.5, "carbs": 3.5, "fat": 1.0, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 4,
+      "name": "Tuna (Canned in Water)",
+      "category": "Protein",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "canned",
+      "barcode": null,
+      "per_100g": {
+        "calories": 116,
+        "protein": 25.5,
+        "carbs": 0.0,
+        "fat": 1.0,
+        "fiber": 0.0,
+        "sugar": 0.0,
+        "sodium_mg": 320
+      },
+      "common_servings": [
+        { "label": "1 can drained (85g)", "grams": 85, "calories": 99, "protein": 21.7, "carbs": 0.0, "fat": 0.9, "fiber": 0.0 },
+        { "label": "100g", "grams": 100, "calories": 116, "protein": 25.5, "carbs": 0.0, "fat": 1.0, "fiber": 0.0 },
+        { "label": "1 large can (150g)", "grams": 150, "calories": 174, "protein": 38.3, "carbs": 0.0, "fat": 1.5, "fiber": 0.0 },
+        { "label": "250g", "grams": 250, "calories": 290, "protein": 63.8, "carbs": 0.0, "fat": 2.5, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 5,
+      "name": "Salmon (Atlantic)",
+      "category": "Protein",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 208,
+        "protein": 20.4,
+        "carbs": 0.0,
+        "fat": 13.4,
+        "fiber": 0.0,
+        "sugar": 0.0,
+        "sodium_mg": 59
+      },
+      "common_servings": [
+        { "label": "1 fillet (100g)", "grams": 100, "calories": 208, "protein": 20.4, "carbs": 0.0, "fat": 13.4, "fiber": 0.0 },
+        { "label": "Medium fillet (150g)", "grams": 150, "calories": 312, "protein": 30.6, "carbs": 0.0, "fat": 20.1, "fiber": 0.0 },
+        { "label": "Large fillet (200g)", "grams": 200, "calories": 416, "protein": 40.8, "carbs": 0.0, "fat": 26.8, "fiber": 0.0 },
+        { "label": "250g", "grams": 250, "calories": 520, "protein": 51.0, "carbs": 0.0, "fat": 33.5, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 6,
+      "name": "Ground Beef (93% Lean)",
+      "category": "Protein",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 152,
+        "protein": 21.0,
+        "carbs": 0.0,
+        "fat": 7.2,
+        "fiber": 0.0,
+        "sugar": 0.0,
+        "sodium_mg": 72
+      },
+      "common_servings": [
+        { "label": "100g", "grams": 100, "calories": 152, "protein": 21.0, "carbs": 0.0, "fat": 7.2, "fiber": 0.0 },
+        { "label": "150g", "grams": 150, "calories": 228, "protein": 31.5, "carbs": 0.0, "fat": 10.8, "fiber": 0.0 },
+        { "label": "250g", "grams": 250, "calories": 380, "protein": 52.5, "carbs": 0.0, "fat": 18.0, "fiber": 0.0 },
+        { "label": "500g", "grams": 500, "calories": 760, "protein": 105.0, "carbs": 0.0, "fat": 36.0, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 7,
+      "name": "Turkey Breast",
+      "category": "Protein",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 135,
+        "protein": 30.0,
+        "carbs": 0.0,
+        "fat": 1.0,
+        "fiber": 0.0,
+        "sugar": 0.0,
+        "sodium_mg": 63
+      },
+      "common_servings": [
+        { "label": "1 slice (28g)", "grams": 28, "calories": 38, "protein": 8.4, "carbs": 0.0, "fat": 0.3, "fiber": 0.0 },
+        { "label": "100g", "grams": 100, "calories": 135, "protein": 30.0, "carbs": 0.0, "fat": 1.0, "fiber": 0.0 },
+        { "label": "150g", "grams": 150, "calories": 203, "protein": 45.0, "carbs": 0.0, "fat": 1.5, "fiber": 0.0 },
+        { "label": "250g", "grams": 250, "calories": 338, "protein": 75.0, "carbs": 0.0, "fat": 2.5, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 8,
+      "name": "Shrimp",
+      "category": "Protein",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 99,
+        "protein": 24.0,
+        "carbs": 0.2,
+        "fat": 0.3,
+        "fiber": 0.0,
+        "sugar": 0.0,
+        "sodium_mg": 111
+      },
+      "common_servings": [
+        { "label": "5 large shrimp (50g)", "grams": 50, "calories": 50, "protein": 12.0, "carbs": 0.1, "fat": 0.2, "fiber": 0.0 },
+        { "label": "100g", "grams": 100, "calories": 99, "protein": 24.0, "carbs": 0.2, "fat": 0.3, "fiber": 0.0 },
+        { "label": "150g", "grams": 150, "calories": 149, "protein": 36.0, "carbs": 0.3, "fat": 0.5, "fiber": 0.0 },
+        { "label": "250g", "grams": 250, "calories": 248, "protein": 60.0, "carbs": 0.5, "fat": 0.8, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 9,
+      "name": "Greek Yogurt (Plain, Non-fat)",
+      "category": "Protein",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 59,
+        "protein": 10.2,
+        "carbs": 3.6,
+        "fat": 0.4,
+        "fiber": 0.0,
+        "sugar": 3.6,
+        "sodium_mg": 36
+      },
+      "common_servings": [
+        { "label": "Small cup (100g)", "grams": 100, "calories": 59, "protein": 10.2, "carbs": 3.6, "fat": 0.4, "fiber": 0.0 },
+        { "label": "Standard cup (170g)", "grams": 170, "calories": 100, "protein": 17.3, "carbs": 6.1, "fat": 0.7, "fiber": 0.0 },
+        { "label": "Large cup (227g)", "grams": 227, "calories": 134, "protein": 23.2, "carbs": 8.2, "fat": 0.9, "fiber": 0.0 },
+        { "label": "250g", "grams": 250, "calories": 148, "protein": 25.5, "carbs": 9.0, "fat": 1.0, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 10,
+      "name": "Cottage Cheese (Low-fat)",
+      "category": "Protein",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 72,
+        "protein": 12.4,
+        "carbs": 4.0,
+        "fat": 1.0,
+        "fiber": 0.0,
+        "sugar": 2.7,
+        "sodium_mg": 372
+      },
+      "common_servings": [
+        { "label": "Half cup (113g)", "grams": 113, "calories": 81, "protein": 14.0, "carbs": 4.5, "fat": 1.1, "fiber": 0.0 },
+        { "label": "1 cup (226g)", "grams": 226, "calories": 163, "protein": 28.0, "carbs": 9.0, "fat": 2.3, "fiber": 0.0 },
+        { "label": "250g", "grams": 250, "calories": 180, "protein": 31.0, "carbs": 10.0, "fat": 2.5, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 11,
+      "name": "Tofu (Firm)",
+      "category": "Protein",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 76,
+        "protein": 8.0,
+        "carbs": 1.9,
+        "fat": 4.2,
+        "fiber": 0.3,
+        "sugar": 0.5,
+        "sodium_mg": 7
+      },
+      "common_servings": [
+        { "label": "Half block (100g)", "grams": 100, "calories": 76, "protein": 8.0, "carbs": 1.9, "fat": 4.2, "fiber": 0.3 },
+        { "label": "1 block (200g)", "grams": 200, "calories": 152, "protein": 16.0, "carbs": 3.8, "fat": 8.4, "fiber": 0.6 },
+        { "label": "250g", "grams": 250, "calories": 190, "protein": 20.0, "carbs": 4.8, "fat": 10.5, "fiber": 0.8 }
+      ]
+    },
+
+    {
+      "id": 12,
+      "name": "Whey Protein Powder",
+      "category": "Protein",
+      "diet_goal": ["fat_loss", "muscle_gain"],
+      "state": "powder",
+      "barcode": null,
+      "per_100g": {
+        "calories": 370,
+        "protein": 80.0,
+        "carbs": 6.0,
+        "fat": 5.0,
+        "fiber": 0.0,
+        "sugar": 4.0,
+        "sodium_mg": 200
+      },
+      "common_servings": [
+        { "label": "1 scoop (30g)", "grams": 30, "calories": 111, "protein": 24.0, "carbs": 1.8, "fat": 1.5, "fiber": 0.0 },
+        { "label": "1.5 scoops (45g)", "grams": 45, "calories": 167, "protein": 36.0, "carbs": 2.7, "fat": 2.3, "fiber": 0.0 },
+        { "label": "100g", "grams": 100, "calories": 370, "protein": 80.0, "carbs": 6.0, "fat": 5.0, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 13,
+      "name": "Tilapia",
+      "category": "Protein",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 128,
+        "protein": 26.0,
+        "carbs": 0.0,
+        "fat": 2.7,
+        "fiber": 0.0,
+        "sugar": 0.0,
+        "sodium_mg": 52
+      },
+      "common_servings": [
+        { "label": "1 fillet (100g)", "grams": 100, "calories": 128, "protein": 26.0, "carbs": 0.0, "fat": 2.7, "fiber": 0.0 },
+        { "label": "Medium fillet (150g)", "grams": 150, "calories": 192, "protein": 39.0, "carbs": 0.0, "fat": 4.1, "fiber": 0.0 },
+        { "label": "250g", "grams": 250, "calories": 320, "protein": 65.0, "carbs": 0.0, "fat": 6.8, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 14,
+      "name": "Beef Sirloin Steak",
+      "category": "Protein",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 207,
+        "protein": 26.0,
+        "carbs": 0.0,
+        "fat": 11.0,
+        "fiber": 0.0,
+        "sugar": 0.0,
+        "sodium_mg": 57
+      },
+      "common_servings": [
+        { "label": "100g", "grams": 100, "calories": 207, "protein": 26.0, "carbs": 0.0, "fat": 11.0, "fiber": 0.0 },
+        { "label": "150g", "grams": 150, "calories": 311, "protein": 39.0, "carbs": 0.0, "fat": 16.5, "fiber": 0.0 },
+        { "label": "250g (restaurant size)", "grams": 250, "calories": 518, "protein": 65.0, "carbs": 0.0, "fat": 27.5, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 15,
+      "name": "Pork Tenderloin",
+      "category": "Protein",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 143,
+        "protein": 26.0,
+        "carbs": 0.0,
+        "fat": 3.5,
+        "fiber": 0.0,
+        "sugar": 0.0,
+        "sodium_mg": 62
+      },
+      "common_servings": [
+        { "label": "100g", "grams": 100, "calories": 143, "protein": 26.0, "carbs": 0.0, "fat": 3.5, "fiber": 0.0 },
+        { "label": "150g", "grams": 150, "calories": 215, "protein": 39.0, "carbs": 0.0, "fat": 5.3, "fiber": 0.0 },
+        { "label": "250g", "grams": 250, "calories": 358, "protein": 65.0, "carbs": 0.0, "fat": 8.8, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 16,
+      "name": "White Rice",
+      "category": "Grains & Carbs",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 130,
+        "protein": 2.7,
+        "carbs": 28.0,
+        "fat": 0.3,
+        "fiber": 0.4,
+        "sugar": 0.0,
+        "sodium_mg": 1
+      },
+      "common_servings": [
+        { "label": "Half cup cooked (90g)", "grams": 90, "calories": 117, "protein": 2.4, "carbs": 25.2, "fat": 0.3, "fiber": 0.4 },
+        { "label": "1 cup cooked (186g)", "grams": 186, "calories": 242, "protein": 5.0, "carbs": 52.1, "fat": 0.6, "fiber": 0.7 },
+        { "label": "100g", "grams": 100, "calories": 130, "protein": 2.7, "carbs": 28.0, "fat": 0.3, "fiber": 0.4 },
+        { "label": "150g", "grams": 150, "calories": 195, "protein": 4.1, "carbs": 42.0, "fat": 0.5, "fiber": 0.6 },
+        { "label": "250g", "grams": 250, "calories": 325, "protein": 6.8, "carbs": 70.0, "fat": 0.8, "fiber": 1.0 },
+        { "label": "500g", "grams": 500, "calories": 650, "protein": 13.5, "carbs": 140.0, "fat": 1.5, "fiber": 2.0 }
+      ]
+    },
+
+    {
+      "id": 17,
+      "name": "Brown Rice",
+      "category": "Grains & Carbs",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 111,
+        "protein": 2.6,
+        "carbs": 23.0,
+        "fat": 0.9,
+        "fiber": 1.8,
+        "sugar": 0.4,
+        "sodium_mg": 5
+      },
+      "common_servings": [
+        { "label": "Half cup cooked (98g)", "grams": 98, "calories": 109, "protein": 2.5, "carbs": 22.5, "fat": 0.9, "fiber": 1.8 },
+        { "label": "1 cup cooked (195g)", "grams": 195, "calories": 216, "protein": 5.1, "carbs": 44.9, "fat": 1.8, "fiber": 3.5 },
+        { "label": "100g", "grams": 100, "calories": 111, "protein": 2.6, "carbs": 23.0, "fat": 0.9, "fiber": 1.8 },
+        { "label": "150g", "grams": 150, "calories": 167, "protein": 3.9, "carbs": 34.5, "fat": 1.4, "fiber": 2.7 },
+        { "label": "250g", "grams": 250, "calories": 278, "protein": 6.5, "carbs": 57.5, "fat": 2.3, "fiber": 4.5 }
+      ]
+    },
+
+    {
+      "id": 18,
+      "name": "Oats (Rolled / Old Fashioned)",
+      "category": "Grains & Carbs",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "dry",
+      "barcode": null,
+      "per_100g": {
+        "calories": 389,
+        "protein": 16.9,
+        "carbs": 66.0,
+        "fat": 6.9,
+        "fiber": 10.6,
+        "sugar": 0.0,
+        "sodium_mg": 2
+      },
+      "common_servings": [
+        { "label": "Quarter cup dry (20g)", "grams": 20, "calories": 78, "protein": 3.4, "carbs": 13.2, "fat": 1.4, "fiber": 2.1 },
+        { "label": "Half cup dry (40g)", "grams": 40, "calories": 156, "protein": 6.8, "carbs": 26.4, "fat": 2.8, "fiber": 4.2 },
+        { "label": "1 cup dry (80g)", "grams": 80, "calories": 311, "protein": 13.5, "carbs": 52.8, "fat": 5.5, "fiber": 8.5 },
+        { "label": "100g", "grams": 100, "calories": 389, "protein": 16.9, "carbs": 66.0, "fat": 6.9, "fiber": 10.6 }
+      ]
+    },
+
+    {
+      "id": 19,
+      "name": "White Bread",
+      "category": "Grains & Carbs",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 265,
+        "protein": 9.0,
+        "carbs": 49.0,
+        "fat": 3.2,
+        "fiber": 2.7,
+        "sugar": 5.0,
+        "sodium_mg": 490
+      },
+      "common_servings": [
+        { "label": "1 slice (28g)", "grams": 28, "calories": 74, "protein": 2.5, "carbs": 13.7, "fat": 0.9, "fiber": 0.8 },
+        { "label": "2 slices (56g)", "grams": 56, "calories": 148, "protein": 5.0, "carbs": 27.4, "fat": 1.8, "fiber": 1.5 },
+        { "label": "100g", "grams": 100, "calories": 265, "protein": 9.0, "carbs": 49.0, "fat": 3.2, "fiber": 2.7 }
+      ]
+    },
+
+    {
+      "id": 20,
+      "name": "Whole Wheat Bread",
+      "category": "Grains & Carbs",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 247,
+        "protein": 13.0,
+        "carbs": 41.0,
+        "fat": 4.2,
+        "fiber": 6.0,
+        "sugar": 5.0,
+        "sodium_mg": 400
+      },
+      "common_servings": [
+        { "label": "1 slice (28g)", "grams": 28, "calories": 69, "protein": 3.6, "carbs": 11.5, "fat": 1.2, "fiber": 1.7 },
+        { "label": "2 slices (56g)", "grams": 56, "calories": 138, "protein": 7.3, "carbs": 23.0, "fat": 2.4, "fiber": 3.4 },
+        { "label": "100g", "grams": 100, "calories": 247, "protein": 13.0, "carbs": 41.0, "fat": 4.2, "fiber": 6.0 }
+      ]
+    },
+
+    {
+      "id": 21,
+      "name": "Pasta (Spaghetti / Penne)",
+      "category": "Grains & Carbs",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 131,
+        "protein": 5.0,
+        "carbs": 25.0,
+        "fat": 1.1,
+        "fiber": 1.8,
+        "sugar": 0.6,
+        "sodium_mg": 1
+      },
+      "common_servings": [
+        { "label": "Half cup cooked (70g)", "grams": 70, "calories": 92, "protein": 3.5, "carbs": 17.5, "fat": 0.8, "fiber": 1.3 },
+        { "label": "1 cup cooked (140g)", "grams": 140, "calories": 183, "protein": 7.0, "carbs": 35.0, "fat": 1.5, "fiber": 2.5 },
+        { "label": "100g", "grams": 100, "calories": 131, "protein": 5.0, "carbs": 25.0, "fat": 1.1, "fiber": 1.8 },
+        { "label": "150g", "grams": 150, "calories": 197, "protein": 7.5, "carbs": 37.5, "fat": 1.7, "fiber": 2.7 },
+        { "label": "250g", "grams": 250, "calories": 328, "protein": 12.5, "carbs": 62.5, "fat": 2.8, "fiber": 4.5 }
+      ]
+    },
+
+    {
+      "id": 22,
+      "name": "Sweet Potato",
+      "category": "Grains & Carbs",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 86,
+        "protein": 1.6,
+        "carbs": 20.0,
+        "fat": 0.1,
+        "fiber": 3.0,
+        "sugar": 4.2,
+        "sodium_mg": 36
+      },
+      "common_servings": [
+        { "label": "Small (100g)", "grams": 100, "calories": 86, "protein": 1.6, "carbs": 20.0, "fat": 0.1, "fiber": 3.0 },
+        { "label": "Medium (150g)", "grams": 150, "calories": 129, "protein": 2.4, "carbs": 30.0, "fat": 0.2, "fiber": 4.5 },
+        { "label": "Large (200g)", "grams": 200, "calories": 172, "protein": 3.2, "carbs": 40.0, "fat": 0.2, "fiber": 6.0 },
+        { "label": "250g", "grams": 250, "calories": 215, "protein": 4.0, "carbs": 50.0, "fat": 0.3, "fiber": 7.5 }
+      ]
+    },
+
+    {
+      "id": 23,
+      "name": "Potato (White, Boiled)",
+      "category": "Grains & Carbs",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 87,
+        "protein": 1.9,
+        "carbs": 20.0,
+        "fat": 0.1,
+        "fiber": 1.8,
+        "sugar": 0.9,
+        "sodium_mg": 5
+      },
+      "common_servings": [
+        { "label": "Small (100g)", "grams": 100, "calories": 87, "protein": 1.9, "carbs": 20.0, "fat": 0.1, "fiber": 1.8 },
+        { "label": "Medium (150g)", "grams": 150, "calories": 131, "protein": 2.9, "carbs": 30.0, "fat": 0.2, "fiber": 2.7 },
+        { "label": "Large (213g)", "grams": 213, "calories": 185, "protein": 4.0, "carbs": 42.6, "fat": 0.2, "fiber": 3.8 },
+        { "label": "250g", "grams": 250, "calories": 218, "protein": 4.8, "carbs": 50.0, "fat": 0.3, "fiber": 4.5 }
+      ]
+    },
+
+    {
+      "id": 24,
+      "name": "Quinoa",
+      "category": "Grains & Carbs",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 120,
+        "protein": 4.4,
+        "carbs": 21.3,
+        "fat": 1.9,
+        "fiber": 2.8,
+        "sugar": 0.9,
+        "sodium_mg": 7
+      },
+      "common_servings": [
+        { "label": "Half cup cooked (93g)", "grams": 93, "calories": 112, "protein": 4.1, "carbs": 19.8, "fat": 1.8, "fiber": 2.6 },
+        { "label": "1 cup cooked (185g)", "grams": 185, "calories": 222, "protein": 8.1, "carbs": 39.4, "fat": 3.5, "fiber": 5.2 },
+        { "label": "100g", "grams": 100, "calories": 120, "protein": 4.4, "carbs": 21.3, "fat": 1.9, "fiber": 2.8 },
+        { "label": "250g", "grams": 250, "calories": 300, "protein": 11.0, "carbs": 53.3, "fat": 4.8, "fiber": 7.0 }
+      ]
+    },
+
+    {
+      "id": 25,
+      "name": "Tortilla (Corn)",
+      "category": "Grains & Carbs",
+      "diet_goal": ["maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 218,
+        "protein": 5.7,
+        "carbs": 46.0,
+        "fat": 2.9,
+        "fiber": 6.6,
+        "sugar": 0.6,
+        "sodium_mg": 34
+      },
+      "common_servings": [
+        { "label": "1 small tortilla (26g)", "grams": 26, "calories": 57, "protein": 1.5, "carbs": 12.0, "fat": 0.8, "fiber": 1.7 },
+        { "label": "2 tortillas (52g)", "grams": 52, "calories": 113, "protein": 3.0, "carbs": 23.9, "fat": 1.5, "fiber": 3.4 },
+        { "label": "100g", "grams": 100, "calories": 218, "protein": 5.7, "carbs": 46.0, "fat": 2.9, "fiber": 6.6 }
+      ]
+    },
+
+    {
+      "id": 26,
+      "name": "Banana",
+      "category": "Fruits",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 89,
+        "protein": 1.1,
+        "carbs": 23.0,
+        "fat": 0.3,
+        "fiber": 2.6,
+        "sugar": 12.0,
+        "sodium_mg": 1
+      },
+      "common_servings": [
+        { "label": "Small banana (90g)", "grams": 90, "calories": 80, "protein": 1.0, "carbs": 20.7, "fat": 0.3, "fiber": 2.3 },
+        { "label": "Medium banana (118g)", "grams": 118, "calories": 105, "protein": 1.3, "carbs": 27.1, "fat": 0.4, "fiber": 3.1 },
+        { "label": "Large banana (136g)", "grams": 136, "calories": 121, "protein": 1.5, "carbs": 31.3, "fat": 0.4, "fiber": 3.5 },
+        { "label": "100g", "grams": 100, "calories": 89, "protein": 1.1, "carbs": 23.0, "fat": 0.3, "fiber": 2.6 },
+        { "label": "250g", "grams": 250, "calories": 223, "protein": 2.8, "carbs": 57.5, "fat": 0.8, "fiber": 6.5 }
+      ]
+    },
+
+    {
+      "id": 27,
+      "name": "Apple",
+      "category": "Fruits",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 52,
+        "protein": 0.3,
+        "carbs": 13.8,
+        "fat": 0.2,
+        "fiber": 2.4,
+        "sugar": 10.4,
+        "sodium_mg": 1
+      },
+      "common_servings": [
+        { "label": "Small apple (149g)", "grams": 149, "calories": 77, "protein": 0.4, "carbs": 20.6, "fat": 0.3, "fiber": 3.6 },
+        { "label": "Medium apple (182g)", "grams": 182, "calories": 95, "protein": 0.5, "carbs": 25.1, "fat": 0.4, "fiber": 4.4 },
+        { "label": "100g", "grams": 100, "calories": 52, "protein": 0.3, "carbs": 13.8, "fat": 0.2, "fiber": 2.4 },
+        { "label": "250g", "grams": 250, "calories": 130, "protein": 0.8, "carbs": 34.5, "fat": 0.5, "fiber": 6.0 }
+      ]
+    },
+
+    {
+      "id": 28,
+      "name": "Orange",
+      "category": "Fruits",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 47,
+        "protein": 0.9,
+        "carbs": 11.8,
+        "fat": 0.1,
+        "fiber": 2.4,
+        "sugar": 9.4,
+        "sodium_mg": 0
+      },
+      "common_servings": [
+        { "label": "Small orange (96g)", "grams": 96, "calories": 45, "protein": 0.9, "carbs": 11.3, "fat": 0.1, "fiber": 2.3 },
+        { "label": "Medium orange (131g)", "grams": 131, "calories": 62, "protein": 1.2, "carbs": 15.5, "fat": 0.2, "fiber": 3.1 },
+        { "label": "100g", "grams": 100, "calories": 47, "protein": 0.9, "carbs": 11.8, "fat": 0.1, "fiber": 2.4 },
+        { "label": "250g", "grams": 250, "calories": 118, "protein": 2.3, "carbs": 29.5, "fat": 0.3, "fiber": 6.0 }
+      ]
+    },
+
+    {
+      "id": 29,
+      "name": "Blueberries",
+      "category": "Fruits",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 57,
+        "protein": 0.7,
+        "carbs": 14.5,
+        "fat": 0.3,
+        "fiber": 2.4,
+        "sugar": 10.0,
+        "sodium_mg": 1
+      },
+      "common_servings": [
+        { "label": "Half cup (74g)", "grams": 74, "calories": 42, "protein": 0.5, "carbs": 10.7, "fat": 0.2, "fiber": 1.8 },
+        { "label": "1 cup (148g)", "grams": 148, "calories": 84, "protein": 1.1, "carbs": 21.5, "fat": 0.5, "fiber": 3.6 },
+        { "label": "100g", "grams": 100, "calories": 57, "protein": 0.7, "carbs": 14.5, "fat": 0.3, "fiber": 2.4 },
+        { "label": "250g", "grams": 250, "calories": 143, "protein": 1.8, "carbs": 36.3, "fat": 0.8, "fiber": 6.0 }
+      ]
+    },
+
+    {
+      "id": 30,
+      "name": "Strawberries",
+      "category": "Fruits",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 32,
+        "protein": 0.7,
+        "carbs": 7.7,
+        "fat": 0.3,
+        "fiber": 2.0,
+        "sugar": 4.9,
+        "sodium_mg": 1
+      },
+      "common_servings": [
+        { "label": "Half cup (76g)", "grams": 76, "calories": 24, "protein": 0.5, "carbs": 5.9, "fat": 0.2, "fiber": 1.5 },
+        { "label": "1 cup (152g)", "grams": 152, "calories": 49, "protein": 1.1, "carbs": 11.7, "fat": 0.5, "fiber": 3.0 },
+        { "label": "100g", "grams": 100, "calories": 32, "protein": 0.7, "carbs": 7.7, "fat": 0.3, "fiber": 2.0 },
+        { "label": "250g", "grams": 250, "calories": 80, "protein": 1.8, "carbs": 19.3, "fat": 0.8, "fiber": 5.0 }
+      ]
+    },
+
+    {
+      "id": 31,
+      "name": "Mango",
+      "category": "Fruits",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 60,
+        "protein": 0.8,
+        "carbs": 15.0,
+        "fat": 0.4,
+        "fiber": 1.6,
+        "sugar": 13.7,
+        "sodium_mg": 1
+      },
+      "common_servings": [
+        { "label": "Half cup diced (83g)", "grams": 83, "calories": 50, "protein": 0.7, "carbs": 12.5, "fat": 0.3, "fiber": 1.3 },
+        { "label": "1 cup diced (165g)", "grams": 165, "calories": 99, "protein": 1.3, "carbs": 24.8, "fat": 0.7, "fiber": 2.6 },
+        { "label": "100g", "grams": 100, "calories": 60, "protein": 0.8, "carbs": 15.0, "fat": 0.4, "fiber": 1.6 },
+        { "label": "250g", "grams": 250, "calories": 150, "protein": 2.0, "carbs": 37.5, "fat": 1.0, "fiber": 4.0 }
+      ]
+    },
+
+    {
+      "id": 32,
+      "name": "Watermelon",
+      "category": "Fruits",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 30,
+        "protein": 0.6,
+        "carbs": 7.6,
+        "fat": 0.2,
+        "fiber": 0.4,
+        "sugar": 6.2,
+        "sodium_mg": 1
+      },
+      "common_servings": [
+        { "label": "1 cup diced (152g)", "grams": 152, "calories": 46, "protein": 0.9, "carbs": 11.6, "fat": 0.3, "fiber": 0.6 },
+        { "label": "100g", "grams": 100, "calories": 30, "protein": 0.6, "carbs": 7.6, "fat": 0.2, "fiber": 0.4 },
+        { "label": "250g", "grams": 250, "calories": 75, "protein": 1.5, "carbs": 19.0, "fat": 0.5, "fiber": 1.0 },
+        { "label": "500g (large slice)", "grams": 500, "calories": 150, "protein": 3.0, "carbs": 38.0, "fat": 1.0, "fiber": 2.0 }
+      ]
+    },
+
+    {
+      "id": 33,
+      "name": "Broccoli",
+      "category": "Vegetables",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 35,
+        "protein": 2.4,
+        "carbs": 7.2,
+        "fat": 0.4,
+        "fiber": 3.3,
+        "sugar": 1.7,
+        "sodium_mg": 41
+      },
+      "common_servings": [
+        { "label": "Half cup (78g)", "grams": 78, "calories": 27, "protein": 1.9, "carbs": 5.6, "fat": 0.3, "fiber": 2.6 },
+        { "label": "1 cup (156g)", "grams": 156, "calories": 55, "protein": 3.7, "carbs": 11.2, "fat": 0.6, "fiber": 5.1 },
+        { "label": "100g", "grams": 100, "calories": 35, "protein": 2.4, "carbs": 7.2, "fat": 0.4, "fiber": 3.3 },
+        { "label": "250g", "grams": 250, "calories": 88, "protein": 6.0, "carbs": 18.0, "fat": 1.0, "fiber": 8.3 }
+      ]
+    },
+
+    {
+      "id": 34,
+      "name": "Spinach (Raw)",
+      "category": "Vegetables",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 23,
+        "protein": 2.9,
+        "carbs": 3.6,
+        "fat": 0.4,
+        "fiber": 2.2,
+        "sugar": 0.4,
+        "sodium_mg": 79
+      },
+      "common_servings": [
+        { "label": "1 cup raw (30g)", "grams": 30, "calories": 7, "protein": 0.9, "carbs": 1.1, "fat": 0.1, "fiber": 0.7 },
+        { "label": "2 cups raw (60g)", "grams": 60, "calories": 14, "protein": 1.7, "carbs": 2.2, "fat": 0.2, "fiber": 1.3 },
+        { "label": "100g", "grams": 100, "calories": 23, "protein": 2.9, "carbs": 3.6, "fat": 0.4, "fiber": 2.2 },
+        { "label": "250g", "grams": 250, "calories": 58, "protein": 7.3, "carbs": 9.0, "fat": 1.0, "fiber": 5.5 }
+      ]
+    },
+
+    {
+      "id": 35,
+      "name": "Romaine Lettuce",
+      "category": "Vegetables",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 17,
+        "protein": 1.2,
+        "carbs": 3.3,
+        "fat": 0.3,
+        "fiber": 2.1,
+        "sugar": 1.2,
+        "sodium_mg": 8
+      },
+      "common_servings": [
+        { "label": "1 cup shredded (47g)", "grams": 47, "calories": 8, "protein": 0.6, "carbs": 1.6, "fat": 0.1, "fiber": 1.0 },
+        { "label": "100g", "grams": 100, "calories": 17, "protein": 1.2, "carbs": 3.3, "fat": 0.3, "fiber": 2.1 },
+        { "label": "250g (large salad base)", "grams": 250, "calories": 43, "protein": 3.0, "carbs": 8.3, "fat": 0.8, "fiber": 5.3 }
+      ]
+    },
+
+    {
+      "id": 36,
+      "name": "Cucumber",
+      "category": "Vegetables",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 15,
+        "protein": 0.7,
+        "carbs": 3.6,
+        "fat": 0.1,
+        "fiber": 0.5,
+        "sugar": 1.7,
+        "sodium_mg": 2
+      },
+      "common_servings": [
+        { "label": "Half cucumber (150g)", "grams": 150, "calories": 23, "protein": 1.1, "carbs": 5.4, "fat": 0.2, "fiber": 0.8 },
+        { "label": "1 whole cucumber (301g)", "grams": 301, "calories": 45, "protein": 2.1, "carbs": 10.8, "fat": 0.3, "fiber": 1.5 },
+        { "label": "100g", "grams": 100, "calories": 15, "protein": 0.7, "carbs": 3.6, "fat": 0.1, "fiber": 0.5 },
+        { "label": "250g", "grams": 250, "calories": 38, "protein": 1.8, "carbs": 9.0, "fat": 0.3, "fiber": 1.3 }
+      ]
+    },
+
+    {
+      "id": 37,
+      "name": "Tomato",
+      "category": "Vegetables",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 18,
+        "protein": 0.9,
+        "carbs": 3.9,
+        "fat": 0.2,
+        "fiber": 1.2,
+        "sugar": 2.6,
+        "sodium_mg": 5
+      },
+      "common_servings": [
+        { "label": "Small tomato (91g)", "grams": 91, "calories": 16, "protein": 0.8, "carbs": 3.5, "fat": 0.2, "fiber": 1.1 },
+        { "label": "Medium tomato (123g)", "grams": 123, "calories": 22, "protein": 1.1, "carbs": 4.8, "fat": 0.3, "fiber": 1.5 },
+        { "label": "100g", "grams": 100, "calories": 18, "protein": 0.9, "carbs": 3.9, "fat": 0.2, "fiber": 1.2 },
+        { "label": "250g", "grams": 250, "calories": 45, "protein": 2.3, "carbs": 9.8, "fat": 0.5, "fiber": 3.0 }
+      ]
+    },
+
+    {
+      "id": 38,
+      "name": "Carrot",
+      "category": "Vegetables",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 41,
+        "protein": 0.9,
+        "carbs": 9.6,
+        "fat": 0.2,
+        "fiber": 2.8,
+        "sugar": 4.7,
+        "sodium_mg": 69
+      },
+      "common_servings": [
+        { "label": "1 medium carrot (61g)", "grams": 61, "calories": 25, "protein": 0.5, "carbs": 5.9, "fat": 0.1, "fiber": 1.7 },
+        { "label": "1 cup sliced (122g)", "grams": 122, "calories": 50, "protein": 1.1, "carbs": 11.7, "fat": 0.3, "fiber": 3.4 },
+        { "label": "100g", "grams": 100, "calories": 41, "protein": 0.9, "carbs": 9.6, "fat": 0.2, "fiber": 2.8 },
+        { "label": "250g", "grams": 250, "calories": 103, "protein": 2.3, "carbs": 24.0, "fat": 0.5, "fiber": 7.0 }
+      ]
+    },
+
+    {
+      "id": 39,
+      "name": "Bell Pepper",
+      "category": "Vegetables",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 31,
+        "protein": 1.0,
+        "carbs": 6.0,
+        "fat": 0.3,
+        "fiber": 2.1,
+        "sugar": 4.2,
+        "sodium_mg": 4
+      },
+      "common_servings": [
+        { "label": "Half pepper (75g)", "grams": 75, "calories": 23, "protein": 0.8, "carbs": 4.5, "fat": 0.2, "fiber": 1.6 },
+        { "label": "1 medium pepper (119g)", "grams": 119, "calories": 37, "protein": 1.2, "carbs": 7.1, "fat": 0.4, "fiber": 2.5 },
+        { "label": "100g", "grams": 100, "calories": 31, "protein": 1.0, "carbs": 6.0, "fat": 0.3, "fiber": 2.1 },
+        { "label": "250g", "grams": 250, "calories": 78, "protein": 2.5, "carbs": 15.0, "fat": 0.8, "fiber": 5.3 }
+      ]
+    },
+
+    {
+      "id": 40,
+      "name": "Zucchini",
+      "category": "Vegetables",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 17,
+        "protein": 1.2,
+        "carbs": 3.1,
+        "fat": 0.3,
+        "fiber": 1.0,
+        "sugar": 2.5,
+        "sodium_mg": 8
+      },
+      "common_servings": [
+        { "label": "1 medium zucchini (196g)", "grams": 196, "calories": 33, "protein": 2.4, "carbs": 6.1, "fat": 0.6, "fiber": 2.0 },
+        { "label": "100g", "grams": 100, "calories": 17, "protein": 1.2, "carbs": 3.1, "fat": 0.3, "fiber": 1.0 },
+        { "label": "250g", "grams": 250, "calories": 43, "protein": 3.0, "carbs": 7.8, "fat": 0.8, "fiber": 2.5 }
+      ]
+    },
+
+    {
+      "id": 41,
+      "name": "Cauliflower",
+      "category": "Vegetables",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 25,
+        "protein": 1.9,
+        "carbs": 5.0,
+        "fat": 0.3,
+        "fiber": 2.0,
+        "sugar": 1.9,
+        "sodium_mg": 30
+      },
+      "common_servings": [
+        { "label": "1 cup florets (100g)", "grams": 100, "calories": 25, "protein": 1.9, "carbs": 5.0, "fat": 0.3, "fiber": 2.0 },
+        { "label": "250g", "grams": 250, "calories": 63, "protein": 4.8, "carbs": 12.5, "fat": 0.8, "fiber": 5.0 },
+        { "label": "1 head (588g)", "grams": 588, "calories": 147, "protein": 11.2, "carbs": 29.4, "fat": 1.8, "fiber": 11.8 }
+      ]
+    },
+
+    {
+      "id": 42,
+      "name": "Green Beans",
+      "category": "Vegetables",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 31,
+        "protein": 1.8,
+        "carbs": 7.1,
+        "fat": 0.2,
+        "fiber": 3.4,
+        "sugar": 3.3,
+        "sodium_mg": 1
+      },
+      "common_servings": [
+        { "label": "Half cup (62g)", "grams": 62, "calories": 19, "protein": 1.1, "carbs": 4.4, "fat": 0.1, "fiber": 2.1 },
+        { "label": "1 cup (125g)", "grams": 125, "calories": 39, "protein": 2.3, "carbs": 8.9, "fat": 0.3, "fiber": 4.3 },
+        { "label": "100g", "grams": 100, "calories": 31, "protein": 1.8, "carbs": 7.1, "fat": 0.2, "fiber": 3.4 },
+        { "label": "250g", "grams": 250, "calories": 78, "protein": 4.5, "carbs": 17.8, "fat": 0.5, "fiber": 8.5 }
+      ]
+    },
+
+    {
+      "id": 43,
+      "name": "Whole Milk",
+      "category": "Dairy",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "liquid",
+      "barcode": null,
+      "per_100g": {
+        "calories": 61,
+        "protein": 3.2,
+        "carbs": 4.8,
+        "fat": 3.3,
+        "fiber": 0.0,
+        "sugar": 5.1,
+        "sodium_mg": 43
+      },
+      "common_servings": [
+        { "label": "Half cup (122ml)", "grams": 122, "calories": 74, "protein": 3.9, "carbs": 5.9, "fat": 4.0, "fiber": 0.0 },
+        { "label": "1 cup (244ml)", "grams": 244, "calories": 149, "protein": 7.8, "carbs": 11.7, "fat": 8.1, "fiber": 0.0 },
+        { "label": "100ml", "grams": 100, "calories": 61, "protein": 3.2, "carbs": 4.8, "fat": 3.3, "fiber": 0.0 },
+        { "label": "250ml", "grams": 250, "calories": 153, "protein": 8.0, "carbs": 12.0, "fat": 8.3, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 44,
+      "name": "Skim Milk (Non-fat)",
+      "category": "Dairy",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "liquid",
+      "barcode": null,
+      "per_100g": {
+        "calories": 35,
+        "protein": 3.4,
+        "carbs": 5.0,
+        "fat": 0.1,
+        "fiber": 0.0,
+        "sugar": 5.0,
+        "sodium_mg": 52
+      },
+      "common_servings": [
+        { "label": "1 cup (244ml)", "grams": 244, "calories": 85, "protein": 8.3, "carbs": 12.2, "fat": 0.2, "fiber": 0.0 },
+        { "label": "100ml", "grams": 100, "calories": 35, "protein": 3.4, "carbs": 5.0, "fat": 0.1, "fiber": 0.0 },
+        { "label": "250ml", "grams": 250, "calories": 88, "protein": 8.5, "carbs": 12.5, "fat": 0.3, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 45,
+      "name": "Cheddar Cheese",
+      "category": "Dairy",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 403,
+        "protein": 25.0,
+        "carbs": 1.3,
+        "fat": 33.0,
+        "fiber": 0.0,
+        "sugar": 0.5,
+        "sodium_mg": 621
+      },
+      "common_servings": [
+        { "label": "1 slice (28g)", "grams": 28, "calories": 113, "protein": 7.0, "carbs": 0.4, "fat": 9.2, "fiber": 0.0 },
+        { "label": "1 oz (28g)", "grams": 28, "calories": 113, "protein": 7.0, "carbs": 0.4, "fat": 9.2, "fiber": 0.0 },
+        { "label": "50g", "grams": 50, "calories": 202, "protein": 12.5, "carbs": 0.7, "fat": 16.5, "fiber": 0.0 },
+        { "label": "100g", "grams": 100, "calories": 403, "protein": 25.0, "carbs": 1.3, "fat": 33.0, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 46,
+      "name": "Butter",
+      "category": "Fats & Oils",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 717,
+        "protein": 0.9,
+        "carbs": 0.1,
+        "fat": 81.0,
+        "fiber": 0.0,
+        "sugar": 0.1,
+        "sodium_mg": 576
+      },
+      "common_servings": [
+        { "label": "1 tsp (5g)", "grams": 5, "calories": 36, "protein": 0.0, "carbs": 0.0, "fat": 4.1, "fiber": 0.0 },
+        { "label": "1 tbsp (14g)", "grams": 14, "calories": 100, "protein": 0.1, "carbs": 0.0, "fat": 11.3, "fiber": 0.0 },
+        { "label": "50g", "grams": 50, "calories": 359, "protein": 0.5, "carbs": 0.1, "fat": 40.5, "fiber": 0.0 },
+        { "label": "100g", "grams": 100, "calories": 717, "protein": 0.9, "carbs": 0.1, "fat": 81.0, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 47,
+      "name": "Olive Oil",
+      "category": "Fats & Oils",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "liquid",
+      "barcode": null,
+      "per_100g": {
+        "calories": 884,
+        "protein": 0.0,
+        "carbs": 0.0,
+        "fat": 100.0,
+        "fiber": 0.0,
+        "sugar": 0.0,
+        "sodium_mg": 2
+      },
+      "common_servings": [
+        { "label": "1 tsp (5ml)", "grams": 5, "calories": 44, "protein": 0.0, "carbs": 0.0, "fat": 5.0, "fiber": 0.0 },
+        { "label": "1 tbsp (15ml)", "grams": 15, "calories": 133, "protein": 0.0, "carbs": 0.0, "fat": 15.0, "fiber": 0.0 },
+        { "label": "2 tbsp (30ml)", "grams": 30, "calories": 265, "protein": 0.0, "carbs": 0.0, "fat": 30.0, "fiber": 0.0 },
+        { "label": "100ml", "grams": 100, "calories": 884, "protein": 0.0, "carbs": 0.0, "fat": 100.0, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 48,
+      "name": "Avocado",
+      "category": "Fats & Oils",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 160,
+        "protein": 2.0,
+        "carbs": 8.5,
+        "fat": 14.7,
+        "fiber": 6.7,
+        "sugar": 0.7,
+        "sodium_mg": 7
+      },
+      "common_servings": [
+        { "label": "Half avocado (68g)", "grams": 68, "calories": 109, "protein": 1.4, "carbs": 5.8, "fat": 10.0, "fiber": 4.6 },
+        { "label": "1 whole avocado (136g)", "grams": 136, "calories": 218, "protein": 2.7, "carbs": 11.6, "fat": 20.0, "fiber": 9.1 },
+        { "label": "100g", "grams": 100, "calories": 160, "protein": 2.0, "carbs": 8.5, "fat": 14.7, "fiber": 6.7 },
+        { "label": "250g", "grams": 250, "calories": 400, "protein": 5.0, "carbs": 21.3, "fat": 36.8, "fiber": 16.8 }
+      ]
+    },
+
+    {
+      "id": 49,
+      "name": "Almonds",
+      "category": "Nuts & Seeds",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 579,
+        "protein": 21.2,
+        "carbs": 21.6,
+        "fat": 49.9,
+        "fiber": 12.5,
+        "sugar": 4.4,
+        "sodium_mg": 1
+      },
+      "common_servings": [
+        { "label": "10 almonds (14g)", "grams": 14, "calories": 81, "protein": 3.0, "carbs": 3.0, "fat": 7.0, "fiber": 1.8 },
+        { "label": "1 oz / 23 almonds (28g)", "grams": 28, "calories": 162, "protein": 5.9, "carbs": 6.1, "fat": 14.0, "fiber": 3.5 },
+        { "label": "50g", "grams": 50, "calories": 290, "protein": 10.6, "carbs": 10.8, "fat": 25.0, "fiber": 6.3 },
+        { "label": "100g", "grams": 100, "calories": 579, "protein": 21.2, "carbs": 21.6, "fat": 49.9, "fiber": 12.5 }
+      ]
+    },
+
+    {
+      "id": 50,
+      "name": "Peanut Butter (Natural)",
+      "category": "Nuts & Seeds",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 588,
+        "protein": 25.0,
+        "carbs": 20.0,
+        "fat": 50.0,
+        "fiber": 6.0,
+        "sugar": 9.0,
+        "sodium_mg": 59
+      },
+      "common_servings": [
+        { "label": "1 tsp (5g)", "grams": 5, "calories": 29, "protein": 1.3, "carbs": 1.0, "fat": 2.5, "fiber": 0.3 },
+        { "label": "1 tbsp (16g)", "grams": 16, "calories": 94, "protein": 4.0, "carbs": 3.2, "fat": 8.0, "fiber": 1.0 },
+        { "label": "2 tbsp (32g)", "grams": 32, "calories": 188, "protein": 8.0, "carbs": 6.4, "fat": 16.0, "fiber": 1.9 },
+        { "label": "100g", "grams": 100, "calories": 588, "protein": 25.0, "carbs": 20.0, "fat": 50.0, "fiber": 6.0 }
+      ]
+    },
+
+    {
+      "id": 51,
+      "name": "Walnuts",
+      "category": "Nuts & Seeds",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 654,
+        "protein": 15.2,
+        "carbs": 13.7,
+        "fat": 65.2,
+        "fiber": 6.7,
+        "sugar": 2.6,
+        "sodium_mg": 2
+      },
+      "common_servings": [
+        { "label": "1 oz / 14 halves (28g)", "grams": 28, "calories": 183, "protein": 4.3, "carbs": 3.8, "fat": 18.3, "fiber": 1.9 },
+        { "label": "50g", "grams": 50, "calories": 327, "protein": 7.6, "carbs": 6.9, "fat": 32.6, "fiber": 3.4 },
+        { "label": "100g", "grams": 100, "calories": 654, "protein": 15.2, "carbs": 13.7, "fat": 65.2, "fiber": 6.7 }
+      ]
+    },
+
+    {
+      "id": 52,
+      "name": "Chia Seeds",
+      "category": "Nuts & Seeds",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 486,
+        "protein": 16.5,
+        "carbs": 42.1,
+        "fat": 30.7,
+        "fiber": 34.4,
+        "sugar": 0.0,
+        "sodium_mg": 16
+      },
+      "common_servings": [
+        { "label": "1 tbsp (12g)", "grams": 12, "calories": 58, "protein": 2.0, "carbs": 5.1, "fat": 3.7, "fiber": 4.1 },
+        { "label": "2 tbsp (25g)", "grams": 25, "calories": 122, "protein": 4.1, "carbs": 10.5, "fat": 7.7, "fiber": 8.6 },
+        { "label": "100g", "grams": 100, "calories": 486, "protein": 16.5, "carbs": 42.1, "fat": 30.7, "fiber": 34.4 }
+      ]
+    },
+
+    {
+      "id": 53,
+      "name": "Flaxseeds",
+      "category": "Nuts & Seeds",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 534,
+        "protein": 18.3,
+        "carbs": 28.9,
+        "fat": 42.2,
+        "fiber": 27.3,
+        "sugar": 1.6,
+        "sodium_mg": 30
+      },
+      "common_servings": [
+        { "label": "1 tbsp (10g)", "grams": 10, "calories": 53, "protein": 1.8, "carbs": 2.9, "fat": 4.2, "fiber": 2.7 },
+        { "label": "2 tbsp (20g)", "grams": 20, "calories": 107, "protein": 3.7, "carbs": 5.8, "fat": 8.4, "fiber": 5.5 },
+        { "label": "100g", "grams": 100, "calories": 534, "protein": 18.3, "carbs": 28.9, "fat": 42.2, "fiber": 27.3 }
+      ]
+    },
+
+    {
+      "id": 54,
+      "name": "Black Beans (Cooked)",
+      "category": "Legumes",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 132,
+        "protein": 8.9,
+        "carbs": 23.7,
+        "fat": 0.5,
+        "fiber": 8.7,
+        "sugar": 0.3,
+        "sodium_mg": 1
+      },
+      "common_servings": [
+        { "label": "Half cup (86g)", "grams": 86, "calories": 114, "protein": 7.7, "carbs": 20.4, "fat": 0.5, "fiber": 7.5 },
+        { "label": "1 cup (172g)", "grams": 172, "calories": 227, "protein": 15.2, "carbs": 40.8, "fat": 0.9, "fiber": 15.0 },
+        { "label": "100g", "grams": 100, "calories": 132, "protein": 8.9, "carbs": 23.7, "fat": 0.5, "fiber": 8.7 },
+        { "label": "250g", "grams": 250, "calories": 330, "protein": 22.3, "carbs": 59.3, "fat": 1.3, "fiber": 21.8 }
+      ]
+    },
+
+    {
+      "id": 55,
+      "name": "Chickpeas (Cooked)",
+      "category": "Legumes",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 164,
+        "protein": 8.9,
+        "carbs": 27.4,
+        "fat": 2.6,
+        "fiber": 7.6,
+        "sugar": 4.8,
+        "sodium_mg": 7
+      },
+      "common_servings": [
+        { "label": "Half cup (82g)", "grams": 82, "calories": 134, "protein": 7.3, "carbs": 22.5, "fat": 2.1, "fiber": 6.2 },
+        { "label": "1 cup (164g)", "grams": 164, "calories": 269, "protein": 14.6, "carbs": 44.9, "fat": 4.3, "fiber": 12.5 },
+        { "label": "100g", "grams": 100, "calories": 164, "protein": 8.9, "carbs": 27.4, "fat": 2.6, "fiber": 7.6 },
+        { "label": "250g", "grams": 250, "calories": 410, "protein": 22.3, "carbs": 68.5, "fat": 6.5, "fiber": 19.0 }
+      ]
+    },
+
+    {
+      "id": 56,
+      "name": "Lentils (Cooked)",
+      "category": "Legumes",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 116,
+        "protein": 9.0,
+        "carbs": 20.1,
+        "fat": 0.4,
+        "fiber": 7.9,
+        "sugar": 1.8,
+        "sodium_mg": 2
+      },
+      "common_servings": [
+        { "label": "Half cup (99g)", "grams": 99, "calories": 115, "protein": 8.9, "carbs": 19.9, "fat": 0.4, "fiber": 7.8 },
+        { "label": "1 cup (198g)", "grams": 198, "calories": 230, "protein": 17.9, "carbs": 39.9, "fat": 0.8, "fiber": 15.6 },
+        { "label": "100g", "grams": 100, "calories": 116, "protein": 9.0, "carbs": 20.1, "fat": 0.4, "fiber": 7.9 },
+        { "label": "250g", "grams": 250, "calories": 290, "protein": 22.5, "carbs": 50.3, "fat": 1.0, "fiber": 19.8 }
+      ]
+    },
+
+    {
+      "id": 57,
+      "name": "Edamame (Shelled)",
+      "category": "Legumes",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "cooked",
+      "barcode": null,
+      "per_100g": {
+        "calories": 121,
+        "protein": 11.9,
+        "carbs": 8.9,
+        "fat": 5.2,
+        "fiber": 5.2,
+        "sugar": 2.2,
+        "sodium_mg": 6
+      },
+      "common_servings": [
+        { "label": "Half cup (75g)", "grams": 75, "calories": 91, "protein": 8.9, "carbs": 6.7, "fat": 3.9, "fiber": 3.9 },
+        { "label": "1 cup (150g)", "grams": 150, "calories": 182, "protein": 17.9, "carbs": 13.4, "fat": 7.8, "fiber": 7.8 },
+        { "label": "100g", "grams": 100, "calories": 121, "protein": 11.9, "carbs": 8.9, "fat": 5.2, "fiber": 5.2 },
+        { "label": "250g", "grams": 250, "calories": 303, "protein": 29.8, "carbs": 22.3, "fat": 13.0, "fiber": 13.0 }
+      ]
+    },
+
+    {
+      "id": 58,
+      "name": "Almond Milk (Unsweetened)",
+      "category": "Beverages",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "liquid",
+      "barcode": null,
+      "per_100g": {
+        "calories": 15,
+        "protein": 0.6,
+        "carbs": 0.6,
+        "fat": 1.2,
+        "fiber": 0.2,
+        "sugar": 0.0,
+        "sodium_mg": 72
+      },
+      "common_servings": [
+        { "label": "Half cup (120ml)", "grams": 120, "calories": 18, "protein": 0.7, "carbs": 0.7, "fat": 1.4, "fiber": 0.2 },
+        { "label": "1 cup (240ml)", "grams": 240, "calories": 36, "protein": 1.4, "carbs": 1.4, "fat": 2.9, "fiber": 0.5 },
+        { "label": "100ml", "grams": 100, "calories": 15, "protein": 0.6, "carbs": 0.6, "fat": 1.2, "fiber": 0.2 },
+        { "label": "250ml", "grams": 250, "calories": 38, "protein": 1.5, "carbs": 1.5, "fat": 3.0, "fiber": 0.5 }
+      ]
+    },
+
+    {
+      "id": 59,
+      "name": "Orange Juice (100% Natural)",
+      "category": "Beverages",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "liquid",
+      "barcode": null,
+      "per_100g": {
+        "calories": 45,
+        "protein": 0.7,
+        "carbs": 10.4,
+        "fat": 0.2,
+        "fiber": 0.2,
+        "sugar": 8.4,
+        "sodium_mg": 1
+      },
+      "common_servings": [
+        { "label": "Half cup (125ml)", "grams": 125, "calories": 56, "protein": 0.9, "carbs": 13.0, "fat": 0.3, "fiber": 0.3 },
+        { "label": "1 cup (248ml)", "grams": 248, "calories": 112, "protein": 1.7, "carbs": 25.8, "fat": 0.5, "fiber": 0.5 },
+        { "label": "100ml", "grams": 100, "calories": 45, "protein": 0.7, "carbs": 10.4, "fat": 0.2, "fiber": 0.2 },
+        { "label": "250ml", "grams": 250, "calories": 113, "protein": 1.8, "carbs": 26.0, "fat": 0.5, "fiber": 0.5 }
+      ]
+    },
+
+    {
+      "id": 60,
+      "name": "Black Coffee",
+      "category": "Beverages",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "liquid",
+      "barcode": null,
+      "per_100g": {
+        "calories": 2,
+        "protein": 0.3,
+        "carbs": 0.0,
+        "fat": 0.0,
+        "fiber": 0.0,
+        "sugar": 0.0,
+        "sodium_mg": 2
+      },
+      "common_servings": [
+        { "label": "1 cup espresso (30ml)", "grams": 30, "calories": 1, "protein": 0.1, "carbs": 0.0, "fat": 0.0, "fiber": 0.0 },
+        { "label": "1 cup regular (237ml)", "grams": 237, "calories": 5, "protein": 0.7, "carbs": 0.0, "fat": 0.1, "fiber": 0.0 },
+        { "label": "100ml", "grams": 100, "calories": 2, "protein": 0.3, "carbs": 0.0, "fat": 0.0, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 61,
+      "name": "Hummus",
+      "category": "Snacks & Other",
+      "diet_goal": ["fat_loss", "muscle_gain", "maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 166,
+        "protein": 7.9,
+        "carbs": 14.3,
+        "fat": 9.6,
+        "fiber": 6.0,
+        "sugar": 0.3,
+        "sodium_mg": 379
+      },
+      "common_servings": [
+        { "label": "2 tbsp (30g)", "grams": 30, "calories": 50, "protein": 2.4, "carbs": 4.3, "fat": 2.9, "fiber": 1.8 },
+        { "label": "Quarter cup (62g)", "grams": 62, "calories": 103, "protein": 4.9, "carbs": 8.9, "fat": 5.9, "fiber": 3.7 },
+        { "label": "100g", "grams": 100, "calories": 166, "protein": 7.9, "carbs": 14.3, "fat": 9.6, "fiber": 6.0 },
+        { "label": "250g", "grams": 250, "calories": 415, "protein": 19.8, "carbs": 35.8, "fat": 24.0, "fiber": 15.0 }
+      ]
+    },
+
+    {
+      "id": 62,
+      "name": "Dark Chocolate (70-85%)",
+      "category": "Snacks & Other",
+      "diet_goal": ["maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 598,
+        "protein": 7.8,
+        "carbs": 45.9,
+        "fat": 42.6,
+        "fiber": 10.9,
+        "sugar": 24.0,
+        "sodium_mg": 20
+      },
+      "common_servings": [
+        { "label": "1 square (10g)", "grams": 10, "calories": 60, "protein": 0.8, "carbs": 4.6, "fat": 4.3, "fiber": 1.1 },
+        { "label": "2 squares (20g)", "grams": 20, "calories": 120, "protein": 1.6, "carbs": 9.2, "fat": 8.5, "fiber": 2.2 },
+        { "label": "Half bar (50g)", "grams": 50, "calories": 299, "protein": 3.9, "carbs": 23.0, "fat": 21.3, "fiber": 5.5 },
+        { "label": "100g (full bar)", "grams": 100, "calories": 598, "protein": 7.8, "carbs": 45.9, "fat": 42.6, "fiber": 10.9 }
+      ]
+    },
+
+    {
+      "id": 63,
+      "name": "Honey",
+      "category": "Snacks & Other",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 304,
+        "protein": 0.3,
+        "carbs": 82.4,
+        "fat": 0.0,
+        "fiber": 0.2,
+        "sugar": 82.1,
+        "sodium_mg": 4
+      },
+      "common_servings": [
+        { "label": "1 tsp (7g)", "grams": 7, "calories": 21, "protein": 0.0, "carbs": 5.8, "fat": 0.0, "fiber": 0.0 },
+        { "label": "1 tbsp (21g)", "grams": 21, "calories": 64, "protein": 0.1, "carbs": 17.3, "fat": 0.0, "fiber": 0.0 },
+        { "label": "100g", "grams": 100, "calories": 304, "protein": 0.3, "carbs": 82.4, "fat": 0.0, "fiber": 0.2 }
+      ]
+    },
+
+    {
+      "id": 64,
+      "name": "Cream Cheese (Full-fat)",
+      "category": "Dairy",
+      "diet_goal": ["maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 342,
+        "protein": 6.2,
+        "carbs": 4.1,
+        "fat": 34.0,
+        "fiber": 0.0,
+        "sugar": 3.8,
+        "sodium_mg": 321
+      },
+      "common_servings": [
+        { "label": "1 tbsp (14g)", "grams": 14, "calories": 48, "protein": 0.9, "carbs": 0.6, "fat": 4.8, "fiber": 0.0 },
+        { "label": "2 tbsp (29g)", "grams": 29, "calories": 99, "protein": 1.8, "carbs": 1.2, "fat": 9.9, "fiber": 0.0 },
+        { "label": "100g", "grams": 100, "calories": 342, "protein": 6.2, "carbs": 4.1, "fat": 34.0, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 65,
+      "name": "Granola",
+      "category": "Snacks & Other",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 471,
+        "protein": 10.0,
+        "carbs": 64.0,
+        "fat": 20.0,
+        "fiber": 5.9,
+        "sugar": 24.0,
+        "sodium_mg": 24
+      },
+      "common_servings": [
+        { "label": "Quarter cup (28g)", "grams": 28, "calories": 132, "protein": 2.8, "carbs": 17.9, "fat": 5.6, "fiber": 1.7 },
+        { "label": "Half cup (56g)", "grams": 56, "calories": 264, "protein": 5.6, "carbs": 35.8, "fat": 11.2, "fiber": 3.3 },
+        { "label": "100g", "grams": 100, "calories": 471, "protein": 10.0, "carbs": 64.0, "fat": 20.0, "fiber": 5.9 }
+      ]
+    },
+
+    {
+      "id": 66,
+      "name": "Protein Bar (Generic / Quest Style)",
+      "category": "Snacks & Other",
+      "diet_goal": ["fat_loss", "muscle_gain"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 380,
+        "protein": 30.0,
+        "carbs": 38.0,
+        "fat": 10.0,
+        "fiber": 14.0,
+        "sugar": 2.0,
+        "sodium_mg": 300
+      },
+      "common_servings": [
+        { "label": "1 bar (60g)", "grams": 60, "calories": 228, "protein": 18.0, "carbs": 22.8, "fat": 6.0, "fiber": 8.4 },
+        { "label": "1 large bar (80g)", "grams": 80, "calories": 304, "protein": 24.0, "carbs": 30.4, "fat": 8.0, "fiber": 11.2 },
+        { "label": "100g", "grams": 100, "calories": 380, "protein": 30.0, "carbs": 38.0, "fat": 10.0, "fiber": 14.0 }
+      ]
+    },
+
+    {
+      "id": 67,
+      "name": "Mixed Nuts (Unsalted)",
+      "category": "Nuts & Seeds",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 607,
+        "protein": 14.0,
+        "carbs": 21.0,
+        "fat": 54.0,
+        "fiber": 5.0,
+        "sugar": 4.5,
+        "sodium_mg": 3
+      },
+      "common_servings": [
+        { "label": "Small handful (28g)", "grams": 28, "calories": 170, "protein": 3.9, "carbs": 5.9, "fat": 15.1, "fiber": 1.4 },
+        { "label": "50g", "grams": 50, "calories": 304, "protein": 7.0, "carbs": 10.5, "fat": 27.0, "fiber": 2.5 },
+        { "label": "100g", "grams": 100, "calories": 607, "protein": 14.0, "carbs": 21.0, "fat": 54.0, "fiber": 5.0 }
+      ]
+    },
+
+    {
+      "id": 68,
+      "name": "Rice Cakes (Plain)",
+      "category": "Snacks & Other",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 387,
+        "protein": 8.2,
+        "carbs": 81.0,
+        "fat": 3.5,
+        "fiber": 1.5,
+        "sugar": 0.5,
+        "sodium_mg": 490
+      },
+      "common_servings": [
+        { "label": "1 rice cake (9g)", "grams": 9, "calories": 35, "protein": 0.7, "carbs": 7.3, "fat": 0.3, "fiber": 0.1 },
+        { "label": "2 rice cakes (18g)", "grams": 18, "calories": 70, "protein": 1.5, "carbs": 14.6, "fat": 0.6, "fiber": 0.3 },
+        { "label": "100g", "grams": 100, "calories": 387, "protein": 8.2, "carbs": 81.0, "fat": 3.5, "fiber": 1.5 }
+      ]
+    },
+
+    {
+      "id": 69,
+      "name": "Low-fat Plain Yogurt",
+      "category": "Dairy",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 63,
+        "protein": 5.3,
+        "carbs": 7.0,
+        "fat": 1.6,
+        "fiber": 0.0,
+        "sugar": 7.0,
+        "sodium_mg": 70
+      },
+      "common_servings": [
+        { "label": "Small cup (100g)", "grams": 100, "calories": 63, "protein": 5.3, "carbs": 7.0, "fat": 1.6, "fiber": 0.0 },
+        { "label": "Standard cup (170g)", "grams": 170, "calories": 107, "protein": 9.0, "carbs": 11.9, "fat": 2.7, "fiber": 0.0 },
+        { "label": "Large cup (227g)", "grams": 227, "calories": 143, "protein": 12.0, "carbs": 15.9, "fat": 3.6, "fiber": 0.0 },
+        { "label": "250g", "grams": 250, "calories": 158, "protein": 13.3, "carbs": 17.5, "fat": 4.0, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 70,
+      "name": "Coconut Oil",
+      "category": "Fats & Oils",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 862,
+        "protein": 0.0,
+        "carbs": 0.0,
+        "fat": 100.0,
+        "fiber": 0.0,
+        "sugar": 0.0,
+        "sodium_mg": 0
+      },
+      "common_servings": [
+        { "label": "1 tsp (5g)", "grams": 5, "calories": 43, "protein": 0.0, "carbs": 0.0, "fat": 5.0, "fiber": 0.0 },
+        { "label": "1 tbsp (14g)", "grams": 14, "calories": 121, "protein": 0.0, "carbs": 0.0, "fat": 14.0, "fiber": 0.0 },
+        { "label": "100g", "grams": 100, "calories": 862, "protein": 0.0, "carbs": 0.0, "fat": 100.0, "fiber": 0.0 }
+      ]
+    },
+
+    {
+      "id": 71,
+      "name": "Peanuts (Dry Roasted)",
+      "category": "Nuts & Seeds",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 567,
+        "protein": 26.2,
+        "carbs": 16.1,
+        "fat": 49.2,
+        "fiber": 8.5,
+        "sugar": 4.0,
+        "sodium_mg": 2
+      },
+      "common_servings": [
+        { "label": "Small handful (28g)", "grams": 28, "calories": 159, "protein": 7.3, "carbs": 4.5, "fat": 13.8, "fiber": 2.4 },
+        { "label": "50g", "grams": 50, "calories": 284, "protein": 13.1, "carbs": 8.1, "fat": 24.6, "fiber": 4.3 },
+        { "label": "100g", "grams": 100, "calories": 567, "protein": 26.2, "carbs": 16.1, "fat": 49.2, "fiber": 8.5 }
+      ]
+    },
+
+    {
+      "id": 72,
+      "name": "Grapes",
+      "category": "Fruits",
+      "diet_goal": ["muscle_gain", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 69,
+        "protein": 0.7,
+        "carbs": 18.1,
+        "fat": 0.2,
+        "fiber": 0.9,
+        "sugar": 15.5,
+        "sodium_mg": 2
+      },
+      "common_servings": [
+        { "label": "Half cup (80g)", "grams": 80, "calories": 55, "protein": 0.6, "carbs": 14.5, "fat": 0.2, "fiber": 0.7 },
+        { "label": "1 cup (160g)", "grams": 160, "calories": 110, "protein": 1.1, "carbs": 29.0, "fat": 0.3, "fiber": 1.4 },
+        { "label": "100g", "grams": 100, "calories": 69, "protein": 0.7, "carbs": 18.1, "fat": 0.2, "fiber": 0.9 },
+        { "label": "250g", "grams": 250, "calories": 173, "protein": 1.8, "carbs": 45.3, "fat": 0.5, "fiber": 2.3 }
+      ]
+    },
+
+    {
+      "id": 73,
+      "name": "Bagel (Plain)",
+      "category": "Grains & Carbs",
+      "diet_goal": ["muscle_gain"],
+      "state": "ready",
+      "barcode": null,
+      "per_100g": {
+        "calories": 270,
+        "protein": 10.5,
+        "carbs": 53.0,
+        "fat": 1.6,
+        "fiber": 2.3,
+        "sugar": 7.0,
+        "sodium_mg": 457
+      },
+      "common_servings": [
+        { "label": "Half bagel (50g)", "grams": 50, "calories": 135, "protein": 5.3, "carbs": 26.5, "fat": 0.8, "fiber": 1.2 },
+        { "label": "1 small bagel (98g)", "grams": 98, "calories": 265, "protein": 10.3, "carbs": 51.9, "fat": 1.6, "fiber": 2.3 },
+        { "label": "1 large bagel (131g)", "grams": 131, "calories": 354, "protein": 13.8, "carbs": 69.4, "fat": 2.1, "fiber": 3.0 }
+      ]
+    },
+
+    {
+      "id": 74,
+      "name": "Protein Shake / Mass Gainer (Generic)",
+      "category": "Snacks & Other",
+      "diet_goal": ["muscle_gain"],
+      "state": "powder",
+      "barcode": null,
+      "per_100g": {
+        "calories": 390,
+        "protein": 30.0,
+        "carbs": 55.0,
+        "fat": 5.0,
+        "fiber": 2.0,
+        "sugar": 10.0,
+        "sodium_mg": 180
+      },
+      "common_servings": [
+        { "label": "1 scoop (50g)", "grams": 50, "calories": 195, "protein": 15.0, "carbs": 27.5, "fat": 2.5, "fiber": 1.0 },
+        { "label": "2 scoops (100g)", "grams": 100, "calories": 390, "protein": 30.0, "carbs": 55.0, "fat": 5.0, "fiber": 2.0 }
+      ]
+    },
+
+    {
+      "id": 75,
+      "name": "Sunflower Seeds (Hulled)",
+      "category": "Nuts & Seeds",
+      "diet_goal": ["fat_loss", "maintenance"],
+      "state": "raw",
+      "barcode": null,
+      "per_100g": {
+        "calories": 584,
+        "protein": 20.8,
+        "carbs": 20.0,
+        "fat": 51.5,
+        "fiber": 8.6,
+        "sugar": 2.6,
+        "sodium_mg": 9
+      },
+      "common_servings": [
+        { "label": "1 oz (28g)", "grams": 28, "calories": 163, "protein": 5.8, "carbs": 5.6, "fat": 14.4, "fiber": 2.4 },
+        { "label": "Quarter cup (35g)", "grams": 35, "calories": 204, "protein": 7.3, "carbs": 7.0, "fat": 18.0, "fiber": 3.0 },
+        { "label": "100g", "grams": 100, "calories": 584, "protein": 20.8, "carbs": 20.0, "fat": 51.5, "fiber": 8.6 }
+      ]
+    }
+
+  ]
+}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
+import { resolveFood, scaleMacros } from "@/src/services/foodDataService";
 import styles from "./BarcodeScannerModal.module.css";
 
 export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
@@ -10,6 +11,7 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
   const [scanning, setScanning] = useState(false);
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState(null);
+  const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
   const [servingAmount, setServingAmount] = useState(100);
   const scannerRef = useRef(null);
@@ -20,6 +22,7 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
       setMounted(true);
       requestAnimationFrame(() => setVisible(true));
       setProduct(null);
+      setResults([]);
       setError(null);
       setServingAmount(100);
     } else {
@@ -55,22 +58,10 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(
-        `https://world.openfoodfacts.org/api/v2/product/${code}.json?fields=product_name,brands,nutriments,serving_size`,
-      );
-      const data = await res.json();
-      if (data.status === 1 && data.product) {
-        const p = data.product;
-        const n = p.nutriments || {};
-        setProduct({
-          name: p.product_name || "Unknown Product",
-          brand: p.brands || "",
-          calories: Math.round(n["energy-kcal_100g"] || n["energy-kcal"] || 0),
-          protein: Math.round((n.proteins_100g || 0) * 10) / 10,
-          carbs: Math.round((n.carbohydrates_100g || 0) * 10) / 10,
-          fat: Math.round((n.fat_100g || 0) * 10) / 10,
-          servingSize: p.serving_size || "100g",
-        });
+      const found = await resolveFood(code, { type: "barcode" });
+      if (found && found.length > 0) {
+        setResults(found);
+        setProduct(found[0]);
       } else {
         setError("Product not found in database. Try scanning another item.");
       }
@@ -109,17 +100,28 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
 
   const handleAdd = () => {
     if (!product) return;
-    const ratio = servingAmount / 100;
+    const per100g = product.per_100g || {
+      calories: product.calories || 0,
+      protein: product.protein || 0,
+      carbs: product.carbs || 0,
+      fat: product.fat || 0,
+      fiber: product.fiber || 0,
+    };
+    const scaled = scaleMacros(per100g, servingAmount);
     onAdd(
       {
         name: product.name,
-        brand: product.brand,
-        calories: Math.round(product.calories * ratio),
-        protein: Math.round(product.protein * ratio * 10) / 10,
-        carbs: Math.round(product.carbs * ratio * 10) / 10,
-        fat: Math.round(product.fat * ratio * 10) / 10,
+        brand: product.brand || "",
+        per_100g: per100g,
+        calories: scaled.calories,
+        protein: scaled.protein,
+        carbs: scaled.carbs,
+        fat: scaled.fat,
+        fiber: scaled.fiber,
         servingAmount,
         servingUnit: "g",
+        source: product.source,
+        common_servings: product.common_servings || [],
       },
       meal,
     );
@@ -212,31 +214,57 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
               </div>
 
               <div className={styles.macroGrid}>
-                <div className={styles.macroItem}>
-                  <span className={styles.macroValue}>
-                    {Math.round((product.calories * servingAmount) / 100)}
-                  </span>
-                  <span className={styles.macroLabel}>kcal</span>
-                </div>
-                <div className={styles.macroItem}>
-                  <span className={styles.macroValue}>
-                    {((product.protein * servingAmount) / 100).toFixed(1)}
-                  </span>
-                  <span className={styles.macroLabel}>Protein</span>
-                </div>
-                <div className={styles.macroItem}>
-                  <span className={styles.macroValue}>
-                    {((product.carbs * servingAmount) / 100).toFixed(1)}
-                  </span>
-                  <span className={styles.macroLabel}>Carbs</span>
-                </div>
-                <div className={styles.macroItem}>
-                  <span className={styles.macroValue}>
-                    {((product.fat * servingAmount) / 100).toFixed(1)}
-                  </span>
-                  <span className={styles.macroLabel}>Fat</span>
-                </div>
+                {(() => {
+                  const per100g = product.per_100g || {
+                    calories: product.calories || 0,
+                    protein: product.protein || 0,
+                    carbs: product.carbs || 0,
+                    fat: product.fat || 0,
+                    fiber: product.fiber || 0,
+                  };
+                  const scaled = scaleMacros(per100g, servingAmount);
+                  return (
+                    <>
+                      <div className={styles.macroItem}>
+                        <span className={styles.macroValue}>{scaled.calories}</span>
+                        <span className={styles.macroLabel}>kcal</span>
+                      </div>
+                      <div className={styles.macroItem}>
+                        <span className={styles.macroValue}>{scaled.protein}</span>
+                        <span className={styles.macroLabel}>Protein</span>
+                      </div>
+                      <div className={styles.macroItem}>
+                        <span className={styles.macroValue}>{scaled.carbs}</span>
+                        <span className={styles.macroLabel}>Carbs</span>
+                      </div>
+                      <div className={styles.macroItem}>
+                        <span className={styles.macroValue}>{scaled.fat}</span>
+                        <span className={styles.macroLabel}>Fat</span>
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
+
+              {results.length > 1 && (
+                <div style={{ marginTop: 12 }}>
+                  <p className={styles.hint}>Other matches</p>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    {results.map((item) => (
+                      <button
+                        key={item.id}
+                        className="btn btn-sm btn-secondary"
+                        style={{
+                          opacity: item.id === product.id ? 1 : 0.8,
+                        }}
+                        onClick={() => setProduct(item)}
+                      >
+                        {item.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className={styles.servingRow}>
                 <label className={styles.servingLabel}>Serving (g)</label>

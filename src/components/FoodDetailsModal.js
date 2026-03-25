@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { scaleMacros } from "@/src/services/foodDataService";
 import styles from "./FoodDetailsModal.module.css";
 
 const UNIT_FACTORS = {
@@ -52,18 +53,22 @@ export default function FoodDetailsModal({
     setServingAmount((prev) => prev + 5);
   };
 
-  const gramsEquiv = servingAmount * UNIT_FACTORS[unit];
+  const per100g = food.per_100g || {
+    calories: food.calories || 0,
+    protein: food.protein || 0,
+    carbs: food.carbs || 0,
+    fat: food.fat || 0,
+    fiber: food.fiber || 0,
+  };
 
-  const scaledCals = Math.round((food.calories * gramsEquiv) / 100);
-  const scaledProtein =
-    Math.round(((food.protein * gramsEquiv) / 100) * 10) / 10;
-  const scaledCarbs = Math.round(((food.carbs * gramsEquiv) / 100) * 10) / 10;
-  const scaledFat = Math.round(((food.fat * gramsEquiv) / 100) * 10) / 10;
+  const gramsEquiv = servingAmount * UNIT_FACTORS[unit];
+  const scaled = scaleMacros(per100g, gramsEquiv);
 
   const handleAddLog = () => {
     onAdd(
       {
         ...food,
+        per_100g: per100g,
         servingAmount: gramsEquiv,
         servingUnit: unit,
         servingDisplay: servingAmount,
@@ -181,19 +186,19 @@ export default function FoodDetailsModal({
           <div className={`glass-card ${styles.macroCard}`}>
             <div className={`${styles.macroRow} ${styles.separator}`}>
               <span className={styles.macroLabel}>Calories</span>
-              <span className={styles.macroValue}>{scaledCals} kcal</span>
+              <span className={styles.macroValue}>{scaled.calories} kcal</span>
             </div>
             <div className={`${styles.macroRow} ${styles.separator}`}>
               <span className={styles.macroLabel}>Protein</span>
-              <span className={styles.macroValue}>{scaledProtein}g</span>
+              <span className={styles.macroValue}>{scaled.protein}g</span>
             </div>
             <div className={`${styles.macroRow} ${styles.separator}`}>
               <span className={styles.macroLabel}>Carbs</span>
-              <span className={styles.macroValue}>{scaledCarbs}g</span>
+              <span className={styles.macroValue}>{scaled.carbs}g</span>
             </div>
             <div className={styles.macroRow}>
               <span className={styles.macroLabel}>Fat</span>
-              <span className={styles.macroValue}>{scaledFat}g</span>
+              <span className={styles.macroValue}>{scaled.fat}g</span>
             </div>
           </div>
         </section>

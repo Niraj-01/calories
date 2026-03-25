@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { resolveFood, scaleMacros } from "@/src/services/foodDataService";
 import styles from "./CameraModal.module.css";
 
 export default function CameraModal({ meal, onAdd, onClose }) {
@@ -9,7 +10,10 @@ export default function CameraModal({ meal, onAdd, onClose }) {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [prediction, setPrediction] = useState(null);
+  const [predictionLabel, setPredictionLabel] = useState(null);
+  const [options, setOptions] = useState([]);
+  const [confidence, setConfidence] = useState(null);
+  const [selectedFood, setSelectedFood] = useState(null);
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -39,7 +43,9 @@ export default function CameraModal({ meal, onAdd, onClose }) {
     if (file) {
       setImage(file);
       setPreview(URL.createObjectURL(file));
-      setPrediction(null);
+      setOptions([]);
+      setSelectedFood(null);
+      setPredictionLabel(null);
       setError(null);
     }
   };
@@ -105,24 +111,22 @@ export default function CameraModal({ meal, onAdd, onClose }) {
 
       const topPrediction = hfResult[0];
       const foodName = topPrediction.label.replace(/_/g, " ");
+      setPredictionLabel(foodName);
+      setConfidence(topPrediction.score);
 
-      // 2. Get local nutrition data
-      const { getNutrition } = await import("@/src/data/foodNutrition");
-      const nutrition = getNutrition(foodName);
-
-      if (!nutrition) {
-        throw new Error("Food identified, but no nutrition data available.");
+      // 2. Resolve nutrition data (local DB first, then OFF)
+      const resolved = await resolveFood(foodName, { type: "search" });
+      if (!resolved || resolved.length === 0) {
+        throw new Error("Food identified, but nutrition data not found.");
       }
 
-      setPrediction({
-        name: foodName,
-        confidence: topPrediction.score,
-        calories: nutrition[0],
-        protein: nutrition[1],
-        carbs: nutrition[2],
-        fat: nutrition[3],
-      });
-      setServingAmount(100);
+      setOptions(resolved);
+      setSelectedFood(resolved[0]);
+      const defaultGrams =
+        resolved[0].common_servings?.[0]?.grams ||
+        resolved[0].defaultAmount ||
+        100;
+      setServingAmount(defaultGrams);
       setServingUnit("g");
     } catch (err) {
       setError(err.message || "Something went wrong. Please try again.");
@@ -132,25 +136,32 @@ export default function CameraModal({ meal, onAdd, onClose }) {
   };
 
   const calculateMacros = () => {
-    if (!prediction) return null;
-    const multiplier = servingAmount / 100;
-    return {
-      calories: Math.round(prediction.calories * multiplier),
-      protein: Math.round(prediction.protein * multiplier * 10) / 10,
-      carbs: Math.round(prediction.carbs * multiplier * 10) / 10,
-      fat: Math.round(prediction.fat * multiplier * 10) / 10,
+    if (!selectedFood) return null;
+    const per100g = selectedFood.per_100g || {
+      calories: selectedFood.calories || 0,
+      protein: selectedFood.protein || 0,
+      carbs: selectedFood.carbs || 0,
+      fat: selectedFood.fat || 0,
+      fiber: selectedFood.fiber || 0,
     };
+    return scaleMacros(per100g, servingAmount);
   };
 
   const handleAddSubmit = () => {
-    if (!prediction) return;
+    if (!selectedFood) return;
     const foodData = {
-      name: prediction.name.charAt(0).toUpperCase() + prediction.name.slice(1),
-      brand: "AI Estimate",
-      calories: prediction.calories,
-      protein: prediction.protein,
-      carbs: prediction.carbs,
-      fat: prediction.fat,
+      ...selectedFood,
+      name:
+        selectedFood.name.charAt(0).toUpperCase() +
+        selectedFood.name.slice(1),
+      per_100g:
+        selectedFood.per_100g || {
+          calories: selectedFood.calories || 0,
+          protein: selectedFood.protein || 0,
+          carbs: selectedFood.carbs || 0,
+          fat: selectedFood.fat || 0,
+          fiber: selectedFood.fiber || 0,
+        },
       servingAmount: servingAmount,
       servingUnit: servingUnit,
     };
@@ -194,7 +205,7 @@ export default function CameraModal({ meal, onAdd, onClose }) {
 
         <div className={styles.content}>
           {/* Upload Area — idle state */}
-          {!prediction && !loading && (
+          {!selectedFood && !loading && (
             <div className={styles.uploadArea}>
               {preview ? (
                 <div className={styles.previewContainer}>
@@ -272,20 +283,24 @@ export default function CameraModal({ meal, onAdd, onClose }) {
           )}
 
           {/* Result state */}
-          {prediction && !loading && (
+          {selectedFood && !loading && (
             <div className={styles.resultArea}>
               <div className={styles.resultHeader}>
                 <h3 className={styles.foodName}>
-                  {prediction.name.charAt(0).toUpperCase() +
-                    prediction.name.slice(1)}
+                  {selectedFood.name.charAt(0).toUpperCase() +
+                    selectedFood.name.slice(1)}
                 </h3>
-                <span className={styles.confidenceBadge}>
-                  {Math.round(prediction.confidence * 100)}% match
-                </span>
+                {confidence && (
+                  <span className={styles.confidenceBadge}>
+                    {Math.round(confidence * 100)}% match
+                  </span>
+                )}
               </div>
 
-              {prediction.message && prediction.message !== "Success" && (
-                <p className={styles.disclaimer}>{prediction.message}</p>
+              {predictionLabel && (
+                <p className={styles.disclaimer}>
+                  Identified as "{predictionLabel}" via AI
+                </p>
               )}
 
               {/* Serving adjustment */}
@@ -319,6 +334,7 @@ export default function CameraModal({ meal, onAdd, onClose }) {
                 <span className={styles.macrosTitle}>Estimated Nutrition</span>
                 {(() => {
                   const calculated = calculateMacros();
+                  if (!calculated) return null;
                   return (
                     <div className={styles.macrosGrid}>
                       <div className={styles.macroBox}>
@@ -353,10 +369,35 @@ export default function CameraModal({ meal, onAdd, onClose }) {
                 })()}
               </div>
 
+              {options.length > 1 && (
+                <div className={styles.suggestions}>
+                  <p className={styles.disclaimer}>Pick the closest match</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                    {options.map((opt) => (
+                      <button
+                        key={opt.id}
+                        className="btn btn-sm btn-secondary"
+                        style={{
+                          opacity: opt.id === selectedFood.id ? 1 : 0.8,
+                        }}
+                        onClick={() => setSelectedFood(opt)}
+                      >
+                        {opt.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className={styles.actionButtons}>
                 <button
                   className="btn btn-secondary"
-                  onClick={() => setPrediction(null)}
+                  onClick={() => {
+                    setSelectedFood(null);
+                    setOptions([]);
+                    setPredictionLabel(null);
+                    setConfidence(null);
+                  }}
                 >
                   Try Again
                 </button>
