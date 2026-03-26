@@ -22,9 +22,18 @@ import BarcodeScannerModal from "@/src/components/BarcodeScannerModal";
 import AddFoodModal from "@/src/components/AddFoodModal";
 import FoodDetailsModal from "@/src/components/FoodDetailsModal";
 import WaterTracker from "@/src/components/WaterTracker";
+import MealPickerSheet from "@/src/components/MealPickerSheet";
 import styles from "./HomePage.module.css";
 
 const MEALS = ["breakfast", "lunch", "dinner", "snacks"];
+
+function getSuggestedMeal() {
+  const h = new Date().getHours();
+  if (h < 10) return "breakfast";
+  if (h < 15) return "lunch";
+  if (h < 20) return "dinner";
+  return "snacks";
+}
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -44,10 +53,14 @@ export default function HomePage() {
   const [searchMeal, setSearchMeal] = useState(null);
   const [cameraMeal, setCameraMeal] = useState(null);
   const [barcodeMeal, setBarcodeMeal] = useState(null);
+  const [mealPickerOpen, setMealPickerOpen] = useState(false);
+  const [mealPickerIntent, setMealPickerIntent] = useState(null); // "start-flow" | "assign-food"
+  const [stagedFood, setStagedFood] = useState(null);
   const [waterIntake, setWaterState] = useState(0);
   const [streak, setStreak] = useState(0);
   const today = dateKey();
   const lastFetchDate = useRef(null);
+  const suggestedMeal = getSuggestedMeal();
 
   const fetchData = useCallback(async () => {
     if (!user) {
@@ -172,6 +185,34 @@ export default function HomePage() {
     setSearchMeal(null);
     setCameraMeal(null);
     setBarcodeMeal(null);
+    setStagedFood(null);
+  };
+
+  const openMealPicker = (intent) => {
+    setMealPickerIntent(intent);
+    setMealPickerOpen(true);
+  };
+
+  const handleMealPicked = (meal) => {
+    if (!meal) {
+      setMealPickerOpen(false);
+      setMealPickerIntent(null);
+      return;
+    }
+
+    if (mealPickerIntent === "start-flow") {
+      setAddFoodMeal(meal);
+    } else if (mealPickerIntent === "assign-food" && stagedFood) {
+      handleStageFood(stagedFood, meal);
+    }
+
+    setMealPickerOpen(false);
+    setMealPickerIntent(null);
+  };
+
+  const handleQuickScanResult = (food) => {
+    setStagedFood(food);
+    openMealPicker("assign-food");
   };
 
   if (loading) {
@@ -237,6 +278,32 @@ export default function HomePage() {
         />
       </div>
 
+      {/* Primary CTA */}
+      <div className={styles.section}>
+        <div className={styles.primaryCtaBlock}>
+          <button
+            className={styles.logButton}
+            onClick={() => openMealPicker("start-flow")}
+          >
+            + Log Food
+          </button>
+          <div className={styles.secondaryActions}>
+            <button
+              className={styles.ghostButton}
+              onClick={() => setCameraMeal("__quick__")}
+            >
+              📷 Scan Food
+            </button>
+            <button
+              className={styles.ghostButton}
+              onClick={() => setBarcodeMeal("__quick__")}
+            >
+              ⬛ Scan Barcode
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Water Tracker */}
       <div className={styles.section}>
         <WaterTracker intake={waterIntake} onAdd={handleAddWater} />
@@ -286,8 +353,12 @@ export default function HomePage() {
       {/* Camera Modal */}
       {cameraMeal && (
         <CameraModal
-          meal={cameraMeal}
-          onAdd={(food) => handleStageFood(food, cameraMeal)}
+          meal={cameraMeal === "__quick__" ? suggestedMeal : cameraMeal}
+          onAdd={(food) =>
+            cameraMeal === "__quick__"
+              ? handleQuickScanResult(food)
+              : handleStageFood(food, cameraMeal)
+          }
           onClose={() => setCameraMeal(null)}
         />
       )}
@@ -295,9 +366,26 @@ export default function HomePage() {
       {/* Barcode Scanner Modal */}
       <BarcodeScannerModal
         open={!!barcodeMeal}
-        meal={barcodeMeal || ""}
-        onAdd={handleStageFood}
+        meal={barcodeMeal === "__quick__" ? suggestedMeal : barcodeMeal || ""}
+        onAdd={(food, meal) => {
+          if (barcodeMeal === "__quick__" || !meal) {
+            handleQuickScanResult(food);
+          } else {
+            handleStageFood(food, meal || suggestedMeal);
+          }
+        }}
         onClose={() => setBarcodeMeal(null)}
+      />
+
+      {/* Meal Picker Bottom Sheet */}
+      <MealPickerSheet
+        open={mealPickerOpen}
+        defaultMeal={suggestedMeal}
+        onSelect={handleMealPicked}
+        onClose={() => {
+          setMealPickerOpen(false);
+          setMealPickerIntent(null);
+        }}
       />
     </div>
   );

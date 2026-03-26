@@ -4,20 +4,32 @@
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
-  padding: 16px;
+  padding: 12px 16px;
   margin-bottom: 12px;
 }
 
-.headerRow {
+.summaryRow {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  color: inherit;
+  cursor: pointer;
 }
 
 .leftPair {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
+}
+
+.rightPair {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .icon {
@@ -33,45 +45,44 @@
   font-weight: 700;
   color: #fff;
   text-transform: capitalize;
+  letter-spacing: -0.01em;
+}
+
+.mealMeta {
+  color: var(--text-tertiary, rgba(255, 255, 255, 0.5));
+  font-size: 0.85rem;
 }
 
 .mealCalories {
-  color: var(--text-secondary, #8e8e93);
-  font-size: 0.85rem;
-}
-
-.addBtn {
-  background: rgba(167, 192, 128, 0.2);
-  color: #a7c080;
-  padding: 8px 16px;
-  border-radius: 12px;
-  font-size: 0.85rem;
+  color: #fff;
   font-weight: 700;
-  border: 1px solid rgba(167, 192, 128, 0.2);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.addBtn:active {
-  transform: scale(0.95);
+  font-size: 0.95rem;
 }
 
 .chevron {
   width: 16px;
   height: 16px;
   color: var(--text-secondary, #8e8e93);
-  margin-left: 4px;
-  display: inline-block;
-  vertical-align: middle;
-  transition: transform 0.2s;
+  transition: transform 0.2s ease;
 }
+
 .chevronOpen {
   transform: rotate(90deg);
 }
 
+.panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.panelOpen {
+  max-height: 600px;
+}
+
 .itemsList {
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: 12px;
+  padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
@@ -90,7 +101,7 @@
 }
 
 .itemName {
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.95rem;
   color: #fff;
 }
@@ -107,22 +118,54 @@
 }
 
 .itemCals {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.95rem;
   color: #fff;
 }
 
 .deleteBtn {
   background: none;
-  border: none;
+  border: 1px solid rgba(239, 68, 68, 0.3);
   color: var(--danger, #ef4444);
-  font-size: 1.2rem;
+  font-size: 1rem;
+  border-radius: 10px;
   cursor: pointer;
-  padding: 4px;
+  padding: 6px 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
+
+.deleteBtn:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
 .deleteBtn:active {
   opacity: 0.6;
+}
+
+.emptyState {
+  color: var(--text-tertiary, rgba(255, 255, 255, 0.5));
+  font-size: 0.9rem;
+  padding: 8px 0;
+}
+
+.inlineAddBtn {
+  margin-top: 12px;
+  width: 100%;
+  background: rgba(167, 192, 128, 0.12);
+  color: #a7c080;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 1px solid rgba(167, 192, 128, 0.25);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.inlineAddBtn:active {
+  transform: translateY(1px);
 }

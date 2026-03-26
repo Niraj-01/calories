@@ -1,0 +1,122 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 60;
+}
+
+.overlayVisible {
+  opacity: 1;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  background: rgba(28, 28, 30, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px 22px 0 0;
+  padding: 16px;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform 0.22s ease, opacity 0.22s ease;
+}
+
+.sheetVisible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.handleBar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.handle {
+  width: 50px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.header {
+  text-align: left;
+  padding: 0 4px 12px;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.subtitle {
+  color: var(--text-secondary, #a1a1aa);
+  font-size: 0.9rem;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.option {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 12px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.12s ease, background 0.15s ease;
+}
+
+.option:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.option:active {
+  transform: translateY(1px);
+}
+
+.optionRecommended {
+  border-color: rgba(167, 192, 128, 0.65);
+  background: rgba(167, 192, 128, 0.1);
+  box-shadow: 0 10px 30px rgba(167, 192, 128, 0.15);
+}
+
+.icon {
+  font-size: 1.3rem;
+}
+
+.optionText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.mealName {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.recommended {
+  margin-top: 4px;
+  font-size: 0.78rem;
+  color: #a7c080;
+  font-weight: 700;
+}

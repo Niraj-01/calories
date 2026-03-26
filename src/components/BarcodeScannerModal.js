@@ -119,14 +119,18 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
         fat: scaled.fat,
         fiber: scaled.fiber,
         servingAmount,
-        servingUnit: "g",
-        source: product.source,
-        common_servings: product.common_servings || [],
-      },
+      servingUnit: "g",
+      source: product.source,
+      common_servings: product.common_servings || [],
+    },
       meal,
     );
     handleClose();
   };
+
+  const mealLabel = meal
+    ? meal.charAt(0).toUpperCase() + meal.slice(1)
+    : "meal";
 
   if (!mounted) return null;
 
@@ -280,7 +284,7 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
               </div>
 
               <button className="btn btn-primary btn-full" onClick={handleAdd}>
-                Add to {meal}
+                {meal ? `Add to ${mealLabel}` : "Add & choose meal"}
               </button>
 
               <button

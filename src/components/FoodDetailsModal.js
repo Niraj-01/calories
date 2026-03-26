@@ -30,9 +30,12 @@ export default function FoodDetailsModal({
       document.body.style.overflow = "hidden";
       const defaultAmount = Math.max(1, parseFloat(food.defaultAmount) || 100);
       const defaultUnit = food.defaultUnit || "g";
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setServingAmount(defaultAmount);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUnit(defaultUnit);
       if (initialMeal) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSelectedMeal(initialMeal);
       }
     } else {

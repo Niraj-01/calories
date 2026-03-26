@@ -299,7 +299,7 @@ export default function CameraModal({ meal, onAdd, onClose }) {
 
               {predictionLabel && (
                 <p className={styles.disclaimer}>
-                  Identified as "{predictionLabel}" via AI
+                  Identified as &ldquo;{predictionLabel}&rdquo; via AI
                 </p>
               )}
 
