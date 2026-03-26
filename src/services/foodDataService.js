@@ -165,19 +165,24 @@ async function fetchOpenFoodFactsByBarcode(barcode) {
 }
 
 async function fetchOpenFoodFactsSearch(query) {
-  const params = new URLSearchParams({
-    search_terms: query,
-    json: 1,
-    page_size: 5,
-    fields:
-      "product_name,brands,nutriments,serving_size,categories_tags,states_tags,code",
-  });
-  const res = await fetch(`${OFF_SEARCH_URL}?${params.toString()}`);
-  if (!res.ok) return [];
-  const data = await res.json();
-  return (data.products || [])
-    .filter((p) => p.product_name && p.nutriments)
-    .map((p) => normalizeOFFProduct(p, p.code));
+  try {
+    const params = new URLSearchParams({
+      search_terms: query,
+      json: 1,
+      page_size: 5,
+      fields:
+        "product_name,brands,nutriments,serving_size,categories_tags,states_tags,code",
+    });
+    const res = await fetch(`${OFF_SEARCH_URL}?${params.toString()}`);
+    if (!res.ok) throw new Error(`OFF search ${res.status}`);
+    const data = await res.json();
+    return (data.products || [])
+      .filter((p) => p.product_name && p.nutriments)
+      .map((p) => normalizeOFFProduct(p, p.code));
+  } catch (err) {
+    console.warn("OpenFoodFacts search failed:", err);
+    return [];
+  }
 }
 
 function searchLocal(query) {
