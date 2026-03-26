@@ -1,10 +1,11 @@
+
 .overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  z-index: 1000;
+  z-index: 2200;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -13,11 +14,11 @@
 
 .modal {
   position: relative;
-  z-index: 1001;
+  z-index: 2201;
   width: 100%;
   border-top-left-radius: 40px;
   border-top-right-radius: 40px;
-  padding: 12px 24px calc(env(safe-area-inset-bottom) + 100px);
+  padding: 12px 24px calc(env(safe-area-inset-bottom, 16px) + 32px);
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

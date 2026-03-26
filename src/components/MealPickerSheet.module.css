@@ -9,7 +9,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  z-index: 60;
+  z-index: 2200;
 }
 
 .overlayVisible {
@@ -23,7 +23,7 @@
   background: rgba(28, 28, 30, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 22px 22px 0 0;
-  padding: 16px;
+  padding: 16px 16px calc(env(safe-area-inset-bottom, 16px) + 20px);
   transform: translateY(20px);
   opacity: 0;
   transition: transform 0.22s ease, opacity 0.22s ease;
