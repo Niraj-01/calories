@@ -68,57 +68,28 @@ export default function CameraModal({ meal, onAdd, onClose }) {
       return;
     }
 
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY;
-    if (!apiKey) {
-      setError("Missing API key");
-      return;
-    }
-
     setLoading(true);
     setError(null);
 
     try {
-      const parts = [];
-      const mime = preview?.split(";")[0]?.split(":")[1] || "image/jpeg";
-      if (!descriptionOnly && imageBase64) {
-        parts.push({ inline_data: { mime_type: mime, data: imageBase64 } });
-      }
-      if (descriptionOnly || correctionText) {
-        parts.push({ text: correctionText || "" });
-      }
-      parts.push({
-        text: `You are a food nutrition expert. Analyze the food in this image. Return ONLY a JSON object (no markdown, no explanation) with this exact shape:
-{ "name": string, "estimatedGrams": number, "calories": number, "protein": number, "carbs": number, "fat": number, "fiber": number, "confidence": "high"|"medium"|"low", "items": [{ "name": string, "grams": number, "calories": number }] }
-If multiple foods are visible, list each in items[] and sum the totals. Estimate portion sizes from visual cues.`,
+      const payload = {
+        imageBase64: descriptionOnly ? undefined : imageBase64,
+        mimeType: preview?.split(";")[0]?.split(":")[1] || "image/jpeg",
+        textDescription: descriptionOnly ? correctionText : undefined,
+      };
+
+      const res = await fetch("/api/analyze-food", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ contents: [{ parts }], generationConfig: { temperature: 0.1 } }),
-        },
-      );
-
-      const data = await res.json().catch(async () => ({ raw: await res.text() }));
+      const data = await res.json().catch(async () => ({ error: await res.text() }));
       if (!res.ok) {
-        const detail = data?.error?.message || JSON.stringify(data);
-        throw new Error(detail || "Analysis failed");
+        throw new Error(data?.error || "Analysis failed");
       }
 
-      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || data?.raw || "";
-      const cleaned = text.replace(/```json|```/g, "").trim();
-      let parsed;
-      try {
-        parsed = JSON.parse(cleaned);
-      } catch {
-        const match = cleaned.match(/\{[\s\S]*\}/);
-        if (!match) throw new Error("Model returned non-JSON response");
-        parsed = JSON.parse(match[0]);
-      }
-
-      parseAnalysis(parsed);
+      parseAnalysis(data);
     } catch (err) {
       setError(err.message || "Analysis failed. Try again.");
     } finally {
