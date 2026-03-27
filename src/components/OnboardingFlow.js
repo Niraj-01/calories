@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { updateUserSettings } from "@/src/services/firestoreService";
+import { setUserSettings } from "@/src/services/firestoreService";
 import styles from "./OnboardingFlow.module.css";
 
 const goals = [
@@ -69,7 +69,7 @@ export default function OnboardingFlow({ user, onComplete }) {
     if (!user) return;
     setSaving(true);
     try {
-      await updateUserSettings(user.uid, {
+      await setUserSettings(user.uid, {
         goal,
         gender,
         age,

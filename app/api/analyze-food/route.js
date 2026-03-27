@@ -76,10 +76,30 @@ If multiple foods are visible, list each in items[] and sum the totals. Estimate
       return NextResponse.json({ error: "Analysis failed", detail }, { status: code });
     }
 
-    const data = await response.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    const data = await response.json().catch(async () => ({ raw: await response.text() }));
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || data?.raw || "";
     const cleaned = text.replace(/```json|```/g, "").trim();
-    const parsed = JSON.parse(cleaned);
+    let parsed;
+    try {
+      parsed = JSON.parse(cleaned);
+    } catch (err) {
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          parsed = JSON.parse(jsonMatch[0]);
+        } catch (e) {
+          return NextResponse.json(
+            { error: "Model returned non-JSON response", detail: cleaned },
+            { status: 502 },
+          );
+        }
+      } else {
+        return NextResponse.json(
+          { error: "Model returned non-JSON response", detail: cleaned },
+          { status: 502 },
+        );
+      }
+    }
 
     return NextResponse.json(parsed);
   } catch (err) {
