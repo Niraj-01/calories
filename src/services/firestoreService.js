@@ -1,5 +1,6 @@
 import {
   collection,
+  collectionGroup,
   doc,
   addDoc,
   deleteDoc,
@@ -8,7 +9,9 @@ import {
   setDoc,
   updateDoc,
   query,
+  where,
   orderBy,
+  limit,
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "@/src/firebase";
@@ -29,6 +32,7 @@ export async function addFoodEntry(uid, date, entry) {
   const ref = entriesRef(uid, date);
   const docRef = await addDoc(ref, {
     ...entry,
+    uid,
     createdAt: serverTimestamp(),
   });
   return docRef.id;
@@ -70,6 +74,59 @@ export async function getDayRange(uid, startDate, endDate) {
 
   await Promise.all(promises);
   return results;
+}
+
+// --- Recent & Frequent Foods ---
+
+export async function getRecentEntries(uid, maxItems = 10) {
+  const q = query(
+    collectionGroup(db, "entries"),
+    where("uid", "==", uid),
+    orderBy("createdAt", "desc"),
+    limit(maxItems),
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
+export async function getFrequentFoods(uid, maxItems = 8) {
+  const q = query(
+    collectionGroup(db, "entries"),
+    where("uid", "==", uid),
+    orderBy("createdAt", "desc"),
+    limit(100),
+  );
+  const snap = await getDocs(q);
+  const counts = new Map();
+
+  snap.docs.forEach((docSnap) => {
+    const data = docSnap.data();
+    const key = (data.name || "").toLowerCase();
+    if (!key) return;
+    const prev = counts.get(key) || { name: data.name, total: 0, calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, count: 0 };
+    prev.count += 1;
+    prev.calories += data.calories || 0;
+    prev.protein += data.protein || 0;
+    prev.carbs += data.carbs || 0;
+    prev.fat += data.fat || 0;
+    prev.fiber += data.fiber || 0;
+    counts.set(key, prev);
+  });
+
+  const sorted = [...counts.values()]
+    .map((v) => ({
+      name: v.name,
+      avgCalories: Math.round(v.calories / v.count) || 0,
+      avgProtein: Math.round((v.protein / v.count) * 10) / 10 || 0,
+      avgCarbs: Math.round((v.carbs / v.count) * 10) / 10 || 0,
+      avgFat: Math.round((v.fat / v.count) * 10) / 10 || 0,
+      avgFiber: Math.round((v.fiber / v.count) * 10) / 10 || 0,
+      count: v.count,
+    }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, maxItems);
+
+  return sorted;
 }
 
 // --- User Settings ---
@@ -188,4 +245,45 @@ export async function updateStreak(uid) {
 
   await setUserSettings(uid, { currentStreak: streak, lastLogDate: today });
   return streak;
+}
+
+// --- Exercises ---
+
+function exercisesRef(uid, date) {
+  return collection(db, "users", uid, "logs", date, "exercises");
+}
+
+export async function addExerciseEntry(uid, date, data) {
+  const ref = exercisesRef(uid, date);
+  const docRef = await addDoc(ref, {
+    ...data,
+    uid,
+    createdAt: serverTimestamp(),
+  });
+  return docRef.id;
+}
+
+export async function getExerciseEntries(uid, date) {
+  const ref = exercisesRef(uid, date);
+  const q = query(ref, orderBy("createdAt", "desc"));
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
+// --- Progress Photos ---
+
+function progressPhotosRef(uid) {
+  return collection(db, "users", uid, "progressPhotos");
+}
+
+export async function addProgressPhoto(uid, dateKeyStr, data) {
+  const ref = doc(progressPhotosRef(uid), dateKeyStr);
+  await setDoc(ref, { ...data, createdAt: serverTimestamp(), uid });
+  return ref.id;
+}
+
+export async function getProgressPhotos(uid) {
+  const q = query(progressPhotosRef(uid), orderBy("createdAt", "desc"));
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }

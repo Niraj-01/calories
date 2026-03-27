@@ -3,18 +3,20 @@
 import { useEffect, useState } from "react";
 import styles from "./CalorieRing.module.css";
 
-export default function CalorieRing({ consumed = 0, goal = 2000 }) {
+export default function CalorieRing({ consumed = 0, goal = 2000, burned = 0 }) {
   const radius = 90;
   const circumference = 2 * Math.PI * radius;
   const [offset, setOffset] = useState(circumference);
-  const isOver = consumed > goal;
+  const adjustedGoal = Math.max(goal + burned, 1);
+  const isOver = consumed > adjustedGoal;
+  const remaining = Math.max(adjustedGoal - consumed, 0);
 
   useEffect(() => {
-    const ratio = Math.min(consumed / Math.max(goal, 1), 1);
+    const ratio = Math.min(consumed / adjustedGoal, 1);
     const targetOffset = circumference - ratio * circumference;
     const timer = setTimeout(() => setOffset(targetOffset), 80);
     return () => clearTimeout(timer);
-  }, [consumed, goal, circumference]);
+  }, [consumed, adjustedGoal, circumference]);
 
   return (
     <div className={styles.container}>
@@ -39,9 +41,10 @@ export default function CalorieRing({ consumed = 0, goal = 2000 }) {
         <span className={styles.value}>
           {Math.round(consumed).toLocaleString()}
         </span>
-        <span className={styles.unit}>kcal</span>
-        <span className={styles.sub}>
-          of {Math.round(goal).toLocaleString()}
+        <span className={styles.unit}>kcal consumed</span>
+        <span className={styles.sub}>Goal {Math.round(goal)} + Burned {Math.round(burned)}</span>
+        <span className={styles.remaining}>
+          {Math.round(remaining)} kcal left
         </span>
       </div>
     </div>

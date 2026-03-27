@@ -8,7 +8,9 @@ import {
   dateKey,
   getDayLog,
   setLoggedWeight,
+  getProgressPhotos,
 } from "@/src/services/firestoreService";
+import ProgressPhotos from "@/src/components/ProgressPhotos";
 import {
   ResponsiveContainer,
   BarChart,
@@ -48,6 +50,7 @@ export default function DashboardPage() {
   const [goal, setGoal] = useState(2000);
   const [weightInput, setWeightInput] = useState("");
   const [weightSaved, setWeightSaved] = useState(false);
+  const [photos, setPhotos] = useState([]);
 
   const [activeFilter, setActiveFilter] = useState("1W");
 
@@ -67,13 +70,16 @@ export default function DashboardPage() {
     (async () => {
       try {
         setLoading(true);
-        const [range, settings, ...logs] = await Promise.all([
+        const [range, settings, photosList, ...logs] = await Promise.all([
           getDayRange(user.uid, days[0], days[days.length - 1]),
           getUserSettings(user.uid),
+          getProgressPhotos(user.uid),
           ...days.map((d) => getDayLog(user.uid, d)),
         ]);
         setRangeData(range);
         setGoal(settings.calorieGoal || 2000);
+        setPhotos(photosList || []);
+        setPhotos(logs.pop() || []);
 
         const logMap = {};
         days.forEach((d, i) => {
@@ -413,6 +419,11 @@ export default function DashboardPage() {
             Log your weight for at least 2 days to see the trend.
           </p>
         )}
+      </div>
+
+      {/* Progress Photos */}
+      <div className={styles.card}>
+        <ProgressPhotos user={user} />
       </div>
 
       {/* Water Intake */}

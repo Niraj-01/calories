@@ -1,24 +1,24 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { resolveFood, scaleMacros } from "@/src/services/foodDataService";
+import { scaleMacros } from "@/src/services/foodDataService";
 import styles from "./CameraModal.module.css";
 
 export default function CameraModal({ meal, onAdd, onClose }) {
-  const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [predictionLabel, setPredictionLabel] = useState(null);
-  const [options, setOptions] = useState([]);
-  const [confidence, setConfidence] = useState(null);
-  const [selectedFood, setSelectedFood] = useState(null);
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
-
-  const [servingAmount, setServingAmount] = useState(100);
-  const [servingUnit, setServingUnit] = useState("g");
+  const [preview, setPreview] = useState(null);
+  const [imageBase64, setImageBase64] = useState(null);
+  const [analysis, setAnalysis] = useState(null);
+  const [foodName, setFoodName] = useState("");
+  const [servingGrams, setServingGrams] = useState(100);
+  const [confidence, setConfidence] = useState(null);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [showCorrection, setShowCorrection] = useState(false);
+  const [correctionText, setCorrectionText] = useState("");
 
   const fileInputRef = useRef(null);
 
@@ -39,135 +39,113 @@ export default function CameraModal({ meal, onAdd, onClose }) {
   };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-      setPreview(URL.createObjectURL(file));
-      setOptions([]);
-      setSelectedFood(null);
-      setPredictionLabel(null);
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result;
+      const base64 = typeof result === "string" ? result.split(",")[1] : "";
+      setPreview(result);
+      setImageBase64(base64);
+      setAnalysis(null);
       setError(null);
-    }
+    };
+    reader.readAsDataURL(file);
   };
 
-  const handleAnalyze = async () => {
-    if (!image) return;
+  const parseAnalysis = (data) => {
+    const estimatedGrams = Number(data.estimatedGrams) || 100;
+    setAnalysis(data);
+    setFoodName(data.name || "Food");
+    setServingGrams(estimatedGrams);
+    setConfidence(data.confidence || null);
+    setItems(Array.isArray(data.items) ? data.items : []);
+  };
+
+  const runAnalysis = async ({ descriptionOnly = false } = {}) => {
+    if (!descriptionOnly && !imageBase64) {
+      setError("Please add a photo first");
+      return;
+    }
 
     setLoading(true);
     setError(null);
-    setPrediction(null);
 
     try {
-      // 1. Send image to HuggingFace
-      const buffer = await image.arrayBuffer();
-      let hfResponse;
-      const maxRetries = 3;
-      for (let attempt = 0; attempt < maxRetries; attempt++) {
-        hfResponse = await fetch(
-          "https://router.huggingface.co/hf-inference/models/nateraw/food",
-          {
-            headers: {
-              Authorization: `Bearer ${process.env.NEXT_PUBLIC_HUGGINGFACE_API_KEY}`,
-              "Content-Type": "application/octet-stream",
-              "x-wait-for-model": "true",
-            },
-            method: "POST",
-            body: buffer,
-          },
-        );
+      const payload = descriptionOnly
+        ? { textDescription: correctionText }
+        : { imageBase64, mimeType: preview?.split(";")[0]?.split(":")[1] || "image/jpeg" };
 
-        if (hfResponse.ok) break;
-
-        if (hfResponse.status === 503 && attempt < maxRetries - 1) {
-          try {
-            const body = await hfResponse.json();
-            const waitTime = Math.min(
-              (body.estimated_time || 15) * 1000,
-              30000,
-            );
-            await new Promise((r) => setTimeout(r, waitTime));
-            continue;
-          } catch {
-            await new Promise((r) => setTimeout(r, 10000));
-            continue;
-          }
-        }
-        const errorText = await hfResponse.text();
-        throw new Error(
-          `AI model error (${hfResponse.status}). Please try again.`,
-        );
+      if (descriptionOnly && imageBase64) {
+        payload.imageBase64 = imageBase64;
+        payload.mimeType = preview?.split(";")[0]?.split(":")[1] || "image/jpeg";
       }
 
-      const hfText = await hfResponse.text();
-      const hfResult = JSON.parse(hfText);
+      const res = await fetch("/api/analyze-food", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-      if (!Array.isArray(hfResult) || hfResult.length === 0) {
-        throw new Error(
-          typeof hfResult?.error === "string"
-            ? hfResult.error
-            : "Could not identify food.",
-        );
+      if (!res.ok) {
+        const detail = await res.json().catch(async () => ({ error: await res.text() }));
+        throw new Error(detail.error || "Analysis failed");
       }
 
-      const topPrediction = hfResult[0];
-      const foodName = topPrediction.label.replace(/_/g, " ");
-      setPredictionLabel(foodName);
-      setConfidence(topPrediction.score);
-
-      // 2. Resolve nutrition data (local DB first, then OFF)
-      const resolved = await resolveFood(foodName, { type: "search" });
-      if (!resolved || resolved.length === 0) {
-        throw new Error("Food identified, but nutrition data not found.");
-      }
-
-      setOptions(resolved);
-      setSelectedFood(resolved[0]);
-      const defaultGrams =
-        resolved[0].common_servings?.[0]?.grams ||
-        resolved[0].defaultAmount ||
-        100;
-      setServingAmount(defaultGrams);
-      setServingUnit("g");
+      const data = await res.json();
+      parseAnalysis(data);
     } catch (err) {
-      setError(err.message || "Something went wrong. Please try again.");
+      setError(err.message || "Analysis failed. Try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const calculateMacros = () => {
-    if (!selectedFood) return null;
-    const per100g = selectedFood.per_100g || {
-      calories: selectedFood.calories || 0,
-      protein: selectedFood.protein || 0,
-      carbs: selectedFood.carbs || 0,
-      fat: selectedFood.fat || 0,
-      fiber: selectedFood.fiber || 0,
+  const per100g = useMemo(() => {
+    if (!analysis) return null;
+    const grams = analysis.estimatedGrams || 100;
+    const factor = grams / 100;
+    return {
+      calories: Math.round((analysis.calories || 0) / factor),
+      protein: Math.round((analysis.protein || 0) / factor),
+      carbs: Math.round((analysis.carbs || 0) / factor),
+      fat: Math.round((analysis.fat || 0) / factor),
+      fiber: Math.round((analysis.fiber || 0) / factor),
     };
-    return scaleMacros(per100g, servingAmount);
-  };
+  }, [analysis]);
 
-  const handleAddSubmit = () => {
-    if (!selectedFood) return;
+  const scaledMacros = useMemo(() => {
+    if (!per100g) return null;
+    return scaleMacros(per100g, servingGrams || 0);
+  }, [per100g, servingGrams]);
+
+  const handleLog = () => {
+    if (!per100g) return;
     const foodData = {
-      ...selectedFood,
-      name:
-        selectedFood.name.charAt(0).toUpperCase() +
-        selectedFood.name.slice(1),
-      per_100g:
-        selectedFood.per_100g || {
-          calories: selectedFood.calories || 0,
-          protein: selectedFood.protein || 0,
-          carbs: selectedFood.carbs || 0,
-          fat: selectedFood.fat || 0,
-          fiber: selectedFood.fiber || 0,
-        },
-      servingAmount: servingAmount,
-      servingUnit: servingUnit,
+      name: foodName?.trim() || "Food",
+      per_100g: per100g,
+      servingAmount: servingGrams,
+      servingUnit: "g",
+      source: "ai",
+      defaultAmount: servingGrams,
+      defaultUnit: "g",
+      calories: scaledMacros?.calories,
+      protein: scaledMacros?.protein,
+      carbs: scaledMacros?.carbs,
+      fat: scaledMacros?.fat,
+      fiber: scaledMacros?.fiber,
     };
     onAdd(foodData);
     handleClose();
   };
+
+  const confidenceClass = confidence
+    ? confidence === "high"
+      ? styles.confidenceHigh
+      : confidence === "medium"
+        ? styles.confidenceMedium
+        : styles.confidenceLow
+    : "";
 
   if (!mounted) return null;
 
@@ -180,12 +158,10 @@ export default function CameraModal({ meal, onAdd, onClose }) {
         className={`${styles.sheet} ${visible ? styles.sheetVisible : ""}`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Drag handle */}
         <div className={styles.handleBar}>
           <div className={styles.handle} />
         </div>
 
-        {/* Header */}
         <div className={styles.sheetHeader}>
           <h2 className={styles.sheetTitle}>Scan Food for {meal}</h2>
           <button className={styles.closeBtn} onClick={handleClose}>
@@ -204,8 +180,7 @@ export default function CameraModal({ meal, onAdd, onClose }) {
         </div>
 
         <div className={styles.content}>
-          {/* Upload Area — idle state */}
-          {!selectedFood && !loading && (
+          {!analysis && !loading && (
             <div className={styles.uploadArea}>
               {preview ? (
                 <div className={styles.previewContainer}>
@@ -217,8 +192,8 @@ export default function CameraModal({ meal, onAdd, onClose }) {
                   <button
                     className={styles.changeBtn}
                     onClick={() => {
-                      setImage(null);
                       setPreview(null);
+                      setImageBase64(null);
                     }}
                   >
                     Change Photo
@@ -246,32 +221,25 @@ export default function CameraModal({ meal, onAdd, onClose }) {
               {error && (
                 <div className={styles.errorCard}>
                   <p className={styles.errorText}>{error}</p>
-                  <p className={styles.errorHint}>
-                    Try a clearer photo of the food
-                  </p>
                 </div>
               )}
 
               <button
                 className="btn btn-primary btn-full"
-                disabled={!image}
-                onClick={handleAnalyze}
+                disabled={!preview}
+                onClick={() => runAnalysis()}
               >
                 Analyze Food
               </button>
             </div>
           )}
 
-          {/* Loading / Analyzing state */}
           {loading && (
             <div className={styles.loadingArea}>
               <div className={styles.pulseRing}>
                 <div className={styles.pulseInner}>🍽️</div>
               </div>
-              <p className={styles.loadingText}>Identifying food...</p>
-              <p className={styles.loadingHint}>
-                This may take up to 30s on first use
-              </p>
+              <p className={styles.loadingText}>Analyzing your meal...</p>
               {preview && (
                 <img
                   src={preview}
@@ -282,110 +250,88 @@ export default function CameraModal({ meal, onAdd, onClose }) {
             </div>
           )}
 
-          {/* Result state */}
-          {selectedFood && !loading && (
+          {analysis && !loading && (
             <div className={styles.resultArea}>
               <div className={styles.resultHeader}>
-                <h3 className={styles.foodName}>
-                  {selectedFood.name.charAt(0).toUpperCase() +
-                    selectedFood.name.slice(1)}
-                </h3>
+                <input
+                  className={styles.foodNameInput}
+                  value={foodName}
+                  onChange={(e) => setFoodName(e.target.value)}
+                />
                 {confidence && (
-                  <span className={styles.confidenceBadge}>
-                    {Math.round(confidence * 100)}% match
+                  <span className={`${styles.confidenceBadge} ${confidenceClass}`}>
+                    {confidence} confidence
                   </span>
                 )}
               </div>
 
-              {predictionLabel && (
-                <p className={styles.disclaimer}>
-                  Identified as &ldquo;{predictionLabel}&rdquo; via AI
-                </p>
+              {items.length > 0 && (
+                <div className={styles.itemsList}>
+                  {items.map((it, idx) => (
+                    <div key={`${it.name}-${idx}`} className={styles.itemRow}>
+                      <span className={styles.itemName}>{it.name}</span>
+                      <span className={styles.itemDetail}>{Math.round(it.grams)}g</span>
+                    </div>
+                  ))}
+                </div>
               )}
 
-              {/* Serving adjustment */}
-              <div className={styles.servingSection}>
-                <span className={styles.servingLabel}>Serving</span>
-                <div className={styles.servingGroup}>
-                  <input
-                    type="number"
-                    className={`input ${styles.servingInput}`}
-                    value={servingAmount}
-                    onChange={(e) =>
-                      setServingAmount(parseFloat(e.target.value) || 0)
-                    }
-                    min="0"
-                  />
-                  <select
-                    className={`input ${styles.unitSelect}`}
-                    value={servingUnit}
-                    onChange={(e) => setServingUnit(e.target.value)}
-                  >
-                    <option value="g">grams</option>
-                    <option value="ml">ml</option>
-                    <option value="oz">oz</option>
-                    <option value="serving">servings</option>
-                  </select>
+              {scaledMacros && (
+                <div className={styles.macrosPills}>
+                  <span className={styles.pill} data-type="calories">
+                    {scaledMacros.calories} kcal
+                  </span>
+                  <span className={styles.pill}>{scaledMacros.protein}g P</span>
+                  <span className={styles.pill}>{scaledMacros.carbs}g C</span>
+                  <span className={styles.pill}>{scaledMacros.fat}g F</span>
                 </div>
+              )}
+
+              <div className={styles.servingSection}>
+                <label className={styles.servingLabel}>Serving size (g)</label>
+                <input
+                  type="number"
+                  className={`input ${styles.servingInput}`}
+                  value={servingGrams}
+                  onChange={(e) =>
+                    setServingGrams(Math.max(1, parseFloat(e.target.value) || 1))
+                  }
+                  min="1"
+                />
               </div>
 
-              {/* Macros card */}
-              <div className={styles.macrosCard}>
-                <span className={styles.macrosTitle}>Estimated Nutrition</span>
-                {(() => {
-                  const calculated = calculateMacros();
-                  if (!calculated) return null;
-                  return (
-                    <div className={styles.macrosGrid}>
-                      <div className={styles.macroBox}>
-                        <span
-                          className={styles.macroValue}
-                          data-type="calories"
-                        >
-                          {calculated.calories}
-                        </span>
-                        <span className={styles.macroLabel}>kcal</span>
-                      </div>
-                      <div className={styles.macroBox}>
-                        <span className={styles.macroValue} data-type="protein">
-                          {calculated.protein}g
-                        </span>
-                        <span className={styles.macroLabel}>Protein</span>
-                      </div>
-                      <div className={styles.macroBox}>
-                        <span className={styles.macroValue} data-type="carbs">
-                          {calculated.carbs}g
-                        </span>
-                        <span className={styles.macroLabel}>Carbs</span>
-                      </div>
-                      <div className={styles.macroBox}>
-                        <span className={styles.macroValue} data-type="fat">
-                          {calculated.fat}g
-                        </span>
-                        <span className={styles.macroLabel}>Fat</span>
-                      </div>
-                    </div>
-                  );
-                })()}
-              </div>
+              {(confidence === "low" || showCorrection) && (
+                <div className={styles.correctionBox}>
+                  <p className={styles.correctionTitle}>Describe your meal</p>
+                  <textarea
+                    className={styles.correctionInput}
+                    rows={3}
+                    value={correctionText}
+                    onChange={(e) => setCorrectionText(e.target.value)}
+                    placeholder="e.g. Two scrambled eggs with butter and toast"
+                  />
+                  <button
+                    className="btn btn-secondary btn-full"
+                    disabled={!correctionText.trim()}
+                    onClick={() => runAnalysis({ descriptionOnly: true })}
+                  >
+                    Re-analyze
+                  </button>
+                </div>
+              )}
 
-              {options.length > 1 && (
-                <div className={styles.suggestions}>
-                  <p className={styles.disclaimer}>Pick the closest match</p>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                    {options.map((opt) => (
-                      <button
-                        key={opt.id}
-                        className="btn btn-sm btn-secondary"
-                        style={{
-                          opacity: opt.id === selectedFood.id ? 1 : 0.8,
-                        }}
-                        onClick={() => setSelectedFood(opt)}
-                      >
-                        {opt.name}
-                      </button>
-                    ))}
-                  </div>
+              {confidence === "low" && !showCorrection && (
+                <button
+                  className={styles.correctionPrompt}
+                  onClick={() => setShowCorrection(true)}
+                >
+                  Confidence is low — tap to correct
+                </button>
+              )}
+
+              {error && (
+                <div className={styles.errorCard}>
+                  <p className={styles.errorText}>{error}</p>
                 </div>
               )}
 
@@ -393,16 +339,16 @@ export default function CameraModal({ meal, onAdd, onClose }) {
                 <button
                   className="btn btn-secondary"
                   onClick={() => {
-                    setSelectedFood(null);
-                    setOptions([]);
-                    setPredictionLabel(null);
-                    setConfidence(null);
+                    setAnalysis(null);
+                    setItems([]);
+                    setShowCorrection(false);
+                    setCorrectionText("");
                   }}
                 >
-                  Try Again
+                  Start Over
                 </button>
-                <button className="btn btn-primary" onClick={handleAddSubmit}>
-                  Log Food
+                <button className="btn btn-primary" onClick={handleLog}>
+                  Log it
                 </button>
               </div>
             </div>

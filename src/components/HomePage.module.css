@@ -37,6 +37,46 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.streakBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.weekRow {
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 11px;
+}
+
+.dotLogged {
+  background: #f59e0b;
+  border-color: #f59e0b;
+  color: #0b0b0c;
+}
+
+.dotToday {
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+}
+
+.streakMessage {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
 .streakIcon {
   color: #f97316;
   font-size: 1rem;
@@ -95,7 +135,7 @@
 
 .secondaryActions {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -122,4 +162,60 @@
 
 .ghostButton:active {
   transform: translateY(1px);
+}
+
+.exerciseCard {
+  background: var(--card-bg, rgba(28, 28, 30, 0.7));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.exerciseHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.exerciseTitle {
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.exerciseBurn {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.exerciseList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exerciseRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.06));
+}
+
+.exerciseName {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.exerciseMeta {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.exerciseCals {
+  color: var(--accent);
+  font-weight: 800;
 }

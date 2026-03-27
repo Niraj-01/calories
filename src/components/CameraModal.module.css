@@ -3,7 +3,7 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0);
-  z-index: 1000;
+  z-index: 2200;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -83,7 +83,7 @@
 .content {
   flex: 1;
   overflow-y: auto;
-  padding: 0 20px 24px;
+  padding: 0 20px calc(env(safe-area-inset-bottom, 16px) + 24px);
   -webkit-overflow-scrolling: touch;
 }
 
@@ -240,12 +240,15 @@
   justify-content: space-between;
   gap: 12px;
 }
-
-.foodName {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 700;
+.foodNameInput {
+  flex: 1;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
   color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 700;
+  padding: 10px 12px;
 }
 
 .confidenceBadge {
@@ -256,6 +259,21 @@
   background: var(--accent-dim);
   padding: 4px 10px;
   border-radius: var(--radius-pill);
+}
+
+.confidenceHigh {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.12);
+}
+
+.confidenceMedium {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
+}
+
+.confidenceLow {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.14);
 }
 
 .disclaimer {
@@ -270,6 +288,32 @@
   gap: 8px;
 }
 
+.itemsList {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.itemRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.itemName {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.itemDetail {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
 .servingLabel {
   font-size: 13px;
   font-weight: 600;
@@ -278,82 +322,29 @@
   color: var(--text-secondary);
 }
 
-.servingGroup {
-  display: flex;
-  gap: 8px;
-}
-
 .servingInput {
-  width: 90px;
+  width: 120px;
   flex-shrink: 0;
   text-align: center;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
 }
 
-.unitSelect {
-  flex: 1;
-}
-
 /* Macros card */
-.macrosCard {
-  background: var(--bg-elevated);
-  border-radius: var(--radius-md);
-  padding: 16px;
+.macrosPills {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.macrosTitle {
-  font-size: 13px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--text-secondary);
-}
-
-.macrosGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  flex-wrap: wrap;
   gap: 8px;
 }
 
-.macroBox {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.macroValue {
-  font-size: 18px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
+.pill {
+  padding: 8px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-glass);
   color: var(--text-primary);
-}
-
-.macroValue[data-type="calories"] {
-  color: var(--accent);
-}
-
-.macroValue[data-type="protein"] {
-  color: var(--accent-protein);
-}
-
-.macroValue[data-type="carbs"] {
-  color: var(--accent-carbs);
-}
-
-.macroValue[data-type="fat"] {
-  color: var(--accent-fat);
-}
-
-.macroLabel {
-  font-size: 11px;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  font-size: 13px;
 }
 
 /* Action buttons */
@@ -364,4 +355,38 @@
 
 .actionButtons .btn {
   flex: 1;
+}
+
+.correctionBox {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.correctionTitle {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.correctionInput {
+  width: 100%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  padding: 10px;
+  resize: vertical;
+}
+
+.correctionPrompt {
+  background: none;
+  border: 1px dashed var(--border-glass);
+  color: var(--accent);
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
 }

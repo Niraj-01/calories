@@ -11,6 +11,9 @@ import {
   getWaterIntake,
   setWaterIntake,
   updateStreak,
+  getRecentEntries,
+  getFrequentFoods,
+  getExerciseEntries,
 } from "@/src/services/firestoreService";
 import { scaleMacros } from "@/src/services/foodDataService";
 import CalorieRing from "@/src/components/CalorieRing";
@@ -23,6 +26,8 @@ import AddFoodModal from "@/src/components/AddFoodModal";
 import FoodDetailsModal from "@/src/components/FoodDetailsModal";
 import WaterTracker from "@/src/components/WaterTracker";
 import MealPickerSheet from "@/src/components/MealPickerSheet";
+import QuickLogPanel from "@/src/components/QuickLogPanel";
+import ExerciseModal from "@/src/components/ExerciseModal";
 import styles from "./HomePage.module.css";
 
 const MEALS = ["breakfast", "lunch", "dinner", "snacks"];
@@ -58,9 +63,16 @@ export default function HomePage() {
   const [stagedFood, setStagedFood] = useState(null);
   const [waterIntake, setWaterState] = useState(0);
   const [streak, setStreak] = useState(0);
+  const [lastLogDate, setLastLogDate] = useState("");
+  const [recentEntries, setRecentEntries] = useState([]);
+  const [frequentFoods, setFrequentFoods] = useState([]);
+  const [exercises, setExercises] = useState([]);
+  const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
   const today = dateKey();
   const lastFetchDate = useRef(null);
   const suggestedMeal = getSuggestedMeal();
+  const prevStreakRef = useRef(0);
+  const confettiLoaded = useRef(false);
 
   const fetchData = useCallback(async () => {
     if (!user) {
@@ -69,18 +81,32 @@ export default function HomePage() {
     }
     try {
       setLoading(true);
-      const [dayEntries, settings, water, currentStreak] = await Promise.all([
-        getDayEntries(user.uid, today),
-        getUserSettings(user.uid),
-        getWaterIntake(user.uid, today),
-        updateStreak(user.uid),
-      ]);
+      const [dayEntries, settings, water, currentStreak, recent, frequent, todaysExercises] =
+        await Promise.all([
+          getDayEntries(user.uid, today),
+          getUserSettings(user.uid),
+          getWaterIntake(user.uid, today),
+          updateStreak(user.uid),
+          getRecentEntries(user.uid, 10),
+          getFrequentFoods(user.uid, 8),
+          getExerciseEntries(user.uid, today),
+        ]);
       setEntries(dayEntries);
       setGoal(settings.calorieGoal || 2000);
       setDisplayName(settings.displayName || user.displayName || "");
       setWaterState(water);
+      const prevStreak = prevStreakRef.current;
       setStreak(currentStreak);
+      setLastLogDate(settings.lastLogDate || today);
+      setRecentEntries(recent || []);
+      setFrequentFoods(frequent || []);
+      setExercises(todaysExercises || []);
       lastFetchDate.current = today;
+
+      if (currentStreak > prevStreak && [3, 7, 14, 30, 60, 90].includes(currentStreak)) {
+        triggerConfetti();
+      }
+      prevStreakRef.current = currentStreak;
     } catch (err) {
       console.warn("Failed to load data:", err);
     } finally {
@@ -124,6 +150,16 @@ export default function HomePage() {
     }
   };
 
+  const handleAddExercise = async (exData) => {
+    if (!user) return;
+    try {
+      const id = await addExerciseEntry(user.uid, today, exData);
+      setExercises((prev) => [{ id, ...exData }, ...prev]);
+    } catch (err) {
+      console.warn("Failed to add exercise:", err);
+    }
+  };
+
   const handleDelete = async (entryId) => {
     if (!user) return;
     try {
@@ -161,6 +197,8 @@ export default function HomePage() {
   MEALS.forEach((m) => {
     mealEntries[m] = entries.filter((e) => e.meal === m);
   });
+
+  const totalBurned = exercises.reduce((s, ex) => s + (ex.caloriesBurned || 0), 0);
 
   const handleStageFood = (food, targetMeal) => {
     const per100g = food.per_100g || {
@@ -215,6 +253,54 @@ export default function HomePage() {
     openMealPicker("assign-food");
   };
 
+  const handleQuickAdd = (foodData, meal) => {
+    handleAddFood(foodData, meal);
+  };
+
+  const streakMessage = (val) => {
+    if (val >= 30) return "Elite tracker status";
+    if (val >= 14) return "Unstoppable streak!";
+    if (val >= 7) return "One week strong 🔥";
+    if (val >= 3) return "You're building momentum!";
+    return "Start your streak today";
+  };
+
+  const triggerConfetti = async () => {
+    if (typeof window === "undefined") return;
+    if (!confettiLoaded.current) {
+      await import("https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js");
+      confettiLoaded.current = true;
+    }
+    if (window.confetti) {
+      window.confetti({
+        particleCount: 120,
+        spread: 70,
+        origin: { y: 0.7 },
+      });
+    }
+  };
+
+  const weekDots = (() => {
+    const dots = [];
+    const todayDate = new Date();
+    const dayIdx = todayDate.getDay();
+    const start = new Date(todayDate);
+    start.setDate(start.getDate() - dayIdx);
+    const todayKey = dateKey();
+    const todayLogged = lastLogDate === todayKey;
+
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      const key = dateKey(d);
+      const daysBack = Math.floor((todayDate - d) / (1000 * 60 * 60 * 24));
+      const logged = todayLogged && daysBack >= 0 && daysBack < streak;
+      const isToday = key === todayKey;
+      dots.push({ key, isToday, logged });
+    }
+    return dots;
+  })();
+
   if (loading) {
     return (
       <div className="page container fade-in">
@@ -253,20 +339,26 @@ export default function HomePage() {
         <div className={styles.titleGroup}>
           <h1 className={styles.userName}>Cal</h1>
         </div>
-        {streak > 0 && (
-          <div className={styles.streakBadge} title={`${streak} day streak!`}>
-            <span className={styles.streakIcon}>🔥</span>
-            <span className={styles.streakText}>
-              <span className={styles.streakValue}>{streak} day</span>{" "}
-              <span className={styles.streakLabel}>streak</span>
-            </span>
+        <div className={styles.streakBlock}>
+          <div className={styles.weekRow}>
+            {weekDots.map((d) => (
+              <div
+                key={d.key}
+                className={`${styles.dot} ${d.logged ? styles.dotLogged : ""} ${d.isToday ? styles.dotToday : ""}`}
+              >
+                {d.logged && <span>✓</span>}
+              </div>
+            ))}
           </div>
-        )}
+          <div className={styles.streakMessage}>
+            {streak} day streak · {streakMessage(streak)}
+          </div>
+        </div>
       </div>
 
       {/* Hero Card — Calorie Ring */}
       <div className={styles.section}>
-        <CalorieRing consumed={totals.calories} goal={goal} />
+        <CalorieRing consumed={totals.calories} goal={goal} burned={totalBurned} />
       </div>
 
       {/* Macros Card */}
@@ -300,6 +392,12 @@ export default function HomePage() {
             >
               ⬛ Scan Barcode
             </button>
+            <button
+              className={styles.ghostButton}
+              onClick={() => setExerciseModalOpen(true)}
+            >
+              🏋️ Log Exercise
+            </button>
           </div>
         </div>
       </div>
@@ -307,6 +405,16 @@ export default function HomePage() {
       {/* Water Tracker */}
       <div className={styles.section}>
         <WaterTracker intake={waterIntake} onAdd={handleAddWater} />
+      </div>
+
+      {/* Quick Log */}
+      <div className={styles.section}>
+        <QuickLogPanel
+          recent={recentEntries}
+          frequent={frequentFoods}
+          defaultMeal={suggestedMeal}
+          onQuickAdd={handleQuickAdd}
+        />
       </div>
 
       {/* Meals */}
@@ -321,6 +429,33 @@ export default function HomePage() {
           />
         ))}
       </div>
+
+      {/* Exercise Section */}
+      {exercises.length > 0 && (
+        <div className={styles.section}>
+          <div className={styles.exerciseCard}>
+            <div className={styles.exerciseHeader}>
+              <span className={styles.exerciseTitle}>Exercise</span>
+              <span className={styles.exerciseBurn}>
+                {Math.round(totalBurned)} kcal burned
+              </span>
+            </div>
+            <div className={styles.exerciseList}>
+              {exercises.map((ex) => (
+                <div key={ex.id} className={styles.exerciseRow}>
+                  <div>
+                    <div className={styles.exerciseName}>{ex.name}</div>
+                    <div className={styles.exerciseMeta}>
+                      {ex.durationMinutes} min{ex.metValue ? ` · MET ${ex.metValue}` : ""}
+                    </div>
+                  </div>
+                  <div className={styles.exerciseCals}>-{Math.round(ex.caloriesBurned || 0)} kcal</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Add Food Selection Modal (Stitch UI) */}
       <AddFoodModal
@@ -386,6 +521,12 @@ export default function HomePage() {
           setMealPickerOpen(false);
           setMealPickerIntent(null);
         }}
+      />
+
+      <ExerciseModal
+        open={exerciseModalOpen}
+        onClose={() => setExerciseModalOpen(false)}
+        onLog={handleAddExercise}
       />
     </div>
   );
