@@ -42,21 +42,46 @@ export default function ExerciseModal({ open, onClose, onLog, defaultWeight = 70
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/estimate-exercise", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          exercise: exercise.trim(),
-          durationMinutes: duration,
-          weightKg: weight,
-        }),
-      });
+      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY;
+      if (!apiKey) throw new Error("Missing API key");
+
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: `Return ONLY JSON: { "name": string, "caloriesBurned": number, "metValue": number } for this exercise. Exercise: ${exercise}. If duration or weight missing, estimate using typical values (70kg, 30min) and clearly reflect that in numbers only.`,
+                  },
+                ],
+              },
+            ],
+            generationConfig: { temperature: 0.1 },
+          }),
+        },
+      );
+
+      const data = await res.json().catch(async () => ({ raw: await res.text() }));
       if (!res.ok) {
-        const detail = await res.json().catch(() => ({}));
-        throw new Error(detail?.error || "Estimate failed");
+        throw new Error(data?.error?.message || JSON.stringify(data));
       }
-      const data = await res.json();
-      setResult(data);
+
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || data?.raw || "";
+      const cleaned = text.replace(/```json|```/g, "").trim();
+      let parsed;
+      try {
+        parsed = JSON.parse(cleaned);
+      } catch {
+        const match = cleaned.match(/\{[\s\S]*\}/);
+        if (!match) throw new Error("Model returned non-JSON");
+        parsed = JSON.parse(match[0]);
+      }
+
+      setResult(parsed);
     } catch (err) {
       setError(err.message || "Estimate failed");
     } finally {
