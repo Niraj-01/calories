@@ -4,10 +4,10 @@
   left: 0;
   right: 0;
   z-index: 900;
-  background: rgba(8, 8, 8, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border-subtle);
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-top: 0.5px solid rgba(255, 255, 255, 0.08);
   padding-bottom: var(--safe-bottom);
 }
 
@@ -30,13 +30,13 @@
   padding: 8px 12px;
   min-width: 56px;
   text-decoration: none;
-  transition: transform 120ms var(--ease-spring);
+  transition: transform 120ms var(--ease-smooth);
   -webkit-tap-highlight-color: transparent;
   position: relative;
 }
 
 .tab:active {
-  transform: scale(0.88);
+  transform: scale(0.9);
 }
 
 .icon {
@@ -44,26 +44,28 @@
   align-items: center;
   justify-content: center;
   color: var(--text-tertiary);
-  opacity: 0.5;
+  opacity: 0.6;
   transition:
     color 0.2s,
     opacity 0.2s;
 }
 
 .label {
-  font-size: 11px;
-  font-weight: 600;
+  font-family: var(--font-text);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
   color: var(--accent);
-  letter-spacing: -0.1px;
+  letter-spacing: 0.04em;
 }
 
 .dot {
-  width: 24px;
-  height: 2px;
-  border-radius: var(--radius-pill);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
   background: var(--accent);
   position: absolute;
-  bottom: 4px;
+  bottom: 6px;
 }
 
 .active .icon {

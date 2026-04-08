@@ -7,11 +7,11 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  transition: background 300ms ease;
+  transition: background 250ms ease;
 }
 
 .overlayVisible {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.5);
 }
 
 /* Bottom sheet */
@@ -40,10 +40,10 @@
 }
 
 .handle {
-  width: 40px;
+  width: 36px;
   height: 4px;
   border-radius: var(--radius-pill);
-  background: var(--border-glass);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 /* Header */
@@ -56,8 +56,8 @@
 
 .sheetTitle {
   font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
@@ -65,8 +65,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: var(--bg-elevated);
   border: none;
@@ -76,7 +76,7 @@
 }
 
 .closeBtn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-highest);
 }
 
 /* Content */
@@ -101,7 +101,7 @@
   justify-content: center;
   gap: 8px;
   padding: 48px 24px;
-  border: 2px dashed var(--border-glass);
+  border: 1.5px dashed rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: border-color 0.2s;
@@ -112,13 +112,14 @@
 }
 
 .uploadIcon {
-  font-size: 40px;
+  font-size: 36px;
   line-height: 1;
 }
 
 .uploadText {
-  font-size: 15px;
+  font-size: 14px;
   color: var(--text-secondary);
+  font-weight: 400;
 }
 
 .fileInput {
@@ -167,6 +168,7 @@
 .errorHint {
   font-size: 13px;
   color: var(--text-secondary);
+  font-weight: 400;
 }
 
 /* Loading */
@@ -185,45 +187,45 @@
     opacity: 1;
   }
   50% {
-    transform: scale(1.12);
+    transform: scale(1.08);
     opacity: 0.7;
   }
 }
 
 .pulseRing {
-  width: 80px;
-  height: 80px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  border: 3px solid var(--accent);
+  border: 2px solid var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
   animation: pulseScale 1.4s ease-in-out infinite;
-  box-shadow: 0 0 20px var(--accent-glow);
 }
 
 .pulseInner {
-  font-size: 32px;
+  font-size: 28px;
   line-height: 1;
 }
 
 .loadingText {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
   color: var(--text-secondary);
 }
 
 .loadingHint {
   font-size: 13px;
   color: var(--text-tertiary);
+  font-weight: 400;
 }
 
 .loadingPreview {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   border-radius: var(--radius-md);
-  opacity: 0.4;
+  opacity: 0.3;
   filter: blur(2px);
 }
 
@@ -240,20 +242,21 @@
   justify-content: space-between;
   gap: 12px;
 }
+
 .foodNameInput {
   flex: 1;
   background: var(--bg-elevated);
-  border: 1px solid var(--border-glass);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   color: var(--text-primary);
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 600;
   padding: 10px 12px;
 }
 
 .confidenceBadge {
   flex-shrink: 0;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--accent);
   background: var(--accent-dim);
@@ -262,23 +265,24 @@
 }
 
 .confidenceHigh {
-  color: #4ade80;
-  background: rgba(74, 222, 128, 0.12);
+  color: #34C759;
+  background: rgba(52, 199, 89, 0.12);
 }
 
 .confidenceMedium {
-  color: #fbbf24;
-  background: rgba(251, 191, 36, 0.12);
+  color: #FF9F0A;
+  background: rgba(255, 159, 10, 0.12);
 }
 
 .confidenceLow {
-  color: #f87171;
-  background: rgba(248, 113, 113, 0.14);
+  color: #FF453A;
+  background: rgba(255, 69, 58, 0.12);
 }
 
 .disclaimer {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-tertiary);
+  font-weight: 400;
 }
 
 /* Serving */
@@ -290,7 +294,7 @@
 
 .itemsList {
   background: var(--bg-elevated);
-  border: 1px solid var(--border-glass);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 10px 12px;
   display: flex;
@@ -306,19 +310,21 @@
 
 .itemName {
   color: var(--text-primary);
-  font-weight: 600;
+  font-weight: 500;
+  font-size: 0.95rem;
 }
 
 .itemDetail {
   color: var(--text-secondary);
   font-size: 13px;
+  font-weight: 400;
 }
 
 .servingLabel {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.04em;
   color: var(--text-secondary);
 }
 
@@ -338,12 +344,12 @@
 }
 
 .pill {
-  padding: 8px 12px;
+  padding: 6px 12px;
   border-radius: var(--radius-pill);
   background: var(--bg-elevated);
-  border: 1px solid var(--border-glass);
+  border: 1px solid var(--border-subtle);
   color: var(--text-primary);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 13px;
 }
 
@@ -359,7 +365,7 @@
 
 .correctionBox {
   background: var(--bg-elevated);
-  border: 1px solid var(--border-glass);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 12px;
   display: flex;
@@ -368,25 +374,34 @@
 }
 
 .correctionTitle {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
+  font-size: 0.95rem;
 }
 
 .correctionInput {
   width: 100%;
   background: var(--bg-surface);
-  border: 1px solid var(--border-glass);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   color: var(--text-primary);
   padding: 10px;
   resize: vertical;
+  font-size: 14px;
 }
 
 .correctionPrompt {
   background: none;
-  border: 1px dashed var(--border-glass);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
   color: var(--accent);
   padding: 10px 12px;
   border-radius: var(--radius-md);
   cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: border-color 0.15s;
+}
+
+.correctionPrompt:hover {
+  border-color: var(--accent);
 }

@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 24px 24px;
+  padding: 12px 24px 20px;
 }
 
 .titleGroup {
@@ -11,19 +11,20 @@
 }
 
 .greeting {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   color: var(--text-secondary);
-  font-weight: 500;
+  font-weight: 400;
+  letter-spacing: -0.005em;
 }
 
 .userName {
   display: flex;
   align-items: center;
-  font-family: var(--font-display, Inter, sans-serif);
-  font-size: 1.75rem;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
   font-weight: 700;
-  color: #fff;
-  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
   margin-top: 2px;
 }
 
@@ -31,10 +32,10 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(28, 28, 30, 0.8);
+  background: var(--bg-elevated);
   padding: 6px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
 }
 
 .streakBlock {
@@ -53,28 +54,29 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
+  border: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  font-size: 11px;
+  color: var(--text-primary);
+  font-size: 10px;
+  font-weight: 500;
 }
 
 .dotLogged {
-  background: #f59e0b;
-  border-color: #f59e0b;
-  color: #0b0b0c;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
 }
 
 .dotToday {
-  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+  box-shadow: 0 0 0 3px var(--accent-dim);
 }
 
 .streakMessage {
   color: var(--text-secondary);
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.82rem;
+  font-weight: 500;
 }
 
 .streakIcon {
@@ -83,22 +85,22 @@
 }
 
 .streakText {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.82rem;
+  font-weight: 500;
 }
 
 .streakValue {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .streakLabel {
-  color: var(--text-secondary, #8e8e93);
+  color: var(--text-secondary);
 }
 
 /* Sections */
 .section {
   padding: 0 16px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .meals {
@@ -115,22 +117,21 @@
 
 .logButton {
   width: 100%;
-  background: var(--color-primary, #9acd32);
-  color: #0c120b;
+  background: var(--accent);
+  color: #fff;
   border: none;
-  border-radius: 18px;
+  border-radius: var(--radius-md);
   padding: 16px 18px;
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-size: 1rem;
+  font-weight: 600;
   letter-spacing: -0.01em;
-  box-shadow: 0 12px 30px rgba(154, 205, 50, 0.3);
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  transition: all 0.2s var(--ease-smooth);
 }
 
 .logButton:active {
-  transform: translateY(1px);
-  box-shadow: 0 6px 16px rgba(154, 205, 50, 0.22);
+  transform: scale(0.98);
+  opacity: 0.9;
 }
 
 .secondaryActions {
@@ -142,32 +143,33 @@
 .ghostButton {
   width: 100%;
   background: transparent;
-  color: #d9e2d0;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 14px;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
   padding: 12px;
-  font-weight: 700;
+  font-weight: 600;
+  font-size: 0.9rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: all 0.15s ease;
 }
 
 .ghostButton:hover {
-  border-color: rgba(255, 255, 255, 0.28);
-  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border-glass);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .ghostButton:active {
-  transform: translateY(1px);
+  transform: scale(0.97);
 }
 
 .exerciseCard {
-  background: var(--card-bg, rgba(28, 28, 30, 0.7));
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
-  border-radius: 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
   padding: 14px;
 }
 
@@ -179,14 +181,15 @@
 }
 
 .exerciseTitle {
-  font-weight: 800;
+  font-weight: 600;
   color: var(--text-primary);
+  font-size: 0.95rem;
 }
 
 .exerciseBurn {
   color: var(--accent);
-  font-weight: 700;
-  font-size: 0.95rem;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .exerciseList {
@@ -200,22 +203,22 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  border-radius: 12px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.06));
+  border-radius: var(--radius-md);
+  background: var(--bg-highest);
+  border: 1px solid var(--border-subtle);
 }
 
 .exerciseName {
   color: var(--text-primary);
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .exerciseMeta {
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .exerciseCals {
   color: var(--accent);
-  font-weight: 800;
+  font-weight: 600;
 }

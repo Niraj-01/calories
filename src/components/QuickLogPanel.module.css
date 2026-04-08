@@ -1,7 +1,7 @@
 .card {
-  background: var(--card-bg, rgba(28, 28, 30, 0.7));
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
-  border-radius: 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
   padding: 14px 16px;
   display: flex;
   flex-direction: column;
@@ -15,16 +15,18 @@
 }
 
 .title {
-  font-weight: 800;
+  font-weight: 600;
   color: var(--text-primary);
   letter-spacing: -0.01em;
+  font-size: 0.95rem;
 }
 
 .rowLabel {
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .scroller {
@@ -40,12 +42,12 @@
   gap: 2px;
   min-width: 110px;
   padding: 10px 12px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
-  border-radius: 14px;
+  background: var(--bg-highest);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
   color: var(--text-primary);
   cursor: pointer;
-  transition: transform 0.1s ease, border-color 0.15s ease;
+  transition: all 0.15s ease;
 }
 
 .pill:hover {
@@ -53,7 +55,7 @@
 }
 
 .pillName {
-  font-weight: 700;
+  font-weight: 600;
   font-size: 14px;
   letter-spacing: -0.01em;
 }
@@ -61,11 +63,13 @@
 .pillCals {
   font-size: 12px;
   color: var(--text-secondary);
+  font-weight: 400;
 }
 
 .empty {
   color: var(--text-tertiary);
   font-size: 13px;
+  font-weight: 400;
 }
 
 /* Sheet */
@@ -85,9 +89,9 @@
   width: 100%;
   max-width: 520px;
   background: var(--bg-surface);
-  border-radius: 18px 18px 0 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   padding: 16px 16px calc(env(safe-area-inset-bottom, 16px) + 16px);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-subtle);
   animation: slideUp 220ms var(--ease-smooth);
 }
 
@@ -109,17 +113,18 @@
 
 .sheetTitle {
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
 .sheetLabel {
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   color: var(--text-secondary);
   margin-top: 8px;
   margin-bottom: 6px;
+  font-weight: 500;
 }
 
 .sheetInput {
@@ -136,8 +141,8 @@
 
 .mealChip {
   padding: 8px 10px;
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
   background: var(--bg-elevated);
   color: var(--text-primary);
   display: flex;
@@ -145,11 +150,12 @@
   align-items: center;
   gap: 4px;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .mealChipActive {
   border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent);
+  background: var(--accent-dim);
 }
 
 .mealIcon {

@@ -5,7 +5,7 @@
   padding: 24px 24px 100px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 28px;
 }
 
 .header {
@@ -16,11 +16,11 @@
 
 .title {
   font-size: 28px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  letter-spacing: -0.03em;
   line-height: 1.1;
-  color: #fff;
-  font-family: inherit;
+  color: var(--text-primary);
+  font-family: var(--font-display);
 }
 
 .profileInfo {
@@ -30,40 +30,38 @@
 }
 
 .avatar {
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
   border-radius: 9999px;
-  background: linear-gradient(135deg, #3f3f46, #18181b);
-  border: 1px solid #52525b;
+  background: linear-gradient(135deg, #2c2c2e, #1c1c1e);
+  border: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
-  color: #d4d4d8;
+  color: var(--text-secondary);
 }
 
 .nameInput {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
   background: transparent;
   border: none;
-  color: #fff;
+  color: var(--text-primary);
   outline: none;
   width: 100%;
   font-family: inherit;
 }
 
 .nameInput::placeholder {
-  color: #52525b;
+  color: var(--text-tertiary);
 }
 
 .frostedGlass {
-  background-color: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
   overflow: hidden;
 }
 
@@ -71,8 +69,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
+  padding: 14px 20px;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
 }
 
 .listRow:last-child {
@@ -82,7 +80,7 @@
 .rowLabel {
   font-size: 15px;
   font-weight: 400;
-  color: #fff;
+  color: var(--text-primary);
   flex-shrink: 0;
   white-space: nowrap;
   font-family: inherit;
@@ -91,7 +89,7 @@
 .rowInput {
   background: transparent;
   border: none;
-  color: #8e8e93;
+  color: var(--text-secondary);
   font-size: 15px;
   text-align: right;
   outline: none;
@@ -119,25 +117,25 @@
 }
 
 .rowUnitSelect {
-  background: #1c1c1e;
-  border: 1px solid #27272a;
-  color: #e5e7eb;
+  background: var(--bg-highest);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
   font-size: 14px;
   padding: 8px 10px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   outline: none;
   font-family: inherit;
 }
 
 .rowUnitSelect option {
-  background: #1c1c1e;
-  color: #fff;
+  background: var(--bg-highest);
+  color: var(--text-primary);
 }
 
 .rowSelect {
   background: transparent;
   border: none;
-  color: #8e8e93;
+  color: var(--text-secondary);
   font-size: 15px;
   text-align: right;
   outline: none;
@@ -149,32 +147,30 @@
 }
 
 .rowSelect option {
-  background: #1c1c1e;
-  color: #fff;
+  background: var(--bg-highest);
+  color: var(--text-primary);
   direction: ltr;
 }
 
 .glowCard {
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow:
-    0 0 15px rgba(255, 255, 255, 0.05),
-    inset 0 0 10px rgba(255, 255, 255, 0.05);
-  border-radius: 24px;
-  padding: 32px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 28px;
   text-align: center;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: var(--bg-elevated);
 }
 
 .glowLabel {
-  font-size: 13px;
-  letter-spacing: 0.1em;
-  color: #a1a1aa;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
   text-transform: uppercase;
   font-family: inherit;
+  font-weight: 500;
 }
 
 .glowStats {
@@ -186,23 +182,24 @@
 }
 
 .glowStatValue {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #fff;
-  font-family: inherit;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
 }
 
 .glowStatHint {
   font-size: 13px;
-  color: #71717a;
+  color: var(--text-tertiary);
   margin-top: 8px;
   font-family: inherit;
 }
 
 .glowStatFootnote {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--text-tertiary);
   margin-top: 4px;
   font-family: inherit;
 }
@@ -212,36 +209,40 @@
   background-color: var(--accent);
   color: #fff;
   font-weight: 600;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   padding: 16px;
   font-size: 16px;
   border: none;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: all 0.2s var(--ease-smooth);
   margin-bottom: 8px;
   font-family: inherit;
 }
 
+.saveBtn:active {
+  transform: scale(0.98);
+}
+
 .saveBtn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .signOutBtn {
   width: 100%;
-  background-color: #18181b;
-  border: 1px solid #27272a;
-  color: #71717a;
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
   font-weight: 500;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   padding: 16px;
   font-size: 16px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s var(--ease-smooth);
   font-family: inherit;
 }
 
 .signOutBtn:active {
   transform: scale(0.98);
-  background-color: #27272a;
+  background-color: var(--bg-highest);
 }
