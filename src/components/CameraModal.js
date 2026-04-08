@@ -62,6 +62,94 @@ export default function CameraModal({ meal, onAdd, onClose }) {
     setItems(Array.isArray(data.items) ? data.items : []);
   };
 
+  const sanitizeAndParse = (rawText) => {
+    const cleaned = (rawText || "").replace(/```json|```/g, "").trim();
+    try {
+      return JSON.parse(cleaned);
+    } catch (err) {
+      const match = cleaned.match(/\{[\s\S]*\}/);
+      if (match) {
+        return JSON.parse(match[0]);
+      }
+      throw new Error("Model returned non-JSON response");
+    }
+  };
+
+  const callGeminiDirect = async ({ descriptionOnly = false }) => {
+    const key = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY;
+    if (!key) throw new Error("Missing GOOGLE_AI_API_KEY");
+
+    const prompt =
+      'You are a food nutrition expert. Analyze the food in this image. Return ONLY a JSON object (no markdown, no explanation) with this exact shape:\\n{ "name": string, "estimatedGrams": number, "calories": number, "protein": number, "carbs": number, "fat": number, "fiber": number, "confidence": "high"|"medium"|"low", "items": [{ "name": string, "grams": number, "calories": number }] }\\nIf multiple foods are visible, list each in items[] and sum the totals. Estimate portion sizes from visual cues.';
+
+    const parts = [];
+    if (!descriptionOnly && imageBase64) {
+      parts.push({
+        inline_data: {
+          mime_type: preview?.split(";")[0]?.split(":")[1] || "image/jpeg",
+          data: imageBase64,
+        },
+      });
+    }
+    if (descriptionOnly && correctionText) {
+      parts.push({ text: `User description: ${correctionText}` });
+    }
+    parts.push({ text: prompt });
+
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts }],
+          generationConfig: { temperature: 0.1 },
+        }),
+      },
+    );
+
+    if (!res.ok) {
+      const errJson = await res.json().catch(() => ({}));
+      const msg = errJson?.error?.message || "Analysis failed";
+      throw new Error(msg);
+    }
+
+    const data = await res.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    return sanitizeAndParse(text);
+  };
+
+  const callServerAnalysis = async ({ descriptionOnly = false }) => {
+    const payload = {
+      imageBase64: descriptionOnly ? undefined : imageBase64,
+      mimeType: preview?.split(";")[0]?.split(":")[1] || "image/jpeg",
+      textDescription: descriptionOnly ? correctionText : undefined,
+    };
+
+    const res = await fetch("/api/analyze-food", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const textBody = await res.text();
+    let data;
+    try {
+      data = JSON.parse(textBody);
+    } catch {
+      if (textBody?.trim().startsWith("<")) {
+        throw new Error("Server API unavailable (HTML response)");
+      }
+      throw new Error("Unexpected response from analysis API");
+    }
+
+    if (!res.ok) {
+      throw new Error(data?.error || "Analysis failed");
+    }
+
+    return data;
+  };
+
   const runAnalysis = async ({ descriptionOnly = false } = {}) => {
     if (!descriptionOnly && !imageBase64) {
       setError("Please add a photo first");
@@ -72,26 +160,22 @@ export default function CameraModal({ meal, onAdd, onClose }) {
     setError(null);
 
     try {
-      const payload = {
-        imageBase64: descriptionOnly ? undefined : imageBase64,
-        mimeType: preview?.split(";")[0]?.split(":")[1] || "image/jpeg",
-        textDescription: descriptionOnly ? correctionText : undefined,
-      };
-
-      const res = await fetch("/api/analyze-food", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json().catch(async () => ({ error: await res.text() }));
-      if (!res.ok) {
-        throw new Error(data?.error || "Analysis failed");
+      // Prefer server API; fall back to direct Gemini if server is unreachable or returns HTML
+      let result;
+      try {
+        result = await callServerAnalysis({ descriptionOnly });
+      } catch (serverErr) {
+        console.warn("Server analysis failed, falling back to client Gemini:", serverErr);
+        result = await callGeminiDirect({ descriptionOnly });
       }
-
-      parseAnalysis(data);
+      parseAnalysis(result);
     } catch (err) {
-      setError(err.message || "Analysis failed. Try again.");
+      const msg = err.message || "Analysis failed";
+      setError(
+        msg === "Failed to fetch"
+          ? "Network error — check your connection and try again."
+          : msg,
+      );
     } finally {
       setLoading(false);
     }
