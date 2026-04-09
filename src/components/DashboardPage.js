@@ -79,7 +79,6 @@ export default function DashboardPage() {
         setRangeData(range);
         setGoal(settings.calorieGoal || 2000);
         setPhotos(photosList || []);
-        setPhotos(logs.pop() || []);
 
         const logMap = {};
         days.forEach((d, i) => {

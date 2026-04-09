@@ -129,3 +129,27 @@
   color: var(--text-secondary);
   font-weight: 400;
 }
+
+.subtractRow {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.subtractBtn {
+  flex: 1;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: 1px solid rgba(255, 69, 58, 0.2);
+  color: var(--danger);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.subtractBtn:active {
+  background: rgba(255, 69, 58, 0.08);
+  transform: scale(0.96);
+}

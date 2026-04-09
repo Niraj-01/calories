@@ -263,6 +263,11 @@ export async function addExerciseEntry(uid, date, data) {
   return docRef.id;
 }
 
+export async function deleteExerciseEntry(uid, date, entryId) {
+  const ref = doc(db, "users", uid, "logs", date, "exercises", entryId);
+  await deleteDoc(ref);
+}
+
 export async function getExerciseEntries(uid, date) {
   const ref = exercisesRef(uid, date);
   const q = query(ref, orderBy("createdAt", "desc"));

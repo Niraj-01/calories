@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB base64
+const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const MAX_TEXT_LENGTH = 500;
+
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -11,6 +15,26 @@ export async function POST(request) {
         { status: 500 },
       );
     }
+
+    // Validate image payload
+    if (imageBase64 && typeof imageBase64 === "string" && imageBase64.length > MAX_IMAGE_SIZE) {
+      return NextResponse.json(
+        { error: "Image too large. Please use a smaller photo (max ~7.5MB)." },
+        { status: 413 },
+      );
+    }
+
+    if (mimeType && !ALLOWED_MIME_TYPES.includes(mimeType)) {
+      return NextResponse.json(
+        { error: "Unsupported image type. Use JPEG, PNG, or WebP." },
+        { status: 400 },
+      );
+    }
+
+    // Sanitize text description
+    const cleanDescription = typeof textDescription === "string"
+      ? textDescription.slice(0, MAX_TEXT_LENGTH).trim()
+      : undefined;
 
     const content = [];
 
@@ -25,8 +49,8 @@ export async function POST(request) {
       });
     }
 
-    if (textDescription) {
-      content.push({ type: "text", text: textDescription });
+    if (cleanDescription) {
+      content.push({ type: "text", text: cleanDescription });
     }
 
     if (content.length === 0) {
@@ -42,8 +66,8 @@ export async function POST(request) {
         inline_data: { mime_type: mimeType, data: imageBase64 },
       });
     }
-    if (textDescription) {
-      parts.push({ text: textDescription });
+    if (cleanDescription) {
+      parts.push({ text: `User describes the food as: "${cleanDescription}"` });
     }
 
     const response = await fetch(

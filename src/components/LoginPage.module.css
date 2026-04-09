@@ -54,10 +54,10 @@
 
 .appName {
   font-family: var(--font-display);
-  font-size: 32px;
-  font-weight: 700;
+  font-size: 34px;
+  font-weight: 800;
   color: var(--text-primary);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
 }
 
 .tagline {
@@ -74,24 +74,26 @@
   justify-content: center;
   gap: 10px;
   width: 100%;
-  height: 50px;
+  height: 54px;
   background: #ffffff;
-  color: #1f1f1f;
+  color: #1a1a1a;
   font-size: 15px;
   font-weight: 600;
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s var(--ease-smooth);
   -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .googleBtn:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .googleBtn:hover {
-  box-shadow: 0 2px 12px rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
 }
 
 .googleIcon {

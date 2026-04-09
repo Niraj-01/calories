@@ -49,9 +49,13 @@ export default function CalorieRing({ consumed = 0, goal = 2000, burned = 0 }) {
           {Math.round(consumed).toLocaleString()}
         </span>
         <span className={styles.unit}>kcal consumed</span>
-        <span className={styles.sub}>Goal {Math.round(goal)} + Burned {Math.round(burned)}</span>
+        {burned > 0 && (
+          <span className={styles.sub}>Net: {Math.round(consumed - burned)} kcal</span>
+        )}
         <span className={styles.remaining}>
-          {Math.round(remaining)} kcal left
+          {isOver
+            ? `${Math.round(consumed - adjustedGoal)} over`
+            : `${Math.round(remaining)} left`}
         </span>
       </div>
     </div>

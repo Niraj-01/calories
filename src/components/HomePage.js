@@ -14,6 +14,7 @@ import {
   getRecentEntries,
   getFrequentFoods,
   getExerciseEntries,
+  deleteExerciseEntry,
 } from "@/src/services/firestoreService";
 import { scaleMacros } from "@/src/services/foodDataService";
 import CalorieRing from "@/src/components/CalorieRing";
@@ -68,6 +69,7 @@ export default function HomePage() {
   const [frequentFoods, setFrequentFoods] = useState([]);
   const [exercises, setExercises] = useState([]);
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
+  const [waterGoal, setWaterGoal] = useState(2500);
   const today = dateKey();
   const lastFetchDate = useRef(null);
   const suggestedMeal = getSuggestedMeal();
@@ -93,6 +95,7 @@ export default function HomePage() {
         ]);
       setEntries(dayEntries);
       setGoal(settings.calorieGoal || 2000);
+      setWaterGoal(settings.waterGoal || 2500);
       setDisplayName(settings.displayName || user.displayName || "");
       setWaterState(water);
       const prevStreak = prevStreakRef.current;
@@ -160,6 +163,16 @@ export default function HomePage() {
     }
   };
 
+  const handleDeleteExercise = async (entryId) => {
+    if (!user) return;
+    try {
+      await deleteExerciseEntry(user.uid, today, entryId);
+      setExercises((prev) => prev.filter((e) => e.id !== entryId));
+    } catch (err) {
+      console.warn("Failed to delete exercise:", err);
+    }
+  };
+
   const handleDelete = async (entryId) => {
     if (!user) return;
     try {
@@ -173,6 +186,17 @@ export default function HomePage() {
   const handleAddWater = async (ml) => {
     if (!user) return;
     const newTotal = waterIntake + ml;
+    setWaterState(newTotal);
+    try {
+      await setWaterIntake(user.uid, today, newTotal);
+    } catch (err) {
+      console.warn("Failed to save water:", err);
+    }
+  };
+
+  const handleSubtractWater = async (ml) => {
+    if (!user) return;
+    const newTotal = Math.max(0, waterIntake - ml);
     setWaterState(newTotal);
     try {
       await setWaterIntake(user.uid, today, newTotal);
@@ -404,7 +428,7 @@ export default function HomePage() {
 
       {/* Water Tracker */}
       <div className={styles.section}>
-        <WaterTracker intake={waterIntake} onAdd={handleAddWater} />
+        <WaterTracker intake={waterIntake} goal={waterGoal} onAdd={handleAddWater} onSubtract={handleSubtractWater} />
       </div>
 
       {/* Quick Log */}
@@ -449,7 +473,23 @@ export default function HomePage() {
                       {ex.durationMinutes} min{ex.metValue ? ` · MET ${ex.metValue}` : ""}
                     </div>
                   </div>
-                  <div className={styles.exerciseCals}>-{Math.round(ex.caloriesBurned || 0)} kcal</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div className={styles.exerciseCals}>-{Math.round(ex.caloriesBurned || 0)} kcal</div>
+                    <button
+                      onClick={() => handleDeleteExercise(ex.id)}
+                      style={{
+                        background: "none",
+                        border: "1px solid rgba(255,69,58,0.2)",
+                        color: "var(--danger)",
+                        borderRadius: "var(--radius-sm)",
+                        padding: "4px 8px",
+                        fontSize: "0.78rem",
+                        cursor: "pointer",
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

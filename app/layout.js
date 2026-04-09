@@ -1,16 +1,10 @@
-import { Inter, DM_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-display",
-  weight: ["400", "500", "600", "700"],
-});
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-text",
-  weight: ["400", "500", "600", "700"],
+  variable: "--font-main",
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 export const metadata = {
@@ -30,7 +24,7 @@ export function generateViewport() {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning={true} className={`${inter.variable} ${dmSans.variable}`}>
+    <html lang="en" suppressHydrationWarning={true} className={jakarta.variable}>
       <body suppressHydrationWarning={true}>{children}</body>
     </html>
   );

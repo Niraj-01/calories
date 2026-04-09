@@ -3,11 +3,12 @@
 import { useState } from "react";
 import styles from "./WaterTracker.module.css";
 
-const GOAL = 2500; // ml
+const DEFAULT_GOAL = 2500; // ml
 
-export default function WaterTracker({ intake, onAdd }) {
+export default function WaterTracker({ intake, goal: goalProp, onAdd, onSubtract }) {
   const [animating, setAnimating] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const GOAL = goalProp || DEFAULT_GOAL;
   const pct = Math.min((intake / GOAL) * 100, 100);
 
   const add = (ml) => {
@@ -47,24 +48,36 @@ export default function WaterTracker({ intake, onAdd }) {
 
       {/* Quick-add buttons */}
       {expanded && (
-        <div className={styles.buttons}>
-          <button className={styles.btn} onClick={() => add(150)}>
-            <span className={styles.btnIcon}>☕</span>
-            <span className={styles.btnLabel}>150ml</span>
-          </button>
-          <button className={styles.btn} onClick={() => add(250)}>
-            <span className={styles.btnIcon}>🥛</span>
-            <span className={styles.btnLabel}>250ml</span>
-          </button>
-          <button className={styles.btn} onClick={() => add(500)}>
-            <span className={styles.btnIcon}>🍶</span>
-            <span className={styles.btnLabel}>500ml</span>
-          </button>
-          <button className={styles.btn} onClick={() => add(750)}>
-            <span className={styles.btnIcon}>🧴</span>
-            <span className={styles.btnLabel}>750ml</span>
-          </button>
-        </div>
+        <>
+          <div className={styles.buttons}>
+            <button className={styles.btn} onClick={() => add(150)}>
+              <span className={styles.btnIcon}>☕</span>
+              <span className={styles.btnLabel}>150ml</span>
+            </button>
+            <button className={styles.btn} onClick={() => add(250)}>
+              <span className={styles.btnIcon}>🥛</span>
+              <span className={styles.btnLabel}>250ml</span>
+            </button>
+            <button className={styles.btn} onClick={() => add(500)}>
+              <span className={styles.btnIcon}>🍶</span>
+              <span className={styles.btnLabel}>500ml</span>
+            </button>
+            <button className={styles.btn} onClick={() => add(750)}>
+              <span className={styles.btnIcon}>🧴</span>
+              <span className={styles.btnLabel}>750ml</span>
+            </button>
+          </div>
+          {intake > 0 && onSubtract && (
+            <div className={styles.subtractRow}>
+              <button className={styles.subtractBtn} onClick={() => onSubtract(250)}>
+                -250ml
+              </button>
+              <button className={styles.subtractBtn} onClick={() => onSubtract(intake)}>
+                Reset
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

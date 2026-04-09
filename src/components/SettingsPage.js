@@ -5,6 +5,8 @@ import { useAuth } from "@/src/context/AuthContext";
 import {
   getUserSettings,
   setUserSettings,
+  getDayRange,
+  dateKey,
 } from "@/src/services/firestoreService";
 import { useRouter } from "next/navigation";
 import styles from "./SettingsPage.module.css";
@@ -62,8 +64,10 @@ export default function SettingsPage() {
   const [activity, setActivity] = useState(1.55);
   const [weightGoal, setWeightGoal] = useState("maintain");
   const [loading, setLoading] = useState(true);
+  const [waterGoal, setWaterGoal] = useState(2500);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -80,6 +84,7 @@ export default function SettingsPage() {
         setWeightUnit("kg");
         setActivity(s.activityLevel || 1.55);
         setWeightGoal(s.weightGoal || "maintain");
+        setWaterGoal(s.waterGoal || 2500);
       } catch (err) {
         console.warn("Failed to load settings:", err);
       } finally {
@@ -157,6 +162,7 @@ export default function SettingsPage() {
         weight: weightKg || null,
         activityLevel: activity,
         weightGoal,
+        waterGoal: parseInt(waterGoal) || 2500,
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
@@ -164,6 +170,49 @@ export default function SettingsPage() {
       console.warn("Failed to save settings:", err);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleExportCSV = async () => {
+    if (!user) return;
+    setExporting(true);
+    try {
+      const today = new Date();
+      const start = new Date(today);
+      start.setDate(start.getDate() - 30);
+      const rangeData = await getDayRange(user.uid, dateKey(start), dateKey(today));
+
+      const rows = [["Date", "Meal", "Name", "Calories", "Protein (g)", "Carbs (g)", "Fat (g)", "Serving", "Unit"]];
+      Object.entries(rangeData)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .forEach(([date, entries]) => {
+          entries.forEach((e) => {
+            rows.push([
+              date,
+              e.meal || "",
+              `"${(e.name || "").replace(/"/g, '""')}"`,
+              e.calories || 0,
+              e.protein || 0,
+              e.carbs || 0,
+              e.fat || 0,
+              e.servingAmount || "",
+              e.servingUnit || "",
+            ]);
+          });
+        });
+
+      const csv = rows.map((r) => r.join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `calories-export-${dateKey()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.warn("Export failed:", err);
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -313,6 +362,16 @@ export default function SettingsPage() {
             onChange={(e) => setCalorieGoal(e.target.value)}
           />
         </div>
+        <div className={styles.listRow}>
+          <label className={styles.rowLabel}>Water Goal (ml)</label>
+          <input
+            className={styles.rowInput}
+            type="number"
+            placeholder="2500"
+            value={waterGoal}
+            onChange={(e) => setWaterGoal(e.target.value)}
+          />
+        </div>
       </section>
 
       {/* BMR/TDEE Stat Card */}
@@ -342,6 +401,15 @@ export default function SettingsPage() {
           disabled={saving}
         >
           {saved ? "✓ Saved" : saving ? "Saving..." : "Save Changes"}
+        </button>
+        <button
+          type="button"
+          className={styles.signOutBtn}
+          onClick={handleExportCSV}
+          disabled={exporting}
+          style={{ marginBottom: 8 }}
+        >
+          {exporting ? "Exporting..." : "Export Last 30 Days (CSV)"}
         </button>
         <button
           type="button"
