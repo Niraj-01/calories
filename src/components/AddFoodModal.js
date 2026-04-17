@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import styles from "./AddFoodModal.module.css";
 
 export default function AddFoodModal({
@@ -8,17 +9,26 @@ export default function AddFoodModal({
   onSearch,
   onBarcode,
 }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
-  return (
+  return createPortal(
     <div className={styles.overlay} onClick={onClose}>
       <main
         className={`${styles.modal} glass-modal`}
@@ -162,6 +172,7 @@ export default function AddFoodModal({
           </button>
         </nav>
       </main>
-    </div>
+    </div>,
+    document.body
   );
 }
