@@ -179,7 +179,7 @@ export default function SettingsPage() {
     try {
       const today = new Date();
       const start = new Date(today);
-      start.setDate(start.getDate() - 30);
+      start.setMonth(start.getMonth() - 30);
       const rangeData = await getDayRange(user.uid, dateKey(start), dateKey(today));
 
       const rows = [["Date", "Meal", "Name", "Calories", "Protein (g)", "Carbs (g)", "Fat (g)", "Serving", "Unit"]];
@@ -206,7 +206,7 @@ export default function SettingsPage() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `calories-export-${dateKey()}.csv`;
+      a.download = `calories-export-last-30-months-${dateKey()}.csv`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
@@ -409,7 +409,7 @@ export default function SettingsPage() {
           disabled={exporting}
           style={{ marginBottom: 8 }}
         >
-          {exporting ? "Exporting..." : "Export Last 30 Days (CSV)"}
+          {exporting ? "Exporting..." : "Export Last 30 Months (CSV)"}
         </button>
         <button
           type="button"

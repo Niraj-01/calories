@@ -16,9 +16,14 @@
   position: relative;
   z-index: 2201;
   width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  padding: 12px 24px calc(env(safe-area-inset-bottom, 16px) + 32px);
+  padding: 12px 24px calc(var(--nav-height) + var(--safe-bottom) + 24px);
   animation: slideUp 0.35s var(--ease-smooth) forwards;
 }
 
