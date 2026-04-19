@@ -11,18 +11,39 @@ export default function MacroBar({ protein = 0, carbs = 0, fat = 0 }) {
   }, []);
 
   const macros = [
-    { name: "Protein", val: protein, goal: 158, color: "var(--accent-protein)" },
-    { name: "Carbs", val: carbs, goal: 210, color: "var(--accent-carbs)" },
-    { name: "Fat", val: fat, goal: 70, color: "var(--accent-fat)" },
+    {
+      name: "Protein",
+      val: protein,
+      goal: 158,
+      color: "var(--accent-protein)",
+      icon: "🍗",
+    },
+    {
+      name: "Carbs",
+      val: carbs,
+      goal: 210,
+      color: "var(--accent-fat)",
+      icon: "🍞",
+    },
+    {
+      name: "Fat",
+      val: fat,
+      goal: 70,
+      color: "#ff6b6b",
+      icon: "🥑",
+    },
   ];
 
   return (
     <div className={styles.section}>
       {macros.map((m) => (
-        <div key={m.name} className={styles.row}>
-          <div className={styles.header}>
-            <div className={styles.name}>{m.name}</div>
-            <div className={styles.values}><span>{Math.round(m.val)}g</span> / {m.goal}g</div>
+        <div key={m.name} className={styles.card}>
+          <div className={styles.badge}>
+            <span className={styles.badgeIcon}>{m.icon}</span>
+            <span className={styles.name}>{m.name}</span>
+          </div>
+          <div className={styles.values}>
+            <span>{Math.round(m.val)}g</span>
           </div>
           <div className={styles.track}>
             <div
@@ -33,6 +54,7 @@ export default function MacroBar({ protein = 0, carbs = 0, fat = 0 }) {
               }}
             />
           </div>
+          <div className={styles.goal}>{m.goal}g goal</div>
         </div>
       ))}
     </div>

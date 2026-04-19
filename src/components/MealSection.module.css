@@ -1,10 +1,11 @@
 .card {
-  background: var(--bg-glass);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-xl);
+  background: rgba(28, 28, 30, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 22px;
   overflow: hidden;
-  cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .card:active {
@@ -12,15 +13,24 @@
 }
 
 .summaryRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.summaryButton {
+  flex: 1;
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 16px 18px;
+  justify-content: space-between;
   gap: 14px;
   background: none;
   border: none;
   color: inherit;
   cursor: pointer;
+  min-width: 0;
 }
 
 .leftPair {
@@ -33,18 +43,18 @@
 .rightPair {
   display: flex;
   align-items: center;
-  gap: 10px;
   flex-shrink: 0;
 }
 
 .icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 18px;
   flex-shrink: 0;
 }
 
@@ -63,41 +73,38 @@
 
 .mealMeta {
   color: var(--text-secondary);
-  text-transform: capitalize;
   font-size: 12px;
   font-weight: 400;
 }
 
-.mealCalories {
-  text-align: right;
-}
-
-.mealCalories .calories {
-  font-weight: 700;
-  font-size: 17px;
-  color: var(--text-primary);
-}
-
-.mealCalories .unit {
-  font-size: 11px;
-  color: var(--text-tertiary);
-}
-
 .chevron {
-  width: 20px;
-  height: 20px;
-  color: var(--text-tertiary);
+  width: 18px;
+  height: 18px;
+  color: rgba(242, 242, 247, 0.45);
   transition: transform 0.3s ease;
   flex-shrink: 0;
 }
 
 .chevron.open {
-  transform: rotate(180deg);
+  transform: rotate(90deg);
+}
+
+.addButton {
+  flex-shrink: 0;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: rgba(136, 157, 83, 0.18);
+  border: 1px solid rgba(180, 198, 132, 0.2);
+  color: #d8ecaf;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .panel {
-  border-top: 1px solid var(--border-subtle);
-  padding: 0 18px 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0 16px 4px;
   overflow: hidden;
   max-height: 0;
   transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), padding 0.2s;
@@ -105,7 +112,7 @@
 
 .panel.open {
   max-height: 400px;
-  padding: 4px 18px 8px;
+  padding: 8px 16px 10px;
 }
 
 .itemsList {
@@ -118,8 +125,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border-subtle);
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .itemRow:last-child {
@@ -147,7 +155,13 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 2px;
+  gap: 4px;
+}
+
+.itemTopRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .itemCals {
@@ -155,6 +169,17 @@
   font-size: 14px;
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
+}
+
+.deleteButton {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 69, 58, 0.18);
+  background: rgba(255, 69, 58, 0.08);
+  color: var(--danger);
+  font-size: 0.95rem;
+  line-height: 1;
 }
 
 .macroPills {
@@ -184,9 +209,9 @@
   width: 100%;
   padding: 12px;
   margin-top: 4px;
-  border: 1.5px dashed var(--border-glass);
-  border-radius: var(--radius-md);
-  background: none;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
   color: var(--text-secondary);
   font-size: 13px;
   font-weight: 500;
@@ -196,6 +221,6 @@
 }
 
 .inlineAddBtn:active {
-  background: var(--bg-glass-hover);
+  background: rgba(255, 255, 255, 0.06);
   color: var(--text-primary);
 }

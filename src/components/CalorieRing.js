@@ -23,11 +23,11 @@ export default function CalorieRing({ consumed = 0, goal = 2000, burned = 0 }) {
         <svg width="220" height="220" viewBox="0 0 220 220">
           <defs>
             <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#FF6B35" />
-              <stop offset="100%" stopColor="#FF8C5A" />
+              <stop offset="0%" stopColor="#F4F4F7" />
+              <stop offset="100%" stopColor="#FFFFFF" />
             </linearGradient>
             <filter id="glow">
-              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
               <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
           </defs>
@@ -56,7 +56,7 @@ export default function CalorieRing({ consumed = 0, goal = 2000, burned = 0 }) {
           <circle
             cx={cx} cy={cy} r={r - 20}
             fill="none"
-            stroke="rgba(255,107,53,0.35)"
+            stroke="rgba(255,159,10,0.45)"
             strokeWidth="8"
             strokeLinecap="round"
             strokeDasharray={circumference * 0.85}

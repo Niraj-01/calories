@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "@/src/context/AuthContext";
 import {
   addFoodEntry,
+  addExerciseEntry,
   getDayEntries,
   deleteFoodEntry,
   getUserSettings,
@@ -41,11 +42,12 @@ function getSuggestedMeal() {
   return "snacks";
 }
 
-function getGreeting() {
-  const h = new Date().getHours();
-  if (h < 12) return "GOOD MORNING";
-  if (h < 17) return "GOOD AFTERNOON";
-  return "GOOD EVENING";
+function getTodayLabel() {
+  return new Intl.DateTimeFormat(undefined, {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+  }).format(new Date());
 }
 
 export default function HomePage() {
@@ -53,7 +55,6 @@ export default function HomePage() {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [goal, setGoal] = useState(2000);
-  const [displayName, setDisplayName] = useState("");
   const [addFoodMeal, setAddFoodMeal] = useState(null);
   const [foodDetail, setFoodDetail] = useState(null); // { food, meal }
   const [searchMeal, setSearchMeal] = useState(null);
@@ -64,15 +65,14 @@ export default function HomePage() {
   const [stagedFood, setStagedFood] = useState(null);
   const [waterIntake, setWaterState] = useState(0);
   const [streak, setStreak] = useState(0);
-  const [lastLogDate, setLastLogDate] = useState("");
   const [recentEntries, setRecentEntries] = useState([]);
   const [frequentFoods, setFrequentFoods] = useState([]);
   const [exercises, setExercises] = useState([]);
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
   const [waterGoal, setWaterGoal] = useState(2500);
   const today = dateKey();
-  const lastFetchDate = useRef(null);
   const suggestedMeal = getSuggestedMeal();
+  const todayLabel = getTodayLabel();
   const prevStreakRef = useRef(0);
   const confettiLoaded = useRef(false);
 
@@ -96,15 +96,12 @@ export default function HomePage() {
       setEntries(dayEntries);
       setGoal(settings.calorieGoal || 2000);
       setWaterGoal(settings.waterGoal || 2500);
-      setDisplayName(settings.displayName || user.displayName || "");
       setWaterState(water);
       const prevStreak = prevStreakRef.current;
       setStreak(currentStreak);
-      setLastLogDate(settings.lastLogDate || today);
       setRecentEntries(recent || []);
       setFrequentFoods(frequent || []);
       setExercises(todaysExercises || []);
-      lastFetchDate.current = today;
 
       if (currentStreak > prevStreak && [3, 7, 14, 30, 60, 90].includes(currentStreak)) {
         triggerConfetti();
@@ -281,14 +278,6 @@ export default function HomePage() {
     handleAddFood(foodData, meal);
   };
 
-  const streakMessage = (val) => {
-    if (val >= 30) return "Elite tracker status";
-    if (val >= 14) return "Unstoppable streak!";
-    if (val >= 7) return "One week strong 🔥";
-    if (val >= 3) return "You're building momentum!";
-    return "Start your streak today";
-  };
-
   const triggerConfetti = async () => {
     if (typeof window === "undefined") return;
     if (!confettiLoaded.current) {
@@ -303,27 +292,6 @@ export default function HomePage() {
       });
     }
   };
-
-  const weekDots = (() => {
-    const dots = [];
-    const todayDate = new Date();
-    const dayIdx = todayDate.getDay();
-    const start = new Date(todayDate);
-    start.setDate(start.getDate() - dayIdx);
-    const todayKey = dateKey();
-    const todayLogged = lastLogDate === todayKey;
-
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(start);
-      d.setDate(start.getDate() + i);
-      const key = dateKey(d);
-      const daysBack = Math.floor((todayDate - d) / (1000 * 60 * 60 * 24));
-      const logged = todayLogged && daysBack >= 0 && daysBack < streak;
-      const isToday = key === todayKey;
-      dots.push({ key, isToday, logged });
-    }
-    return dots;
-  })();
 
   if (loading) {
     return (
@@ -357,26 +325,25 @@ export default function HomePage() {
   }
 
   return (
-    <div className="page container fade-in">
-      {/* Header */}
+    <div className={`page container fade-in ${styles.page}`}>
       <div className={styles.header}>
-        <div className={styles.titleGroup}>
-          <div className={styles.greeting}>{getGreeting()}</div>
-          <h1 className={styles.userName}>{displayName} 👋</h1>
+        <div className={styles.brandBlock}>
+          <h1 className={styles.brand}>Cal</h1>
+          <p className={styles.headerMeta}>{todayLabel}</p>
         </div>
         <div className={styles.streakBadge}>
-          <span style={{fontSize:'16px'}}>🔥</span>
-          <span style={{fontSize:'13px', fontWeight:'600', color:'var(--accent-streak)'}}>{streak} Day Streak</span>
+          <span className={styles.streakIcon}>🔥</span>
+          <span className={styles.streakText}>
+            <span className={styles.streakCount}>{streak}</span> day streak
+          </span>
         </div>
       </div>
 
-      {/* Hero Card — Calorie Ring */}
-      <div className={styles.section}>
+      <div className={styles.heroSection}>
         <CalorieRing consumed={totals.calories} goal={goal} burned={totalBurned} />
       </div>
 
-      {/* Macros Card */}
-      <div className={styles.section}>
+      <div className={styles.macroSection}>
         <MacroBar
           protein={totals.protein}
           carbs={totals.carbs}
@@ -384,54 +351,15 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Primary CTA */}
       <div className={styles.section}>
-        <div className={styles.primaryCtaBlock}>
-          <button
-            className={styles.logButton}
-            onClick={() => openMealPicker("start-flow")}
-          >
-            + Log Food
-          </button>
-          <div className={styles.secondaryActions}>
-            <button
-              className={styles.ghostButton}
-              onClick={() => setCameraMeal("__quick__")}
-            >
-              📷 Scan Food
-            </button>
-            <button
-              className={styles.ghostButton}
-              onClick={() => setBarcodeMeal("__quick__")}
-            >
-              ⬛ Scan Barcode
-            </button>
-            <button
-              className={styles.ghostButton}
-              onClick={() => setExerciseModalOpen(true)}
-            >
-              🏋️ Log Exercise
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Water Tracker */}
-      <div className={styles.section}>
-        <WaterTracker intake={waterIntake} goal={waterGoal} onAdd={handleAddWater} onSubtract={handleSubtractWater} />
-      </div>
-
-      {/* Quick Log */}
-      <div className={styles.section}>
-        <QuickLogPanel
-          recent={recentEntries}
-          frequent={frequentFoods}
-          defaultMeal={suggestedMeal}
-          onQuickAdd={handleQuickAdd}
+        <WaterTracker
+          intake={waterIntake}
+          goal={waterGoal}
+          onAdd={handleAddWater}
+          onSubtract={handleSubtractWater}
         />
       </div>
 
-      {/* Meals */}
       <div className={styles.meals}>
         {MEALS.map((meal) => (
           <MealSection
@@ -444,7 +372,56 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* Exercise Section */}
+      <div className={styles.section}>
+        <div className={styles.utilityCard}>
+          <div className={styles.utilityHeader}>
+            <div>
+              <div className={styles.utilityTitle}>Quick Actions</div>
+              <div className={styles.utilityMeta}>Use the Claude logging flow directly</div>
+            </div>
+            <button
+              className={styles.utilityButton}
+              onClick={() => openMealPicker("start-flow")}
+            >
+              <span className={styles.utilityIcon}>+</span>
+              <span className={styles.utilityLabel}>Add Food</span>
+            </button>
+          </div>
+          <div className={styles.utilityGrid}>
+            <button
+              className={styles.utilityButton}
+              onClick={() => setCameraMeal("__quick__")}
+            >
+              <span className={styles.utilityIcon}>📷</span>
+              <span className={styles.utilityLabel}>Scan Food</span>
+            </button>
+            <button
+              className={styles.utilityButton}
+              onClick={() => setBarcodeMeal("__quick__")}
+            >
+              <span className={styles.utilityIcon}>▦</span>
+              <span className={styles.utilityLabel}>Scan Barcode</span>
+            </button>
+            <button
+              className={styles.utilityButton}
+              onClick={() => setExerciseModalOpen(true)}
+            >
+              <span className={styles.utilityIcon}>🏋️</span>
+              <span className={styles.utilityLabel}>Log Exercise</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.section}>
+        <QuickLogPanel
+          recent={recentEntries}
+          frequent={frequentFoods}
+          defaultMeal={suggestedMeal}
+          onQuickAdd={handleQuickAdd}
+        />
+      </div>
+
       {exercises.length > 0 && (
         <div className={styles.section}>
           <div className={styles.exerciseCard}>
@@ -457,25 +434,19 @@ export default function HomePage() {
             <div className={styles.exerciseList}>
               {exercises.map((ex) => (
                 <div key={ex.id} className={styles.exerciseRow}>
-                  <div>
+                  <div className={styles.exerciseInfo}>
                     <div className={styles.exerciseName}>{ex.name}</div>
                     <div className={styles.exerciseMeta}>
                       {ex.durationMinutes} min{ex.metValue ? ` · MET ${ex.metValue}` : ""}
                     </div>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <div className={styles.exerciseCals}>-{Math.round(ex.caloriesBurned || 0)} kcal</div>
+                  <div className={styles.exerciseActions}>
+                    <div className={styles.exerciseCals}>
+                      -{Math.round(ex.caloriesBurned || 0)} kcal
+                    </div>
                     <button
+                      className={styles.exerciseDelete}
                       onClick={() => handleDeleteExercise(ex.id)}
-                      style={{
-                        background: "none",
-                        border: "1px solid rgba(255,69,58,0.2)",
-                        color: "var(--danger)",
-                        borderRadius: "var(--radius-sm)",
-                        padding: "4px 8px",
-                        fontSize: "0.78rem",
-                        cursor: "pointer",
-                      }}
                     >
                       ×
                     </button>

@@ -2,105 +2,81 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0);
-  backdrop-filter: blur(0);
-  -webkit-backdrop-filter: blur(0);
   z-index: 2200;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  padding: 24px;
-  padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 24px);
   transition: background 220ms ease, backdrop-filter 220ms ease;
 }
 
 .overlayVisible {
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
 }
 
 .modal {
-  position: relative;
-  z-index: 2201;
   width: 100%;
-  max-width: 380px;
-  background: rgba(22, 22, 24, 0.94);
+  max-width: 430px;
+  background: rgba(28, 28, 30, 0.96);
   backdrop-filter: blur(40px) saturate(160%);
   -webkit-backdrop-filter: blur(40px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 24px;
-  padding: 24px 20px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 1px solid rgba(255, 255, 255, 0.04);
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 34px 34px 0 0;
+  padding: 10px 20px calc(var(--safe-bottom) + 26px);
   box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.5),
-    0 2px 4px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  opacity: 0;
-  transform: translateY(12px) scale(0.96);
-  transition:
-    opacity 220ms var(--ease-smooth),
-    transform 260ms var(--ease-spring);
+    0 -20px 40px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  transform: translateY(100%);
+  transition: transform 260ms var(--ease-spring);
 }
 
 .modalVisible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
 }
 
-.closeBtn {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 30px;
-  height: 30px;
+.handleBar {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.06);
-  border: none;
-  border-radius: 50%;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+  margin-bottom: 14px;
 }
 
-.closeBtn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
+.handle {
+  width: 40px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .titleContainer {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   padding: 0 12px;
 }
 
 .title {
-  font-size: 22px;
+  font-size: 1.95rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   font-family: var(--font-display);
   color: var(--text-primary);
 }
 
-.subtitle {
-  margin-top: 4px;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--text-secondary);
-}
-
 .actionList {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .actionButton {
   width: 100%;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 20px 18px;
   display: flex;
   align-items: center;
   text-align: left;
@@ -124,19 +100,19 @@
 
 .iconContainer {
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: var(--accent-dim);
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent);
+  color: rgba(255, 255, 255, 0.86);
 }
 
 .icon {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -156,16 +132,10 @@
 }
 
 .actionText {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 1.06rem;
+  font-weight: 500;
   color: var(--text-primary);
   letter-spacing: -0.01em;
-}
-
-.actionDescription {
-  font-size: 12.5px;
-  font-weight: 400;
-  color: var(--text-secondary);
 }
 
 .chevronContainer {
@@ -178,5 +148,5 @@
 .chevron {
   width: 18px;
   height: 18px;
-  color: var(--text-tertiary);
+  color: rgba(255, 255, 255, 0.36);
 }

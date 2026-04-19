@@ -4,6 +4,9 @@
   --bg-layer1: #111114;
   --bg-layer2: #18181C;
   --bg-layer3: #222228;
+  --bg-surface: rgba(28, 28, 30, 0.94);
+  --bg-elevated: rgba(36, 36, 39, 0.92);
+  --bg-highest: rgba(48, 48, 52, 0.96);
   --bg-glass: rgba(255, 255, 255, 0.04);
   --bg-glass-hover: rgba(255, 255, 255, 0.07);
   --bg-input: #1a1a1c;

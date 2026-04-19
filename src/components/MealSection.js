@@ -12,45 +12,43 @@ export default function MealSection({ meal, entries = [], onAdd, onDelete }) {
   const [expanded, setExpanded] = useState(false);
   const totalCals = entries.reduce((s, e) => s + (e.calories || 0), 0);
   const hasEntries = entries.length > 0;
+  const mealLabel = meal.charAt(0).toUpperCase() + meal.slice(1);
 
   const toggleExpanded = () => setExpanded((val) => !val);
 
   return (
     <div className={styles.card}>
-      <button className={styles.summaryRow} onClick={toggleExpanded}>
-        <div className={styles.leftPair}>
-          <div className={styles.icon}>{ICONS[meal] || "🍽️"}</div>
-          <div className={styles.nameBlock}>
-            <span className={styles.mealName}>{meal}</span>
-            <span className={styles.mealMeta}>
-              {hasEntries
-                ? `${entries.length} item${entries.length > 1 ? "s" : ""}`
-                : "Tap to add food"}
-            </span>
+      <div className={styles.summaryRow}>
+        <button className={styles.summaryButton} onClick={toggleExpanded}>
+          <div className={styles.leftPair}>
+            <div className={styles.icon}>{ICONS[meal] || "🍽️"}</div>
+            <div className={styles.nameBlock}>
+              <span className={styles.mealName}>{mealLabel}</span>
+              <span className={styles.mealMeta}>{totalCals} kcal</span>
+            </div>
           </div>
-        </div>
 
-        <div className={styles.rightPair}>
-          <div className={styles.mealCalories}>
-            <div className={styles.calories}>{totalCals}</div>
-            <div className={styles.unit}>kcal</div>
+          <div className={styles.rightPair}>
+            <svg
+              className={`${styles.chevron} ${expanded ? styles.open : ""}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
           </div>
-          <svg
-            className={`${styles.chevron} ${expanded ? styles.open : ""}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </div>
-      </button>
+        </button>
+        <button className={styles.addButton} onClick={onAdd}>
+          + Add Food
+        </button>
+      </div>
 
       <div className={`${styles.panel} ${expanded ? styles.open : ""}`}>
         <div className={styles.itemsList}>
@@ -64,7 +62,16 @@ export default function MealSection({ meal, entries = [], onAdd, onDelete }) {
                   </span>
                 </div>
                 <div className={styles.itemRight}>
-                  <span className={styles.itemCals}>{e.calories} kcal</span>
+                  <div className={styles.itemTopRow}>
+                    <span className={styles.itemCals}>{e.calories} kcal</span>
+                    <button
+                      className={styles.deleteButton}
+                      onClick={() => onDelete?.(e.id)}
+                      aria-label={`Delete ${e.name}`}
+                    >
+                      ×
+                    </button>
+                  </div>
                   <div className={styles.macroPills}>
                     <span className={styles.macroPill} style={{background:'rgba(52,200,138,0.15)', color:'var(--accent-protein)'}}>P {Math.round(e.protein)}</span>
                     <span className={styles.macroPill} style={{background:'rgba(91,140,255,0.15)', color:'var(--accent-carbs)'}}>C {Math.round(e.carbs)}</span>

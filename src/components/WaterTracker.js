@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./WaterTracker.module.css";
 
 const DEFAULT_GOAL = 2500; // ml
@@ -9,6 +9,10 @@ export default function WaterTracker({ intake, goal: goalProp, onAdd, onSubtract
   const [filled, setFilled] = useState(Math.round(intake / 250)); // cups
   const GOAL = Math.round((goalProp || DEFAULT_GOAL) / 250); // convert ml to cups
   const pct = Math.min((filled / GOAL) * 100, 100);
+
+  useEffect(() => {
+    setFilled(Math.round(intake / 250));
+  }, [intake]);
 
   const handleCupClick = (index) => {
     const newFilled = index < filled ? index : index + 1;
@@ -33,7 +37,7 @@ export default function WaterTracker({ intake, goal: goalProp, onAdd, onSubtract
         </div>
         <div>
           <div className={styles.amount}>
-            {(filled * 250 / 1000).toFixed(1)}L
+            {(filled * 250 / 1000).toFixed(1)}L / {(GOAL * 250 / 1000).toFixed(1)}L
           </div>
           <div className={styles.goal}>
             {filled}/{GOAL} cups

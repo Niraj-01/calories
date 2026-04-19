@@ -1,9 +1,9 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   opacity: 0;
   transition: opacity 0.2s ease;
   display: flex;
@@ -18,13 +18,15 @@
 
 .sheet {
   width: 100%;
-  max-width: 520px;
+  max-width: 430px;
   margin: 0 auto;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  padding: 16px 16px calc(env(safe-area-inset-bottom, 16px) + 20px);
-  transform: translateY(20px);
+  background: rgba(28, 28, 30, 0.96);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 1px solid rgba(255, 255, 255, 0.04);
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 34px 34px 0 0;
+  padding: 12px 18px calc(env(safe-area-inset-bottom, 16px) + 24px);
+  transform: translateY(100%);
   opacity: 0;
   transition: transform 0.22s var(--ease-smooth), opacity 0.22s ease;
 }
@@ -37,31 +39,32 @@
 .handleBar {
   display: flex;
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .handle {
-  width: 36px;
-  height: 4px;
+  width: 40px;
+  height: 5px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .header {
   text-align: left;
-  padding: 0 4px 12px;
+  padding: 0 4px 14px;
 }
 
 .title {
   margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.65rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
   color: var(--text-primary);
 }
 
 .subtitle {
   color: var(--text-secondary);
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   font-weight: 400;
 }
 
@@ -73,21 +76,21 @@
 
 .option {
   width: 100%;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  padding: 14px 12px;
   color: var(--text-primary);
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-start;
+  gap: 12px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .option:hover {
-  border-color: var(--border-glass);
-  background: var(--bg-highest);
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .option:active {
@@ -95,12 +98,13 @@
 }
 
 .optionRecommended {
-  border-color: var(--accent);
-  background: var(--accent-dim);
+  border-color: rgba(255, 133, 76, 0.85);
+  background: rgba(82, 42, 24, 0.6);
 }
 
 .icon {
-  font-size: 1.2rem;
+  font-size: 1.35rem;
+  line-height: 1;
 }
 
 .optionText {
@@ -112,12 +116,12 @@
 .mealName {
   font-weight: 600;
   letter-spacing: -0.01em;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .recommended {
   margin-top: 4px;
   font-size: 0.75rem;
-  color: var(--accent);
+  color: #ff905d;
   font-weight: 600;
 }
