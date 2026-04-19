@@ -6,79 +6,56 @@ import styles from "./WaterTracker.module.css";
 const DEFAULT_GOAL = 2500; // ml
 
 export default function WaterTracker({ intake, goal: goalProp, onAdd, onSubtract }) {
-  const [animating, setAnimating] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  const GOAL = goalProp || DEFAULT_GOAL;
-  const pct = Math.min((intake / GOAL) * 100, 100);
+  const [filled, setFilled] = useState(Math.round(intake / 250)); // cups
+  const GOAL = Math.round((goalProp || DEFAULT_GOAL) / 250); // convert ml to cups
+  const pct = Math.min((filled / GOAL) * 100, 100);
 
-  const add = (ml) => {
-    setAnimating(true);
-    onAdd(ml);
-    setExpanded(false);
-    setTimeout(() => setAnimating(false), 400);
+  const handleCupClick = (index) => {
+    const newFilled = index < filled ? index : index + 1;
+    const mlDiff = (newFilled - filled) * 250;
+    setFilled(newFilled);
+    if (mlDiff > 0 && onAdd) {
+      onAdd(mlDiff);
+    } else if (mlDiff < 0 && onSubtract) {
+      onSubtract(Math.abs(mlDiff));
+    }
   };
 
   return (
-    <div className={styles.card}>
+    <div className={styles.section}>
       <div className={styles.header}>
-        <div className={styles.leftPair}>
-          <span className={styles.icon}>💧</span>
-          <span className={styles.title}>Water</span>
-        </div>
-        <div className={styles.rightPair}>
-          <span className={styles.amount}>
-            {(intake / 1000).toFixed(1)}L / {(GOAL / 1000).toFixed(1)}L
-          </span>
-          <button
-            className={styles.addBtn}
-            onClick={() => setExpanded(!expanded)}
-          >
-            +
-          </button>
-        </div>
-      </div>
-
-      {/* Progress bar */}
-      <div className={styles.track}>
-        <div
-          className={`${styles.fill} ${animating ? styles.pulse : ""}`}
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-
-      {/* Quick-add buttons */}
-      {expanded && (
-        <>
-          <div className={styles.buttons}>
-            <button className={styles.btn} onClick={() => add(150)}>
-              <span className={styles.btnIcon}>☕</span>
-              <span className={styles.btnLabel}>150ml</span>
-            </button>
-            <button className={styles.btn} onClick={() => add(250)}>
-              <span className={styles.btnIcon}>🥛</span>
-              <span className={styles.btnLabel}>250ml</span>
-            </button>
-            <button className={styles.btn} onClick={() => add(500)}>
-              <span className={styles.btnIcon}>🍶</span>
-              <span className={styles.btnLabel}>500ml</span>
-            </button>
-            <button className={styles.btn} onClick={() => add(750)}>
-              <span className={styles.btnIcon}>🧴</span>
-              <span className={styles.btnLabel}>750ml</span>
-            </button>
+        <div className={styles.titleRow}>
+          <div className={styles.icon}>💧</div>
+          <div>
+            <div className={styles.title}>Water</div>
+            <div className={styles.sub}>Daily intake</div>
           </div>
-          {intake > 0 && onSubtract && (
-            <div className={styles.subtractRow}>
-              <button className={styles.subtractBtn} onClick={() => onSubtract(250)}>
-                -250ml
-              </button>
-              <button className={styles.subtractBtn} onClick={() => onSubtract(intake)}>
-                Reset
-              </button>
-            </div>
-          )}
-        </>
-      )}
+        </div>
+        <div>
+          <div className={styles.amount}>
+            {(filled * 250 / 1000).toFixed(1)}L
+          </div>
+          <div className={styles.goal}>
+            {filled}/{GOAL} cups
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.track}>
+        <div className={styles.fill} style={{width: `${pct}%`}} />
+      </div>
+
+      <div className={styles.cups}>
+        {Array.from({length: GOAL}).map((_, i) => (
+          <button
+            key={i}
+            className={`${styles.cup} ${i < filled ? styles.filled : ""}`}
+            onClick={() => handleCupClick(i)}
+          >
+            💧
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

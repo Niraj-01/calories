@@ -120,9 +120,11 @@ export default function BottomNav() {
               href={tab.href}
               className={`${styles.tab} ${isActive ? styles.active : ""}`}
             >
-              <span className={styles.icon}>{tab.icon}</span>
-              {isActive && <span className={styles.label}>{tab.label}</span>}
-              {isActive && <span className={styles.dot} />}
+              <div className={styles.iconWrap}>
+                <span className={styles.icon}>{tab.icon}</span>
+              </div>
+              <span className={styles.label}>{tab.label}</span>
+              {isActive && <div className={styles.activeDot} />}
             </Link>
           );
         })}

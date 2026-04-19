@@ -1,74 +1,81 @@
 .nav {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 900;
-  background: rgba(0, 0, 0, 0.92);
-  backdrop-filter: blur(40px) saturate(200%);
-  -webkit-backdrop-filter: blur(40px) saturate(200%);
-  border-top: 0.5px solid rgba(255, 255, 255, 0.06);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: calc(var(--nav-height) + var(--safe-bottom));
   padding-bottom: var(--safe-bottom);
+  background: rgba(10, 10, 12, 0.85);
+  border-top: 1px solid var(--border-glass);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  display: flex;
+  align-items: flex-start;
+  z-index: 100;
 }
 
 .inner {
   display: flex;
-  max-width: 430px;
-  margin: 0 auto;
-  height: var(--nav-height);
-  align-items: center;
+  width: 100%;
+  padding: 8px 8px 0;
   justify-content: space-around;
-  padding: 0 8px;
 }
 
 .tab {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 3px;
+  gap: 4px;
   padding: 8px 12px;
-  min-width: 56px;
-  text-decoration: none;
-  transition: transform 120ms var(--ease-smooth);
-  -webkit-tap-highlight-color: transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  background: none;
+  color: var(--text-tertiary);
+  min-width: 60px;
   position: relative;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.tab:active {
-  transform: scale(0.9);
+.tab.active {
+  color: var(--text-primary);
 }
 
-.icon {
+.iconWrap {
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-tertiary);
-  opacity: 0.6;
-  transition:
-    color 0.2s,
-    opacity 0.2s;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+
+.tab.active .iconWrap {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+  color: inherit;
 }
 
 .label {
-  font-family: var(--font-text);
   font-size: 10px;
   font-weight: 500;
-  text-transform: uppercase;
-  color: var(--accent);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
 }
 
-.dot {
+.activeDot {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--accent-calories);
   position: absolute;
-  bottom: 6px;
-}
-
-.active .icon {
-  color: var(--accent);
-  opacity: 1;
+  bottom: 2px;
 }

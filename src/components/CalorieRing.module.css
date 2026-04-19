@@ -1,102 +1,91 @@
-.container {
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 20px 24px;
+  gap: 4px;
   position: relative;
-  width: 200px;
-  height: 200px;
-  margin: 0 auto;
+  animation: fadeUp 0.4s ease both;
 }
 
-.svg {
-  transform: rotate(-90deg);
-}
-
-.bg {
-  fill: none;
-  stroke: var(--bg-highest);
-  stroke-width: 12;
-}
-
-.progress {
-  fill: none;
-  stroke-width: 10;
-  stroke-linecap: round;
-  transition:
-    stroke-dashoffset 0.8s var(--ease-smooth),
-    stroke 0.3s var(--ease-smooth);
-}
-
-.progressOver {
-  stroke: var(--danger);
-}
-
-.glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 180px;
-  height: 180px;
-  background: radial-gradient(
-    circle,
-    var(--accent-glow) 0%,
-    rgba(0, 0, 0, 0) 70%
-  );
-  z-index: -1;
-  border-radius: 50%;
-  opacity: 0.5;
-}
-
-.glowOver {
-  background: radial-gradient(
-    circle,
-    rgba(255, 69, 58, 0.12) 0%,
-    rgba(0, 0, 0, 0) 70%
-  );
+.wrapper {
+  position: relative;
+  width: 220px;
+  height: 220px;
 }
 
 .center {
   position: absolute;
-  inset: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+  gap: 0;
 }
 
-.value {
-  font-size: 3.2rem;
+.caloriesNum {
+  font-size: 42px;
   font-weight: 800;
-  letter-spacing: -0.045em;
-  line-height: 1.05;
-  font-family: var(--font-display);
-  font-variant-numeric: tabular-nums;
   color: var(--text-primary);
+  line-height: 1;
+  letter-spacing: -1px;
 }
 
-.unit {
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-family: var(--font-text);
-  margin-top: 4px;
-  color: var(--text-secondary);
-}
-
-.sub {
+.caloriesLabel {
+  font-size: 11px;
   color: var(--text-tertiary);
-  font-family: var(--font-text);
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-size: 0.72rem;
-  margin-top: 8px;
-  font-weight: 400;
+  margin-top: 2px;
 }
 
 .remaining {
-  margin-top: 6px;
-  font-family: var(--font-text);
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.remaining span {
+  color: var(--accent-calories);
   font-weight: 600;
-  color: var(--accent);
-  font-size: 0.9rem;
+}
+
+.stats {
+  display: flex;
+  gap: 28px;
+  margin-top: 4px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.statVal {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.statLabel {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

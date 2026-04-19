@@ -19,23 +19,24 @@ export default function MealSection({ meal, entries = [], onAdd, onDelete }) {
     <div className={styles.card}>
       <button className={styles.summaryRow} onClick={toggleExpanded}>
         <div className={styles.leftPair}>
-          <span className={styles.icon}>{ICONS[meal] || "🍽️"}</span>
+          <div className={styles.icon}>{ICONS[meal] || "🍽️"}</div>
           <div className={styles.nameBlock}>
             <span className={styles.mealName}>{meal}</span>
             <span className={styles.mealMeta}>
               {hasEntries
                 ? `${entries.length} item${entries.length > 1 ? "s" : ""}`
-                : "Empty"}
+                : "Tap to add food"}
             </span>
           </div>
         </div>
 
         <div className={styles.rightPair}>
-          <span className={styles.mealCalories}>
-            {hasEntries ? `${totalCals} kcal` : "— kcal"}
-          </span>
+          <div className={styles.mealCalories}>
+            <div className={styles.calories}>{totalCals}</div>
+            <div className={styles.unit}>kcal</div>
+          </div>
           <svg
-            className={`${styles.chevron} ${expanded ? styles.chevronOpen : ""}`}
+            className={`${styles.chevron} ${expanded ? styles.open : ""}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -51,7 +52,7 @@ export default function MealSection({ meal, entries = [], onAdd, onDelete }) {
         </div>
       </button>
 
-      <div className={`${styles.panel} ${expanded ? styles.panelOpen : ""}`}>
+      <div className={`${styles.panel} ${expanded ? styles.open : ""}`}>
         <div className={styles.itemsList}>
           {hasEntries ? (
             entries.map((e) => (
@@ -64,16 +65,11 @@ export default function MealSection({ meal, entries = [], onAdd, onDelete }) {
                 </div>
                 <div className={styles.itemRight}>
                   <span className={styles.itemCals}>{e.calories} kcal</span>
-                  <button
-                    className={styles.deleteBtn}
-                    onClick={(ev) => {
-                      ev.stopPropagation();
-                      onDelete(e.id);
-                    }}
-                    title="Remove"
-                  >
-                    &times;
-                  </button>
+                  <div className={styles.macroPills}>
+                    <span className={styles.macroPill} style={{background:'rgba(52,200,138,0.15)', color:'var(--accent-protein)'}}>P {Math.round(e.protein)}</span>
+                    <span className={styles.macroPill} style={{background:'rgba(91,140,255,0.15)', color:'var(--accent-carbs)'}}>C {Math.round(e.carbs)}</span>
+                    <span className={styles.macroPill} style={{background:'rgba(245,166,35,0.15)', color:'var(--accent-fat)'}}>F {Math.round(e.fat)}</span>
+                  </div>
                 </div>
               </div>
             ))
@@ -89,7 +85,7 @@ export default function MealSection({ meal, entries = [], onAdd, onDelete }) {
             onAdd();
           }}
         >
-          + Add
+          + Add food
         </button>
       </div>
     </div>

@@ -1,7 +1,7 @@
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const jakarta = Plus_Jakarta_Sans({
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-main",
   weight: ["300", "400", "500", "600", "700", "800"],
@@ -24,7 +24,7 @@ export function generateViewport() {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning={true} className={jakarta.variable}>
+    <html lang="en" suppressHydrationWarning={true} className={inter.variable}>
       <body suppressHydrationWarning={true}>{children}</body>
     </html>
   );

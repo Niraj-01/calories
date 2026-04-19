@@ -43,9 +43,9 @@ function getSuggestedMeal() {
 
 function getGreeting() {
   const h = new Date().getHours();
-  if (h < 12) return "Good morning";
-  if (h < 17) return "Good afternoon";
-  return "Good evening";
+  if (h < 12) return "GOOD MORNING";
+  if (h < 17) return "GOOD AFTERNOON";
+  return "GOOD EVENING";
 }
 
 export default function HomePage() {
@@ -361,22 +361,12 @@ export default function HomePage() {
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.titleGroup}>
-          <h1 className={styles.userName}>Cal</h1>
+          <div className={styles.greeting}>{getGreeting()}</div>
+          <h1 className={styles.userName}>{displayName} 👋</h1>
         </div>
-        <div className={styles.streakBlock}>
-          <div className={styles.weekRow}>
-            {weekDots.map((d) => (
-              <div
-                key={d.key}
-                className={`${styles.dot} ${d.logged ? styles.dotLogged : ""} ${d.isToday ? styles.dotToday : ""}`}
-              >
-                {d.logged && <span>✓</span>}
-              </div>
-            ))}
-          </div>
-          <div className={styles.streakMessage}>
-            {streak} day streak · {streakMessage(streak)}
-          </div>
+        <div className={styles.streakBadge}>
+          <span style={{fontSize:'16px'}}>🔥</span>
+          <span style={{fontSize:'13px', fontWeight:'600', color:'var(--accent-streak)'}}>{streak} Day Streak</span>
         </div>
       </div>
 
