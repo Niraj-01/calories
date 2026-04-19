@@ -21,6 +21,7 @@ export default function CameraModal({ meal, onAdd, onClose }) {
   const [correctionText, setCorrectionText] = useState("");
 
   const fileInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
 
   useEffect(() => {
     setMounted(true);
@@ -280,14 +281,64 @@ export default function CameraModal({ meal, onAdd, onClose }) {
                   </button>
                 </div>
               ) : (
-                <div
-                  className={styles.dropzone}
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <div className={styles.uploadIcon}>📷</div>
-                  <p className={styles.uploadText}>
-                    Tap to scan or choose photo
-                  </p>
+                <div className={styles.sourceChoices}>
+                  <button
+                    type="button"
+                    className={styles.sourceTile}
+                    onClick={() => cameraInputRef.current?.click()}
+                  >
+                    <div className={styles.sourceIcon}>
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                        <circle cx="12" cy="13" r="4" />
+                      </svg>
+                    </div>
+                    <div className={styles.sourceTextGroup}>
+                      <span className={styles.sourceTitle}>Take Photo</span>
+                      <span className={styles.sourceSub}>Use camera now</span>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    className={styles.sourceTile}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <div className={styles.sourceIcon}>
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <rect x="3" y="3" width="18" height="18" rx="2.5" />
+                        <circle cx="8.5" cy="9" r="1.6" />
+                        <path d="M21 15l-5-5-8 8" />
+                      </svg>
+                    </div>
+                    <div className={styles.sourceTextGroup}>
+                      <span className={styles.sourceTitle}>Choose Photo</span>
+                      <span className={styles.sourceSub}>From library</span>
+                    </div>
+                  </button>
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    ref={cameraInputRef}
+                    className={styles.fileInput}
+                    onChange={handleImageChange}
+                  />
                   <input
                     type="file"
                     accept="image/*"
