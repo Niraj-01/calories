@@ -1,66 +1,62 @@
-.section {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+.card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px 8px;
+  box-shadow: var(--shadow-card);
   animation: fadeUp 0.4s ease both 0.1s;
   animation-fill-mode: both;
 }
 
-.card {
-  min-width: 0;
-  padding: 12px;
-  border-radius: 20px;
-  background: rgba(28, 28, 30, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+.row {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+
+.macroItem {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 4px;
 }
 
-.badge {
+.ringWrapper {
+  position: relative;
+  width: 68px;
+  height: 68px;
+}
+
+.ringCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
-  gap: 6px;
-  min-width: 0;
+  justify-content: center;
 }
 
-.badgeIcon {
-  font-size: 0.8rem;
-  line-height: 1;
-}
-
-.name {
-  font-size: 10px;
-  font-weight: 600;
-  color: rgba(242, 242, 247, 0.72);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.values {
-  color: var(--text-primary);
+.ringVal {
+  font-size: 15px;
   font-weight: 700;
-  font-size: 1rem;
-  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
-.track {
-  height: 5px;
-  border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.07);
-  overflow: hidden;
+.macroLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
 }
 
-.fill {
-  height: 100%;
-  border-radius: var(--radius-pill);
-  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.12);
-}
-
-.goal {
-  font-size: 0.7rem;
+.macroGoal {
+  font-size: 11px;
   color: var(--text-secondary);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
 }
 
 @keyframes fadeUp {

@@ -88,7 +88,8 @@
 .stepperBtn {
   width: 52px;
   height: 52px;
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -99,7 +100,7 @@
 }
 
 .stepperBtn:active {
-  background-color: rgba(255, 255, 255, 0.14);
+  background-color: var(--bg-highest);
 }
 
 .weightContainer {
@@ -151,7 +152,7 @@
 }
 
 .macroRow.separator {
-  border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 0.5px solid var(--border-divider);
 }
 
 .macroLabel {
@@ -168,7 +169,7 @@
 }
 
 .segmentedControl {
-  background-color: rgba(118, 118, 128, 0.2);
+  background-color: var(--bg-highest);
   border-radius: var(--radius-sm);
   padding: 2px;
   display: flex;

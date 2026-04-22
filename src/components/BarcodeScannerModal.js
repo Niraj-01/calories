@@ -174,7 +174,7 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
                   className="btn btn-primary btn-full"
                   onClick={startScanner}
                 >
-                  📷 Start Scanning
+                  Start Scanning
                 </button>
               )}
               {scanning && (

@@ -11,7 +11,7 @@
 }
 
 .overlayVisible {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 /* Bottom sheet */
@@ -43,7 +43,7 @@
   width: 36px;
   height: 4px;
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--border-glass);
 }
 
 /* Header */
@@ -177,7 +177,7 @@
   justify-content: space-between;
   width: 100%;
   padding: 14px 0;
-  border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 0.5px solid var(--border-divider);
   background: none;
   border-left: none;
   border-right: none;
@@ -188,7 +188,7 @@
 }
 
 .resultItem:active {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-surface);
 }
 
 .resultInfo {
@@ -227,7 +227,7 @@
   gap: 4px;
   padding: 3px 8px;
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   color: var(--text-tertiary);
   font-size: 11px;

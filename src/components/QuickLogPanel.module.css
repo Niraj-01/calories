@@ -76,9 +76,7 @@
 .sheetOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -90,7 +88,7 @@
   max-width: 520px;
   background: var(--bg-surface);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  padding: 16px 16px calc(env(safe-area-inset-bottom, 16px) + 16px);
+  padding: 16px 16px calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 16px);
   border: 1px solid var(--border-subtle);
   animation: slideUp 220ms var(--ease-smooth);
 }

@@ -242,7 +242,7 @@ export default function SearchModal({ meal, onAdd, onClose }) {
                           <span className={styles.resultBrand}>{food.brand}</span>
                         )}
                         <span className={styles.sourceBadge}>
-                          {food.source === "local" ? "🏠 Local DB" : "🌐 Open Food Facts"}
+                          {food.source === "local" ? "Local DB" : "Open Food Facts"}
                         </span>
                       </div>
                     </div>

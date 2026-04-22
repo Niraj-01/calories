@@ -205,9 +205,9 @@
 .skeleton {
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.03) 25%,
-    rgba(255, 255, 255, 0.06) 50%,
-    rgba(255, 255, 255, 0.03) 75%
+    #F0F0F2 25%,
+    #E8E8ED 50%,
+    #F0F0F2 75%
   );
   background-size: 200% 100%;
   animation: shine 1.5s infinite;

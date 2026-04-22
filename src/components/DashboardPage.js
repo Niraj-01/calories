@@ -134,9 +134,9 @@ export default function DashboardPage() {
   });
 
   const macroPieData = [
-    { name: "Protein", value: totalProtein, color: "#32d74b" },
-    { name: "Carbs", value: totalCarbs, color: "#0a84ff" },
-    { name: "Fat", value: totalFat, color: "#ff9f0a" },
+    { name: "Protein", value: totalProtein, color: "#4A90D9" },
+    { name: "Carbs", value: totalCarbs, color: "#F5A623" },
+    { name: "Fat", value: totalFat, color: "#D0021B" },
   ].filter((m) => m.value > 0);
 
   if (macroPieData.length === 0) {
@@ -269,7 +269,7 @@ export default function DashboardPage() {
               <Bar
                 dataKey="calories"
                 name="Calories"
-                fill="#1fc11b"
+                fill="#00B84D"
                 radius={[4, 4, 4, 4]}
                 barSize={24}
               />
@@ -310,7 +310,7 @@ export default function DashboardPage() {
               <div className={styles.macroLabelGroup}>
                 <div
                   className={styles.macroDot}
-                  style={{ background: "#32d74b" }}
+                  style={{ background: "#4A90D9" }}
                 />
                 <span className={styles.macroLabel}>Protein</span>
               </div>
@@ -322,7 +322,7 @@ export default function DashboardPage() {
               <div className={styles.macroLabelGroup}>
                 <div
                   className={styles.macroDot}
-                  style={{ background: "#0a84ff" }}
+                  style={{ background: "#F5A623" }}
                 />
                 <span className={styles.macroLabel}>Carbs</span>
               </div>
@@ -334,7 +334,7 @@ export default function DashboardPage() {
               <div className={styles.macroLabelGroup}>
                 <div
                   className={styles.macroDot}
-                  style={{ background: "#ff9f0a" }}
+                  style={{ background: "#D0021B" }}
                 />
                 <span className={styles.macroLabel}>Fat</span>
               </div>
@@ -377,8 +377,8 @@ export default function DashboardPage() {
               >
                 <defs>
                   <linearGradient id="colorWeight" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#bf5af2" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#bf5af2" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#00B84D" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#00B84D" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid
@@ -405,7 +405,7 @@ export default function DashboardPage() {
                   type="monotone"
                   dataKey="weight"
                   name="Weight"
-                  stroke="#bf5af2"
+                  stroke="#00B84D"
                   strokeWidth={3}
                   fillOpacity={1}
                   fill="url(#colorWeight)"
@@ -464,7 +464,7 @@ export default function DashboardPage() {
               <Bar
                 dataKey="water"
                 name="Water (L)"
-                fill="#0a84ff"
+                fill="#4A90D9"
                 radius={[4, 4, 4, 4]}
                 barSize={24}
               />

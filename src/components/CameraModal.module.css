@@ -11,9 +11,7 @@
 }
 
 .overlayVisible {
-  background: rgba(0, 0, 0, 0.62);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 /* Bottom sheet */
@@ -21,11 +19,11 @@
   width: 100%;
   max-width: 430px;
   max-height: 92dvh;
-  background: rgba(28, 28, 30, 0.96);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  border-left: 1px solid rgba(255, 255, 255, 0.04);
-  border-right: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 34px 34px 0 0;
+  background: var(--bg-base);
+  border-top: 1px solid var(--border-subtle);
+  border-left: none;
+  border-right: none;
+  border-radius: 24px 24px 0 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -48,7 +46,7 @@
   width: 40px;
   height: 5px;
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.16);
+  background: var(--border-glass);
 }
 
 /* Header */
@@ -74,8 +72,8 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
   cursor: pointer;
   transition: background 0.15s ease;
@@ -107,7 +105,7 @@
   justify-content: center;
   gap: 8px;
   padding: 48px 24px;
-  border: 1.5px dashed rgba(255, 255, 255, 0.1);
+  border: 1.5px dashed var(--border-glass);
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: border-color 0.2s;
@@ -144,8 +142,8 @@
   align-items: center;
   gap: 14px;
   padding: 18px 16px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
   border-radius: 20px;
   cursor: pointer;
   text-align: left;
@@ -156,13 +154,13 @@
 }
 
 .sourceTile:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.08);
+  background: var(--bg-highest);
+  border-color: var(--border-glass);
 }
 
 .sourceTile:active {
   transform: scale(0.985);
-  background: rgba(255, 255, 255, 0.09);
+  background: var(--bg-highest);
 }
 
 .sourceIcon {
@@ -170,8 +168,8 @@
   width: 46px;
   height: 46px;
   border-radius: 14px;
-  background: rgba(255, 107, 53, 0.14);
-  color: #ff8d57;
+  background: var(--accent-dim);
+  color: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -468,7 +466,7 @@
 
 .correctionPrompt {
   background: none;
-  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border: 1px dashed var(--border-glass);
   color: var(--accent);
   padding: 10px 12px;
   border-radius: var(--radius-md);

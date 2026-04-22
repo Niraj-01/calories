@@ -1,9 +1,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,7 +15,7 @@
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-ambient);
 }
 
 .header {
@@ -30,7 +28,7 @@
 .progressBar {
   width: 100%;
   height: 4px;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-highest);
   border-radius: 999px;
   overflow: hidden;
 }

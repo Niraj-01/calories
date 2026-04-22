@@ -1,61 +1,67 @@
 :root {
-  /* NutriTrack Design Tokens */
-  --bg-base: #0A0A0C;
-  --bg-layer1: #111114;
-  --bg-layer2: #18181C;
-  --bg-layer3: #222228;
-  --bg-surface: rgba(28, 28, 30, 0.94);
-  --bg-elevated: rgba(36, 36, 39, 0.92);
-  --bg-highest: rgba(48, 48, 52, 0.96);
-  --bg-glass: rgba(255, 255, 255, 0.04);
-  --bg-glass-hover: rgba(255, 255, 255, 0.07);
-  --bg-input: #1a1a1c;
+  /* ─── MFP-Inspired Light Design Tokens ─── */
 
-  /* Borders — crisp glass */
-  --border-glass: rgba(255, 255, 255, 0.08);
-  --border-subtle: rgba(255, 255, 255, 0.05);
+  /* Backgrounds */
+  --bg-base: #FFFFFF;
+  --bg-surface: #F7F7F8;
+  --bg-elevated: #FFFFFF;
+  --bg-highest: #F0F0F2;
+  --bg-glass: rgba(0, 0, 0, 0.02);
+  --bg-glass-hover: rgba(0, 0, 0, 0.04);
+  --bg-input: #F4F4F6;
+  --bg-overlay: rgba(0, 0, 0, 0.3);
 
-  /* Macros — NutriTrack palette */
-  --accent-calories: #FF6B35;
-  --accent-protein: #34C88A;
-  --accent-carbs: #5B8CFF;
-  --accent-fat: #F5A623;
-  --accent-water: #3ECFCF;
-  --accent-streak: #FF9F0A;
+  /* Borders */
+  --border-subtle: #E8E8ED;
+  --border-glass: #D1D1D6;
+  --border-divider: #F0F0F2;
+
+  /* Accent — MFP Green */
+  --accent: #00B84D;
+  --accent-dim: rgba(0, 184, 77, 0.08);
+  --accent-glow: rgba(0, 184, 77, 0.12);
+  --accent-hover: #00A344;
+  --accent-light: #E6F9EE;
+
+  /* Macro Colors */
+  --accent-calories: #00B84D;
+  --accent-protein: #4A90D9;
+  --accent-carbs: #F5A623;
+  --accent-fat: #D0021B;
+  --accent-water: #2196F3;
+  --accent-streak: #FF9500;
 
   /* Legacy aliases */
-  --accent: var(--accent-calories);
-  --accent-dim: rgba(255, 107, 53, 0.12);
-  --accent-glow: rgba(255, 107, 53, 0.12);
-  --accent-hover: #E85A2A;
   --protein: var(--accent-protein);
   --carbs: var(--accent-carbs);
   --fat: var(--accent-fat);
 
-  /* Text — Apple-style hierarchy */
-  --text-primary: #F2F2F7;
-  --text-secondary: rgba(242, 242, 247, 0.55);
-  --text-tertiary: rgba(242, 242, 247, 0.3);
-  --text-inverse: #ffffff;
+  /* Text */
+  --text-primary: #1C1C1E;
+  --text-secondary: #8E8E93;
+  --text-tertiary: #C7C7CC;
+  --text-inverse: #FFFFFF;
+  --text-accent: #00B84D;
 
   /* Danger */
-  --danger: #FF453A;
-  --danger-dim: rgba(255, 69, 58, 0.12);
+  --danger: #FF3B30;
+  --danger-dim: rgba(255, 59, 48, 0.08);
 
   /* Radius */
+  --radius-xs: 8px;
   --radius-sm: 12px;
   --radius-md: 16px;
   --radius-lg: 20px;
   --radius-xl: 24px;
   --radius-pill: 999px;
 
-  /* Effects */
-  --blur-glass: blur(20px);
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03);
-  --shadow-ambient: 0 12px 40px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px var(--accent-glow);
-  --shadow-input-focus: 0 0 0 3px rgba(255, 107, 53, 0.2);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.15);
+  /* Shadows — Subtle elevation */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-ambient: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --shadow-input-focus: 0 0 0 3px rgba(0, 184, 77, 0.15);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-nav: 0 -1px 0 #E8E8ED;
 
   /* Typography — Inter */
   --font-display: var(--font-main, "Inter", -apple-system, BlinkMacSystemFont, sans-serif);
@@ -65,7 +71,8 @@
   /* Spacing */
   --nav-height: 80px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --space-vertical: 20px;
+  --space-vertical: 16px;
+  --space-section: 24px;
 
   /* Easings */
   --ease-spring: cubic-bezier(0.25, 1, 0.5, 1);
@@ -94,7 +101,7 @@ html {
 
 body {
   font-family: var(--font-text);
-  background: var(--bg-base);
+  background: var(--bg-surface);
   color: var(--text-primary);
   line-height: 1.5;
   min-height: 100dvh;
@@ -142,7 +149,7 @@ ol {
   display: block;
   font-family: var(--font-text);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -166,9 +173,9 @@ ol {
 
 .page-title {
   font-family: var(--font-display);
-  font-size: 30px;
-  font-weight: 800;
-  letter-spacing: -0.035em;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
   color: var(--text-primary);
 }
 
@@ -186,57 +193,7 @@ ol {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  padding: 20px;
-}
-
-/* ─── Glassmorphism Utilities ─── */
-
-.glass-card {
-  background: rgba(17, 17, 19, 0.78);
-  backdrop-filter: blur(32px) saturate(150%);
-  -webkit-backdrop-filter: blur(32px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: var(--radius-lg);
-  transition: background 0.2s ease;
-}
-
-.glass-card:active {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.glass-pill {
-  background: rgba(28, 28, 30, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 999px;
-}
-
-.glass-modal {
-  background: rgba(20, 20, 22, 0.88);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  border-left: 1px solid rgba(255, 255, 255, 0.04);
-  border-right: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.stepper-bg {
-  background-color: var(--bg-highest);
-  border-radius: var(--radius-lg);
-}
-
-.stepper-button {
-  background-color: rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s;
-}
-
-.stepper-button:active {
-  background-color: rgba(255, 255, 255, 0.14);
+  padding: 16px;
 }
 
 /* ─── Buttons ─── */
@@ -268,12 +225,12 @@ ol {
   border-radius: var(--radius-md);
   height: 52px;
   letter-spacing: -0.01em;
-  box-shadow: 0 2px 12px rgba(10, 132, 255, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 184, 77, 0.2);
 }
 
 .btn-primary:hover {
-  filter: brightness(1.08);
-  box-shadow: 0 4px 20px rgba(10, 132, 255, 0.3);
+  background: var(--accent-hover);
+  box-shadow: 0 4px 16px rgba(0, 184, 77, 0.25);
 }
 
 .btn-primary:disabled {
@@ -290,7 +247,7 @@ ol {
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-surface);
   border-color: var(--border-glass);
 }
 
@@ -301,7 +258,7 @@ ol {
 }
 
 .btn-danger:hover {
-  background: rgba(255, 69, 58, 0.2);
+  background: rgba(255, 59, 48, 0.14);
 }
 
 .btn-ghost {
@@ -312,7 +269,7 @@ ol {
 
 .btn-ghost:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-surface);
   border-radius: var(--radius-sm);
 }
 
@@ -332,7 +289,7 @@ ol {
   width: 100%;
   padding: 0 18px;
   height: 50px;
-  background: var(--bg-highest);
+  background: var(--bg-input);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   color: var(--text-primary);
@@ -340,13 +297,13 @@ ol {
   font-weight: 400;
   transition:
     border-color 0.2s var(--ease-smooth),
-    box-shadow 0.2s var(--ease-smooth),
-    background 0.2s var(--ease-smooth);
+    box-shadow 0.2s var(--ease-smooth);
 }
 
 .input:focus {
   border-color: var(--accent);
   box-shadow: var(--shadow-input-focus);
+  background: var(--bg-elevated);
 }
 
 .input::placeholder {
@@ -367,9 +324,9 @@ ol {
 .skeleton {
   background: linear-gradient(
     90deg,
-    var(--bg-surface) 25%,
-    var(--bg-elevated) 50%,
-    var(--bg-surface) 75%
+    #F0F0F2 25%,
+    #E8E8ED 50%,
+    #F0F0F2 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
@@ -413,7 +370,7 @@ ol {
 .spinner {
   width: 20px;
   height: 20px;
-  border: 2px solid var(--border-glass);
+  border: 2px solid var(--border-subtle);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -434,6 +391,7 @@ ol {
   min-height: 100dvh;
   flex-direction: column;
   gap: 16px;
+  background: var(--bg-base);
 }
 
 .loading-screen .app-name {
@@ -464,7 +422,7 @@ ol {
   color: var(--text-secondary);
 }
 
-/* ─── Scrollbar ─── */
+/* ─── Scrollbar (light) ─── */
 
 ::-webkit-scrollbar {
   width: 4px;
@@ -475,6 +433,6 @@ ol {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.1);
   border-radius: 4px;
 }

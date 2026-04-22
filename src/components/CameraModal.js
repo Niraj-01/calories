@@ -368,7 +368,7 @@ export default function CameraModal({ meal, onAdd, onClose }) {
           {loading && (
             <div className={styles.loadingArea}>
               <div className={styles.pulseRing}>
-                <div className={styles.pulseInner}>🍽️</div>
+                <div className={styles.pulseInner}><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg></div>
               </div>
               <p className={styles.loadingText}>Analyzing your meal...</p>
               {preview && (

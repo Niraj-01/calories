@@ -11,7 +11,7 @@ export default function LoginPage() {
       <div className={styles.glow} />
       <div className={styles.content}>
         <div className={styles.brand}>
-          <div className={styles.logoIcon}>🍽️</div>
+          <div className={styles.logoIcon}><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg></div>
           <h1 className={styles.appName}>CALORIES</h1>
           <p className={styles.tagline}>Track smarter. Eat better.</p>
         </div>

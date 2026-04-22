@@ -332,7 +332,7 @@ export default function HomePage() {
           <p className={styles.headerMeta}>{todayLabel}</p>
         </div>
         <div className={styles.streakBadge}>
-          <span className={styles.streakIcon}>🔥</span>
+          <span className={styles.streakIcon}><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 23c-3.866 0-7-3.358-7-7.5 0-3.133 2.268-6.093 4.5-8.5L12 4l2.5 3c2.232 2.407 4.5 5.367 4.5 8.5 0 4.142-3.134 7.5-7 7.5z"/></svg></span>
           <span className={styles.streakText}>
             <span className={styles.streakCount}>{streak}</span> day streak
           </span>
@@ -392,7 +392,7 @@ export default function HomePage() {
               className={styles.utilityButton}
               onClick={() => setCameraMeal("__quick__")}
             >
-              <span className={styles.utilityIcon}>📷</span>
+              <span className={styles.utilityIcon}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
               <span className={styles.utilityLabel}>Scan Food</span>
             </button>
             <button
@@ -406,7 +406,7 @@ export default function HomePage() {
               className={styles.utilityButton}
               onClick={() => setExerciseModalOpen(true)}
             >
-              <span className={styles.utilityIcon}>🏋️</span>
+              <span className={styles.utilityIcon}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
               <span className={styles.utilityLabel}>Log Exercise</span>
             </button>
           </div>

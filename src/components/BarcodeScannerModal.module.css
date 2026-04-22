@@ -1,12 +1,10 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.3);
   z-index: 1000;
   opacity: 0;
   transition: opacity 0.25s ease;
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
 }
 
 .overlayVisible {
@@ -26,7 +24,7 @@
   transition: transform 0.3s var(--ease-smooth);
   z-index: 1001;
   padding-bottom: env(safe-area-inset-bottom, 20px);
-  border-top: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .sheetVisible {
@@ -43,7 +41,7 @@
   width: 36px;
   height: 4px;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--border-glass);
 }
 
 .sheetHeader {

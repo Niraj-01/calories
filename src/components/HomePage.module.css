@@ -1,46 +1,49 @@
 .page {
-  padding-top: 10px;
+  padding-top: 8px;
+  background: var(--bg-surface);
 }
 
 .header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  padding-top: 30px;
-  margin-bottom: 18px;
+  padding-top: 24px;
+  margin-bottom: 20px;
 }
 
 .brandBlock {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .brand {
-  font-size: 2rem;
+  font-size: 1.6rem;
   line-height: 1;
-  font-weight: 800;
-  letter-spacing: -0.05em;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
 }
 
 .headerMeta {
   font-size: 0.82rem;
   color: var(--text-secondary);
   letter-spacing: -0.01em;
+  font-weight: 400;
 }
 
 .streakBadge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: 6px;
+  padding: 6px 12px;
   border-radius: var(--radius-pill);
-  background: rgba(255, 159, 10, 0.12);
-  border: 1px solid rgba(255, 159, 10, 0.2);
+  background: rgba(255, 149, 0, 0.08);
+  border: 1px solid rgba(255, 149, 0, 0.15);
 }
 
 .streakIcon {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   line-height: 1;
 }
 
@@ -48,16 +51,17 @@
   font-size: 0.75rem;
   line-height: 1;
   font-weight: 600;
-  color: rgba(255, 202, 128, 0.88);
+  color: #B87A00;
   text-transform: lowercase;
 }
 
 .streakCount {
   color: var(--text-primary);
+  font-weight: 700;
 }
 
 .heroSection {
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .macroSection,
@@ -68,14 +72,21 @@
 .meals {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0;
   margin-bottom: 16px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
 }
 
+/* ─── Quick Actions (Utility) ─── */
+
 .utilityCard {
-  background: rgba(28, 28, 30, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 24px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
   padding: 16px;
   box-shadow: var(--shadow-card);
 }
@@ -92,6 +103,7 @@
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: -0.01em;
+  color: var(--text-primary);
 }
 
 .utilityMeta {
@@ -102,53 +114,55 @@
 .utilityGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: 8px;
 }
 
 .utilityButton {
-  min-height: 72px;
+  min-height: 68px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   padding: 12px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
   color: var(--text-primary);
   transition:
     transform 180ms var(--ease-smooth),
-    border-color 180ms ease,
     background 180ms ease;
 }
 
 .utilityButton:hover {
-  background: rgba(255, 255, 255, 0.075);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: var(--bg-highest);
 }
 
 .utilityButton:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .utilityIcon {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   line-height: 1;
 }
 
 .utilityLabel {
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   font-weight: 600;
   text-align: center;
   letter-spacing: -0.01em;
+  color: var(--text-secondary);
 }
 
+/* ─── Exercise Card ─── */
+
 .exerciseCard {
-  background: rgba(28, 28, 30, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 24px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
   padding: 16px;
+  box-shadow: var(--shadow-card);
 }
 
 .exerciseHeader {
@@ -162,18 +176,19 @@
 .exerciseTitle {
   font-size: 0.95rem;
   font-weight: 600;
+  color: var(--text-primary);
 }
 
 .exerciseBurn {
   font-size: 0.82rem;
   font-weight: 600;
-  color: rgba(255, 202, 128, 0.92);
+  color: var(--accent);
 }
 
 .exerciseList {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .exerciseRow {
@@ -182,9 +197,9 @@
   justify-content: space-between;
   gap: 12px;
   padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
 }
 
 .exerciseInfo {
@@ -194,6 +209,7 @@
 .exerciseName {
   font-size: 0.92rem;
   font-weight: 600;
+  color: var(--text-primary);
 }
 
 .exerciseMeta {
@@ -210,7 +226,7 @@
 .exerciseCals {
   font-size: 0.86rem;
   font-weight: 600;
-  color: rgba(255, 202, 128, 0.92);
+  color: var(--accent);
   white-space: nowrap;
 }
 
@@ -218,11 +234,14 @@
   width: 28px;
   height: 28px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 69, 58, 0.22);
-  background: rgba(255, 69, 58, 0.08);
+  border: 1px solid var(--danger-dim);
+  background: var(--danger-dim);
   color: var(--danger);
   font-size: 1rem;
   line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 380px) {
