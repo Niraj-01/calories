@@ -141,7 +141,7 @@ export default function HomePage() {
         meal,
         servingAmount,
         servingUnit,
-        source: food.source,
+        source: food.source || "user",
       };
       const id = await addFoodEntry(user.uid, today, entry);
       setEntries((prev) => [...prev, { id, ...entry }]);
@@ -182,24 +182,24 @@ export default function HomePage() {
 
   const handleAddWater = async (ml) => {
     if (!user) return;
-    const newTotal = waterIntake + ml;
-    setWaterState(newTotal);
-    try {
-      await setWaterIntake(user.uid, today, newTotal);
-    } catch (err) {
-      console.warn("Failed to save water:", err);
-    }
+    setWaterState((prev) => {
+      const newTotal = prev + ml;
+      setWaterIntake(user.uid, today, newTotal).catch((err) => {
+        console.warn("Failed to save water:", err);
+      });
+      return newTotal;
+    });
   };
 
   const handleSubtractWater = async (ml) => {
     if (!user) return;
-    const newTotal = Math.max(0, waterIntake - ml);
-    setWaterState(newTotal);
-    try {
-      await setWaterIntake(user.uid, today, newTotal);
-    } catch (err) {
-      console.warn("Failed to save water:", err);
-    }
+    setWaterState((prev) => {
+      const newTotal = Math.max(0, prev - ml);
+      setWaterIntake(user.uid, today, newTotal).catch((err) => {
+        console.warn("Failed to save water:", err);
+      });
+      return newTotal;
+    });
   };
 
   // Compute totals

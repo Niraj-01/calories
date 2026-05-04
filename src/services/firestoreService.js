@@ -16,9 +16,11 @@ import {
 } from "firebase/firestore";
 import { db } from "@/src/firebase";
 
-// Helper: date string in YYYY-MM-DD format
+// Helper: date string in YYYY-MM-DD format (Local Timezone)
 export function dateKey(date = new Date()) {
-  return date.toISOString().split("T")[0];
+  const offset = date.getTimezoneOffset();
+  const adjustedDate = new Date(date.getTime() - offset * 60 * 1000);
+  return adjustedDate.toISOString().split("T")[0];
 }
 
 // --- Entries ---

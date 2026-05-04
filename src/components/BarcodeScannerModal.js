@@ -177,6 +177,15 @@ export default function BarcodeScannerModal({ open, meal, onClose, onAdd }) {
                   Start Scanning
                 </button>
               )}
+              {process.env.NEXT_PUBLIC_TEST_MODE === 'true' && !scanning && (
+                <button
+                  className="btn btn-secondary btn-full"
+                  onClick={() => lookupBarcode("3017620422003")} // Nutella barcode
+                  style={{ marginTop: 8 }}
+                >
+                  [TEST] Mock Scan Nutella
+                </button>
+              )}
               {scanning && (
                 <p className={styles.hint}>
                   Point at a barcode on any packaged food

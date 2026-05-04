@@ -42,5 +42,17 @@
         "supportEmail": "nirajvaidya0.0@gmail.com"
       }
     }
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
   }
 }

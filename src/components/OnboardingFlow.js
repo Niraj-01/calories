@@ -40,14 +40,14 @@ export default function OnboardingFlow({ user, onComplete }) {
   const [step, setStep] = useState(0);
   const [goal, setGoal] = useState("lose");
   const [gender, setGender] = useState("male");
-  const [age, setAge] = useState(28);
-  const [height, setHeight] = useState(170);
-  const [weight, setWeight] = useState(70);
+  const [age, setAge] = useState("28");
+  const [height, setHeight] = useState("170");
+  const [weight, setWeight] = useState("70");
   const [activity, setActivity] = useState("light");
   const [saving, setSaving] = useState(false);
 
   const tdee = useMemo(
-    () => estimateTDEE({ weight, height, age, gender, activity }),
+    () => estimateTDEE({ weight: parseFloat(weight) || 70, height: parseInt(height) || 170, age: parseInt(age) || 28, gender, activity }),
     [weight, height, age, gender, activity],
   );
 
@@ -72,9 +72,9 @@ export default function OnboardingFlow({ user, onComplete }) {
       await setUserSettings(user.uid, {
         goal,
         gender,
-        age,
-        height,
-        weight,
+        age: parseInt(age) || 28,
+        height: parseInt(height) || 170,
+        weight: parseFloat(weight) || 70,
         activity,
         calorieGoal: targetCals,
         macroProtein: macros.protein,
@@ -130,7 +130,7 @@ export default function OnboardingFlow({ user, onComplete }) {
               min={14}
               max={90}
               value={age}
-              onChange={(e) => setAge(Math.max(14, parseInt(e.target.value) || age))}
+              onChange={(e) => setAge(e.target.value)}
             />
           </div>
         </div>
@@ -147,7 +147,7 @@ export default function OnboardingFlow({ user, onComplete }) {
               min={130}
               max={210}
               value={height}
-              onChange={(e) => setHeight(parseInt(e.target.value) || height)}
+              onChange={(e) => setHeight(e.target.value)}
             />
             <div className={styles.value}>{height} cm</div>
           </div>
@@ -159,7 +159,7 @@ export default function OnboardingFlow({ user, onComplete }) {
               min={35}
               max={200}
               value={weight}
-              onChange={(e) => setWeight(Math.max(35, parseFloat(e.target.value) || weight))}
+              onChange={(e) => setWeight(e.target.value)}
             />
           </div>
         </div>

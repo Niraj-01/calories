@@ -168,10 +168,12 @@ async function fetchOpenFoodFactsSearch(query) {
   try {
     const params = new URLSearchParams({
       search_terms: query,
-      json: 1,
-      page_size: 5,
+      search_simple: "1",
+      action: "process",
+      json: "1",
+      page_size: "10",
       fields:
-        "product_name,brands,nutriments,serving_size,categories_tags,states_tags,code",
+        "product_name,brands,nutriments,serving_size,image_url,code,categories_tags,states_tags",
     });
     const res = await fetch(`${OFF_SEARCH_URL}?${params.toString()}`);
     if (!res.ok) throw new Error(`OFF search ${res.status}`);

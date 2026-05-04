@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, connectAuthEmulator } from "firebase/auth";
 import {
   initializeFirestore,
   getFirestore,
@@ -7,6 +7,7 @@ import {
   persistentMultipleTabManager,
   CACHE_SIZE_UNLIMITED,
   memoryLocalCache,
+  connectFirestoreEmulator
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -39,6 +40,11 @@ if (typeof window !== "undefined") {
     db = getFirestore(app, { localCache: memoryLocalCache() });
   }
   googleProvider = new GoogleAuthProvider();
+
+  if (process.env.NEXT_PUBLIC_TEST_MODE === 'true') {
+    connectAuthEmulator(auth, "http://127.0.0.1:9099");
+    connectFirestoreEmulator(db, '127.0.0.1', 8080);
+  }
 }
 
 export { app, auth, db, googleProvider };
