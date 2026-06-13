@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.niraj.calories",
+      "sha256_cert_fingerprints": [
+        "42:08:07:F3:48:6D:C8:21:C6:B8:A2:0C:19:35:AA:EC:0B:30:C4:E2:A8:02:C3:05:F3:D5:40:9F:9A:F9:28:12"
+      ]
+    }
+  }
+]
