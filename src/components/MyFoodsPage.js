@@ -135,7 +135,10 @@ export default function MyFoodsPage() {
   return (
     <div className="page container fade-in">
       <div className={styles.header}>
-        <h1 className="page-title">My Foods</h1>
+        <div>
+          <h1 className="page-title">My Foods</h1>
+          <p className="page-subtitle">Saved &amp; frequent</p>
+        </div>
         <button
           className="btn btn-sm btn-secondary"
           onClick={() => {
@@ -268,41 +271,49 @@ export default function MyFoodsPage() {
         </div>
       )}
 
-      <div className={styles.list}>
-        {foods
-          .filter((f) => f.name.toLowerCase().includes(query.trim().toLowerCase()))
-          .map((food) => (
-          <div key={food.id} className={`card ${styles.foodCard}`}>
-            <div className={styles.foodTop}>
-              <div className={styles.foodInfo}>
-                <span className={styles.foodName}>{food.name}</span>
-                <span className={styles.foodMeta}>
-                  P:{food.protein}g · C:{food.carbs}g · F:{food.fat}g
-                </span>
+      {(() => {
+        const TINTS = ["#EAF8F1", "#FBF1DA", "#FFF1E8", "#E4EEFB", "#F7E4E9"];
+        const filtered = foods.filter((f) =>
+          f.name.toLowerCase().includes(query.trim().toLowerCase()),
+        );
+        if (filtered.length === 0) return null;
+        return (
+          <div className={styles.foodGroup}>
+            {filtered.map((food, i) => (
+              <div
+                key={food.id}
+                className={styles.foodRow}
+                style={{ borderBottom: i === filtered.length - 1 ? "none" : "1px solid var(--border-divider)" }}
+              >
+                <div className={styles.foodTile} style={{ background: TINTS[i % TINTS.length] }}>
+                  {food.name.charAt(0).toUpperCase()}
+                </div>
+                <div className={styles.foodInfo}>
+                  <div className={styles.foodName}>{food.name}</div>
+                  <div className={styles.foodMeta}>
+                    {Math.round(food.defaultAmount || 100)} {food.defaultUnit || "g"} · P{Math.round(food.protein)} C{Math.round(food.carbs)} F{Math.round(food.fat)}
+                  </div>
+                </div>
+                <div className={styles.foodCals}>{Math.round(food.calories)}</div>
+                <button
+                  className={styles.foodAction}
+                  onClick={() => handleEdit(food)}
+                  aria-label={`Edit ${food.name}`}
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" /></svg>
+                </button>
+                <button
+                  className={`${styles.foodAction} ${styles.foodDelete}`}
+                  onClick={() => handleDelete(food.id)}
+                  aria-label={`Delete ${food.name}`}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+                </button>
               </div>
-              <span className={styles.foodCals}>
-                {food.calories}
-                <span className={styles.foodUnit}>kcal</span>
-              </span>
-            </div>
-            <div className={styles.foodActions}>
-              <button
-                className="btn btn-ghost btn-sm"
-                onClick={() => handleEdit(food)}
-              >
-                Edit
-              </button>
-              <button
-                className="btn btn-ghost btn-sm"
-                style={{ color: "var(--danger)" }}
-                onClick={() => handleDelete(food.id)}
-              >
-                Delete
-              </button>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
+        );
+      })()}
     </div>
   );
 }

@@ -151,65 +151,47 @@ export default function HistoryPage() {
         </div>
       )}
 
-      <div className={styles.list}>
-        {days.map((day) => {
-          const isOver = day.calories > goal;
-          const isEmpty = day.entries === 0;
-          const pct = Math.min(Math.round((day.calories / goal) * 100), 150);
-
+      {(() => {
+        const logged = days.filter((d) => d.entries > 0);
+        if (logged.length === 0) {
           return (
-            <div
-              key={day.date}
-              className={`card ${styles.dayCard} ${isEmpty ? styles.empty : ""}`}
-            >
-              <div className={styles.dayTop}>
-                <span className={styles.dayDate}>{formatDate(day.date)}</span>
-                <span
-                  className={`${styles.dayCals} ${
-                    isEmpty ? styles.muted : isOver ? styles.red : styles.green
-                  }`}
-                >
-                  {isEmpty ? "—" : day.calories}
-                  {!isEmpty && <span className={styles.kcalSuffix}>kcal</span>}
-                </span>
-              </div>
-
-              {!isEmpty && (
-                <>
-                  <div className={styles.barTrack}>
-                    <div
-                      className={styles.barFill}
-                      style={{
-                        width: `${Math.min(pct, 100)}%`,
-                        background: isOver ? "var(--danger)" : "var(--accent)",
-                      }}
-                    />
-                  </div>
-                  <div className={styles.dayMeta}>
-                    <span className={styles.metaItem}>
-                      <span className={styles.metaDot} data-type="protein" />
-                      {day.protein.toFixed(0)}g
-                    </span>
-                    <span className={styles.metaItem}>
-                      <span className={styles.metaDot} data-type="carbs" />
-                      {day.carbs.toFixed(0)}g
-                    </span>
-                    <span className={styles.metaItem}>
-                      <span className={styles.metaDot} data-type="fat" />
-                      {day.fat.toFixed(0)}g
-                    </span>
-                    <span className={styles.metaGoal}>
-                      {isOver
-                        ? `+${day.calories - goal}`
-                        : `${goal - day.calories} left`}
-                    </span>
-                  </div>
-                </>
-              )}
+            <div className="empty-state">
+              <p className="empty-state-text">No history yet — start logging meals.</p>
             </div>
           );
-        })}
-      </div>
+        }
+        return (
+          <div className={styles.dayGroup}>
+            {logged.map((day, i) => {
+              const isOver = day.calories > goal;
+              const onTarget = !isOver && day.calories >= goal * 0.9;
+              const status = isOver ? "over" : onTarget ? "on target" : "under";
+              const color = isOver
+                ? "var(--accent-streak)"
+                : onTarget
+                  ? "var(--accent)"
+                  : "var(--text-primary)";
+              return (
+                <div
+                  key={day.date}
+                  className={styles.dayRow}
+                  style={{ borderBottom: i === logged.length - 1 ? "none" : "1px solid var(--border-divider)" }}
+                >
+                  <div>
+                    <div className={styles.dayLabel}>{formatDate(day.date)}</div>
+                    <div className={styles.dayMeals}>
+                      {day.entries} {day.entries === 1 ? "item" : "items"} · {status}
+                    </div>
+                  </div>
+                  <div className={styles.dayKcal} style={{ color }}>
+                    {Math.round(day.calories).toLocaleString()}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })()}
     </div>
   );
 }

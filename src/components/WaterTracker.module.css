@@ -65,12 +65,12 @@
   flex: 1;
   height: 40px;
   border-radius: 12px;
-  background: var(--bg-highest);
+  background: #f4f3ef;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--text-tertiary);
+  color: #d8d6ce;
   border: none;
   transition: transform 0.15s ease, background 0.25s ease, color 0.25s ease;
 }

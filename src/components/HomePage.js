@@ -43,11 +43,10 @@ function getSuggestedMeal() {
 }
 
 function getTodayLabel() {
-  return new Intl.DateTimeFormat(undefined, {
-    weekday: "long",
-    month: "short",
-    day: "numeric",
-  }).format(new Date());
+  const d = new Date();
+  const weekday = new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(d);
+  const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(d);
+  return `${weekday} ${d.getDate()} ${month}`;
 }
 
 export default function HomePage() {
@@ -411,51 +410,6 @@ export default function HomePage() {
           <span className={styles.quickSub}>Burn calories</span>
         </button>
       </div>
-
-      <div className={styles.section}>
-        <QuickLogPanel
-          recent={recentEntries}
-          frequent={frequentFoods}
-          defaultMeal={suggestedMeal}
-          onQuickAdd={handleQuickAdd}
-        />
-      </div>
-
-      {exercises.length > 0 && (
-        <div className={styles.section}>
-          <div className={styles.exerciseCard}>
-            <div className={styles.exerciseHeader}>
-              <span className={styles.exerciseTitle}>Exercise</span>
-              <span className={styles.exerciseBurn}>
-                {Math.round(totalBurned)} kcal burned
-              </span>
-            </div>
-            <div className={styles.exerciseList}>
-              {exercises.map((ex) => (
-                <div key={ex.id} className={styles.exerciseRow}>
-                  <div className={styles.exerciseInfo}>
-                    <div className={styles.exerciseName}>{ex.name}</div>
-                    <div className={styles.exerciseMeta}>
-                      {ex.durationMinutes} min{ex.metValue ? ` · MET ${ex.metValue}` : ""}
-                    </div>
-                  </div>
-                  <div className={styles.exerciseActions}>
-                    <div className={styles.exerciseCals}>
-                      -{Math.round(ex.caloriesBurned || 0)} kcal
-                    </div>
-                    <button
-                      className={styles.exerciseDelete}
-                      onClick={() => handleDeleteExercise(ex.id)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Add Food Selection Modal (Stitch UI) */}
       <AddFoodModal
