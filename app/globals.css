@@ -1,35 +1,42 @@
 :root {
-  /* ─── MFP-Inspired Light Design Tokens ─── */
+  /* ─── "Calo" warm-paper design tokens ─── */
 
   /* Backgrounds */
-  --bg-base: #FFFFFF;
-  --bg-surface: #F7F7F8;
+  --bg-base: #F6F5F1;
+  --bg-surface: #F6F5F1;
   --bg-elevated: #FFFFFF;
-  --bg-highest: #F0F0F2;
-  --bg-glass: rgba(0, 0, 0, 0.02);
-  --bg-glass-hover: rgba(0, 0, 0, 0.04);
-  --bg-input: #F4F4F6;
-  --bg-overlay: rgba(0, 0, 0, 0.3);
+  --bg-highest: #F2F0EA;
+  --bg-glass: rgba(11, 11, 12, 0.02);
+  --bg-glass-hover: rgba(11, 11, 12, 0.04);
+  --bg-input: #FBFAF7;
+  --bg-overlay: rgba(11, 11, 12, 0.45);
 
   /* Borders */
-  --border-subtle: #E8E8ED;
-  --border-glass: #D1D1D6;
-  --border-divider: #F0F0F2;
+  --border-subtle: #EFEDE6;
+  --border-glass: #E6E3DB;
+  --border-divider: #F2F0EA;
 
-  /* Accent — MFP Green */
-  --accent: #00B84D;
-  --accent-dim: rgba(0, 184, 77, 0.08);
-  --accent-glow: rgba(0, 184, 77, 0.12);
-  --accent-hover: #00A344;
-  --accent-light: #E6F9EE;
+  /* Accent — Calo green */
+  --accent: #16B26A;
+  --accent-dim: rgba(22, 178, 106, 0.09);
+  --accent-glow: rgba(22, 178, 106, 0.14);
+  --accent-hover: #0E9A59;
+  --accent-light: #EAF8F1;
+  --accent-grad: linear-gradient(150deg, #1FD080, #0E9A59);
 
   /* Macro Colors */
-  --accent-calories: #00B84D;
-  --accent-protein: #4A90D9;
-  --accent-carbs: #F5A623;
-  --accent-fat: #D0021B;
-  --accent-water: #2196F3;
-  --accent-streak: #FF9500;
+  --accent-calories: #16B26A;
+  --accent-protein: #FF5C7A;
+  --accent-carbs: #F4B740;
+  --accent-fat: #4F9CFF;
+  --accent-water: #4F9CFF;
+  --accent-streak: #FF7A3D;
+
+  /* Tints (ring tracks / icon tiles) */
+  --tint-protein: #F7E4E9;
+  --tint-carbs: #FBF1DA;
+  --tint-fat: #E4EEFB;
+  --tint-water: #E9F2FF;
 
   /* Legacy aliases */
   --protein: var(--accent-protein);
@@ -37,39 +44,39 @@
   --fat: var(--accent-fat);
 
   /* Text */
-  --text-primary: #1C1C1E;
-  --text-secondary: #8E8E93;
-  --text-tertiary: #C7C7CC;
+  --text-primary: #0B0B0C;
+  --text-secondary: #9A9A9C;
+  --text-tertiary: #C7C5BD;
   --text-inverse: #FFFFFF;
-  --text-accent: #00B84D;
+  --text-accent: #16B26A;
 
   /* Danger */
-  --danger: #FF3B30;
-  --danger-dim: rgba(255, 59, 48, 0.08);
+  --danger: #FF5C7A;
+  --danger-dim: rgba(255, 92, 122, 0.09);
 
   /* Radius */
-  --radius-xs: 8px;
-  --radius-sm: 12px;
-  --radius-md: 16px;
-  --radius-lg: 20px;
-  --radius-xl: 24px;
+  --radius-xs: 12px;
+  --radius-sm: 15px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+  --radius-xl: 30px;
   --radius-pill: 999px;
 
-  /* Shadows — Subtle elevation */
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-ambient: 0 8px 24px rgba(0, 0, 0, 0.06);
-  --shadow-input-focus: 0 0 0 3px rgba(0, 184, 77, 0.15);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-nav: 0 -1px 0 #E8E8ED;
+  /* Shadows — soft elevation on paper */
+  --shadow-card: 0 8px 26px rgba(11, 11, 12, 0.04);
+  --shadow-elevated: 0 10px 34px rgba(11, 11, 12, 0.05);
+  --shadow-ambient: 0 14px 40px -8px rgba(11, 11, 12, 0.18);
+  --shadow-input-focus: 0 0 0 3px rgba(22, 178, 106, 0.15);
+  --shadow-sm: 0 2px 8px rgba(11, 11, 12, 0.04);
+  --shadow-nav: 0 14px 40px -8px rgba(11, 11, 12, 0.18);
 
-  /* Typography — Inter */
-  --font-display: var(--font-main, "Inter", -apple-system, BlinkMacSystemFont, sans-serif);
-  --font-text: var(--font-main, "Inter", -apple-system, BlinkMacSystemFont, sans-serif);
+  /* Typography */
+  --font-display: var(--font-bricolage, "Bricolage Grotesque", "Plus Jakarta Sans", system-ui, sans-serif);
+  --font-text: var(--font-main, "Plus Jakarta Sans", system-ui, -apple-system, sans-serif);
   --font-label: var(--font-text);
 
   /* Spacing */
-  --nav-height: 80px;
+  --nav-height: 104px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --space-vertical: 16px;
   --space-section: 24px;
@@ -173,17 +180,18 @@ ol {
 
 .page-title {
   font-family: var(--font-display);
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 32px;
+  font-weight: 800;
   letter-spacing: -0.03em;
+  line-height: 1;
   color: var(--text-primary);
 }
 
 .page-subtitle {
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--text-secondary);
-  margin-top: 2px;
-  font-weight: 400;
+  margin-top: 3px;
+  font-weight: 600;
 }
 
 /* ─── Card ─── */
@@ -225,12 +233,12 @@ ol {
   border-radius: var(--radius-md);
   height: 52px;
   letter-spacing: -0.01em;
-  box-shadow: 0 2px 8px rgba(0, 184, 77, 0.2);
+  box-shadow: 0 6px 18px -4px rgba(14, 154, 89, 0.4);
 }
 
 .btn-primary:hover {
   background: var(--accent-hover);
-  box-shadow: 0 4px 16px rgba(0, 184, 77, 0.25);
+  box-shadow: 0 8px 22px -4px rgba(14, 154, 89, 0.45);
 }
 
 .btn-primary:disabled {

@@ -1,11 +1,17 @@
-import { Inter } from "next/font/google";
+import { Plus_Jakarta_Sans, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import ServiceWorkerRegister from "@/src/components/ServiceWorkerRegister";
 
-const inter = Inter({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-main",
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  variable: "--font-bricolage",
+  weight: ["500", "600", "700", "800"],
 });
 
 export const metadata = {
@@ -42,7 +48,11 @@ export function generateViewport() {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning={true} className={inter.variable}>
+    <html
+      lang="en"
+      suppressHydrationWarning={true}
+      className={`${jakarta.variable} ${bricolage.variable}`}
+    >
       <body suppressHydrationWarning={true}>
         {children}
         <ServiceWorkerRegister />

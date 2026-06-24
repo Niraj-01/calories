@@ -118,6 +118,20 @@ export default function HomePage() {
     fetchData();
   }, [fetchData]);
 
+  // Open the camera scanner when triggered by the bottom-nav scan FAB
+  // (same-page via custom event, cross-page via sessionStorage flag).
+  useEffect(() => {
+    const openScan = () => setCameraMeal("__quick__");
+    window.addEventListener("calo:scan", openScan);
+    try {
+      if (sessionStorage.getItem("calo:autoscan")) {
+        sessionStorage.removeItem("calo:autoscan");
+        openScan();
+      }
+    } catch {}
+    return () => window.removeEventListener("calo:scan", openScan);
+  }, []);
+
   const handleAddFood = async (food, meal) => {
     if (!user) return;
     try {
@@ -328,14 +342,17 @@ export default function HomePage() {
     <div className={`page container fade-in ${styles.page}`}>
       <div className={styles.header}>
         <div className={styles.brandBlock}>
-          <h1 className={styles.brand}>Cal</h1>
+          <h1 className={styles.brand}>Today</h1>
           <p className={styles.headerMeta}>{todayLabel}</p>
         </div>
-        <div className={styles.streakBadge}>
-          <span className={styles.streakIcon}><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 23c-3.866 0-7-3.358-7-7.5 0-3.133 2.268-6.093 4.5-8.5L12 4l2.5 3c2.232 2.407 4.5 5.367 4.5 8.5 0 4.142-3.134 7.5-7 7.5z"/></svg></span>
-          <span className={styles.streakText}>
-            <span className={styles.streakCount}>{streak}</span> day streak
-          </span>
+        <div className={styles.headerRight}>
+          <div className={styles.streakBadge}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--accent-streak)"><path d="M12 2c1 3-1 4-1 6 0 1.5 1 2 1 2s2-1 2-3c2 1.5 4 4 4 7a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3 0-2-1-3-1-6 1 0 2 .5 2 1z"/></svg>
+            <span className={styles.streakCount}>{streak}</span>
+          </div>
+          <div className={styles.avatar}>
+            {(user?.displayName || user?.email || "U").charAt(0).toUpperCase()}
+          </div>
         </div>
       </div>
 
@@ -372,45 +389,27 @@ export default function HomePage() {
         ))}
       </div>
 
-      <div className={styles.section}>
-        <div className={styles.utilityCard}>
-          <div className={styles.utilityHeader}>
-            <div>
-              <div className={styles.utilityTitle}>Quick Actions</div>
-              <div className={styles.utilityMeta}>Use the Claude logging flow directly</div>
-            </div>
-            <button
-              className={styles.utilityButton}
-              onClick={() => openMealPicker("start-flow")}
-            >
-              <span className={styles.utilityIcon}>+</span>
-              <span className={styles.utilityLabel}>Add Food</span>
-            </button>
-          </div>
-          <div className={styles.utilityGrid}>
-            <button
-              className={styles.utilityButton}
-              onClick={() => setCameraMeal("__quick__")}
-            >
-              <span className={styles.utilityIcon}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
-              <span className={styles.utilityLabel}>Scan Food</span>
-            </button>
-            <button
-              className={styles.utilityButton}
-              onClick={() => setBarcodeMeal("__quick__")}
-            >
-              <span className={styles.utilityIcon}>▦</span>
-              <span className={styles.utilityLabel}>Scan Barcode</span>
-            </button>
-            <button
-              className={styles.utilityButton}
-              onClick={() => setExerciseModalOpen(true)}
-            >
-              <span className={styles.utilityIcon}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
-              <span className={styles.utilityLabel}>Log Exercise</span>
-            </button>
-          </div>
-        </div>
+      <div className={styles.quickRow}>
+        <button
+          className={`${styles.quickTile} ${styles.quickDark}`}
+          onClick={() => setCameraMeal("__quick__")}
+        >
+          <span className={`${styles.quickIcon} ${styles.quickIconDark}`}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1FD080" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/></svg>
+          </span>
+          <span className={styles.quickTitle}>Scan a meal</span>
+          <span className={styles.quickSubDark}>Food or barcode</span>
+        </button>
+        <button
+          className={styles.quickTile}
+          onClick={() => setExerciseModalOpen(true)}
+        >
+          <span className={`${styles.quickIcon} ${styles.quickIconOrange}`}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF7A3D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </span>
+          <span className={styles.quickTitle}>Log activity</span>
+          <span className={styles.quickSub}>Burn calories</span>
+        </button>
       </div>
 
       <div className={styles.section}>

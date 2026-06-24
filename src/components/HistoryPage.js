@@ -102,12 +102,54 @@ export default function HistoryPage() {
     );
   }
 
+  const week = days.slice(0, 7).reverse();
+  const weekMax = Math.max(goal, ...week.map((d) => d.calories), 1);
+  const onTargetDays = week.filter((d) => d.entries > 0 && d.calories <= goal).length;
+  const loggedDays = week.filter((d) => d.entries > 0);
+  const weekAvg = loggedDays.length
+    ? Math.round(loggedDays.reduce((s, d) => s + d.calories, 0) / loggedDays.length)
+    : 0;
+
   return (
     <div className="page container fade-in">
       <div className={styles.header}>
         <h1 className="page-title">History</h1>
-        <p className="page-subtitle">Last 14 days</p>
+        <p className="page-subtitle">Last 7 days</p>
       </div>
+
+      {week.length > 0 && (
+        <div className={styles.chartCard}>
+          <div className={styles.chart}>
+            {week.map((d) => {
+              const h = d.entries === 0 ? 6 : Math.max(Math.round((d.calories / weekMax) * 100), 8);
+              const color =
+                d.entries === 0
+                  ? "var(--bg-highest)"
+                  : d.calories > goal
+                    ? "var(--accent-streak)"
+                    : d.calories >= goal * 0.85
+                      ? "var(--accent)"
+                      : "#9DE0C0";
+              const initial = new Date(d.date + "T12:00:00").toLocaleDateString("en-US", {
+                weekday: "narrow",
+              });
+              return (
+                <div key={d.date} className={styles.barCol}>
+                  <div className={styles.bar} style={{ height: `${h}%`, background: color }} />
+                  <span className={styles.barDay}>{initial}</span>
+                </div>
+              );
+            })}
+          </div>
+          <div className={styles.chartLegend}>
+            <span className={styles.legendDot} />
+            <span className={styles.legendText}>
+              {weekAvg ? `Avg ${weekAvg.toLocaleString()} kcal · ` : ""}
+              {onTargetDays} of {week.length} days on target
+            </span>
+          </div>
+        </div>
+      )}
 
       <div className={styles.list}>
         {days.map((day) => {

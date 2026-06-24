@@ -2,104 +2,86 @@
   background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  padding: 16px;
+  padding: 20px;
   box-shadow: var(--shadow-card);
   animation: fadeUp 0.4s ease both 0.2s;
-  animation-fill-mode: both;
 }
 
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 14px;
+  justify-content: space-between;
 }
 
 .titleRow {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 11px;
 }
 
 .icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  background: rgba(33, 150, 243, 0.08);
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--tint-water);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
 }
 
 .title {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 800;
   color: var(--text-primary);
 }
 
 .sub {
   font-size: 12px;
   color: var(--text-secondary);
+  font-weight: 600;
 }
 
 .amount {
-  font-size: 0.86rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  text-align: right;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--accent-water);
+  font-variant-numeric: tabular-nums;
 }
 
-.goal {
-  font-size: 0.72rem;
+.amountGoal {
+  font-size: 12px;
   color: var(--text-secondary);
-  text-align: right;
-}
-
-.track {
-  height: 8px;
-  border-radius: var(--radius-pill);
-  background: var(--bg-highest);
-  overflow: hidden;
-  margin-bottom: 14px;
-}
-
-.fill {
-  height: 100%;
-  border-radius: var(--radius-pill);
-  background: var(--accent-water);
-  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
 }
 
 .cups {
   display: flex;
   gap: 6px;
-  justify-content: space-between;
+  margin-top: 16px;
 }
 
 .cup {
   flex: 1;
-  height: 36px;
-  border-radius: 10px;
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-surface);
+  height: 40px;
+  border-radius: 12px;
+  background: var(--bg-highest);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
   color: var(--text-tertiary);
-  font-size: 14px;
+  border: none;
+  transition: transform 0.15s ease, background 0.25s ease, color 0.25s ease;
 }
 
 .cup.filled {
-  background: rgba(33, 150, 243, 0.08);
-  border-color: rgba(33, 150, 243, 0.2);
+  background: var(--tint-water);
   color: var(--accent-water);
 }
 
 .cup:active {
-  transform: scale(0.93);
+  transform: scale(0.9);
 }
 
 @keyframes fadeUp {

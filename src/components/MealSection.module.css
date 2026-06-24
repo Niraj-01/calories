@@ -1,231 +1,144 @@
 .card {
-  border-bottom: 1px solid var(--border-subtle);
-  transition: background 0.2s ease;
+  border-bottom: 1px solid var(--border-divider);
 }
 
 .card:last-child {
   border-bottom: none;
 }
 
-.summaryRow {
+.row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 16px;
+  gap: 13px;
+  padding: 15px 0;
 }
 
-.summaryButton {
+.main {
   flex: 1;
-  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 13px;
   background: none;
   border: none;
-  color: inherit;
   cursor: pointer;
   min-width: 0;
+  text-align: left;
+  color: inherit;
 }
 
-.leftPair {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.rightPair {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--bg-surface);
+.iconTile {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
   flex-shrink: 0;
 }
 
 .nameBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
+  flex: 1;
+  min-width: 0;
 }
 
 .mealName {
-  font-weight: 600;
+  font-size: 15.5px;
+  font-weight: 800;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
-  font-size: 15px;
 }
 
-.mealMeta {
+.mealSub {
+  font-size: 12.5px;
   color: var(--text-secondary);
-  font-size: 12px;
-  font-weight: 400;
-}
-
-.chevron {
-  width: 16px;
-  height: 16px;
-  color: var(--text-tertiary);
-  transition: transform 0.3s ease;
-  flex-shrink: 0;
-}
-
-.chevron.open {
-  transform: rotate(90deg);
-}
-
-.addButton {
-  flex-shrink: 0;
-  height: 32px;
-  padding: 0 14px;
-  border-radius: var(--radius-xs);
-  background: transparent;
-  border: none;
-  color: var(--accent);
-  font-size: 13px;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.addButton:active {
-  background: var(--accent-dim);
+.kcal {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
 }
 
-/* ─── Expanded Panel ─── */
+.addBtn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--bg-highest);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--accent);
+  border: none;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
 
+.addBtn:active {
+  transform: scale(0.9);
+}
+
+/* expanded entries */
 .panel {
-  border-top: 1px solid var(--border-divider);
-  padding: 0 16px 4px;
   overflow: hidden;
   max-height: 0;
-  transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), padding 0.2s;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .panel.open {
-  max-height: 400px;
-  padding: 8px 16px 10px;
-}
-
-.itemsList {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+  max-height: 420px;
 }
 
 .itemRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border-divider);
-}
-
-.itemRow:last-child {
-  border-bottom: none;
+  gap: 10px;
+  padding: 11px 0 11px 55px;
+  border-top: 1px solid var(--border-divider);
 }
 
 .itemInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
+  flex: 1;
   min-width: 0;
 }
 
 .itemName {
-  font-weight: 500;
+  display: block;
   font-size: 14px;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
-.itemSub {
+.itemMeta {
+  display: block;
   font-size: 12px;
   color: var(--text-secondary);
-}
-
-.itemRight {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-}
-
-.itemTopRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  font-weight: 500;
 }
 
 .itemCals {
-  font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 700;
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
 }
 
-.deleteButton {
-  width: 22px;
-  height: 22px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 59, 48, 0.12);
-  background: rgba(255, 59, 48, 0.06);
+.deleteBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--danger-dim);
   color: var(--danger);
-  font-size: 0.95rem;
-  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.macroPills {
-  display: flex;
-  gap: 6px;
-}
-
-.macroPill {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: var(--radius-pill);
-}
-
-.emptyState {
-  color: var(--text-tertiary);
-  font-size: 14px;
-  padding: 8px 0;
-  font-weight: 400;
-}
-
-.inlineAddBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  padding: 10px;
-  margin-top: 4px;
-  border: 1px dashed var(--border-subtle);
-  border-radius: var(--radius-sm);
-  background: var(--bg-surface);
-  color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 500;
+  border: none;
   cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
-}
-
-.inlineAddBtn:active {
-  background: var(--bg-highest);
-  color: var(--text-primary);
+  flex-shrink: 0;
 }

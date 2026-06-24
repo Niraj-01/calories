@@ -28,6 +28,7 @@ export default function MyFoodsPage() {
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({ ...emptyForm });
   const [saving, setSaving] = useState(false);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     if (!user) return;
@@ -241,6 +242,20 @@ export default function MyFoodsPage() {
         </div>
       )}
 
+      {/* Search */}
+      {foods.length > 0 && (
+        <div className={styles.searchBar}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>
+          <input
+            className={styles.searchInput}
+            type="text"
+            placeholder="Search your foods"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+      )}
+
       {/* Foods list */}
       {foods.length === 0 && !showForm && (
         <div className="empty-state">
@@ -254,7 +269,9 @@ export default function MyFoodsPage() {
       )}
 
       <div className={styles.list}>
-        {foods.map((food) => (
+        {foods
+          .filter((f) => f.name.toLowerCase().includes(query.trim().toLowerCase()))
+          .map((food) => (
           <div key={food.id} className={`card ${styles.foodCard}`}>
             <div className={styles.foodTop}>
               <div className={styles.foodInfo}>

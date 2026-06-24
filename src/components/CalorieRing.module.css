@@ -1,94 +1,101 @@
 .card {
   background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-xl);
+  padding: 26px 24px 22px;
+  box-shadow: var(--shadow-elevated);
   animation: fadeUp 0.4s ease both;
 }
 
-.remainingBlock {
-  text-align: center;
-  padding: 8px 0 16px;
+.ringWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.remainingNum {
-  font-size: 42px;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1;
+.ring {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+.svg {
+  transform: rotate(-90deg);
+}
+
+.progress {
+  transition: stroke-dashoffset 1.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.left {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 48px;
   letter-spacing: -0.04em;
+  line-height: 0.9;
+  color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
-.remainingLabel {
-  font-size: 13px;
+.leftLabel {
+  font-size: 12px;
+  font-weight: 700;
   color: var(--text-secondary);
-  font-weight: 500;
-  margin-top: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.progressTrack {
-  height: 8px;
-  border-radius: var(--radius-pill);
-  background: var(--bg-highest);
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-
-.progressFill {
-  height: 100%;
-  border-radius: var(--radius-pill);
-  background: var(--accent);
-  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.04em;
+  margin-top: 5px;
 }
 
 .stats {
   display: flex;
   align-items: center;
-  justify-content: center;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-divider);
 }
 
 .stat {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.statDivider {
-  width: 1px;
-  height: 40px;
-  background: var(--border-subtle);
-  flex-shrink: 0;
-}
-
-.statIcon {
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-}
-
-.statVal {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
+  text-align: center;
 }
 
 .statLabel {
   font-size: 11px;
+  font-weight: 700;
   color: var(--text-secondary);
-  font-weight: 500;
-  text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.statLabel.food {
+  color: var(--accent);
+}
+
+.statLabel.burn {
+  color: var(--accent-streak);
+}
+
+.statVal {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  margin-top: 3px;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.divider {
+  width: 1px;
+  height: 34px;
+  background: var(--border-divider);
+  flex-shrink: 0;
 }
 
 @keyframes fadeUp {

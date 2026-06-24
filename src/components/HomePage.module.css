@@ -5,7 +5,7 @@
 
 .header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   padding-top: 24px;
   margin-bottom: 20px;
@@ -14,71 +14,151 @@
 .brandBlock {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .brand {
-  font-size: 1.6rem;
+  font-family: var(--font-display);
+  font-size: 32px;
   line-height: 1;
-  font-weight: 700;
-  letter-spacing: -0.04em;
+  font-weight: 800;
+  letter-spacing: -0.03em;
   color: var(--text-primary);
 }
 
 .headerMeta {
-  font-size: 0.82rem;
+  font-size: 13.5px;
   color: var(--text-secondary);
-  letter-spacing: -0.01em;
-  font-weight: 400;
+  font-weight: 600;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .streakBadge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 7px 12px;
   border-radius: var(--radius-pill);
-  background: rgba(255, 149, 0, 0.08);
-  border: 1px solid rgba(255, 149, 0, 0.15);
-}
-
-.streakIcon {
-  font-size: 0.85rem;
-  line-height: 1;
-}
-
-.streakText {
-  font-size: 0.75rem;
-  line-height: 1;
-  font-weight: 600;
-  color: #B87A00;
-  text-transform: lowercase;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
 }
 
 .streakCount {
-  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--accent-streak);
+  font-variant-numeric: tabular-nums;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1b1b1d, #3a3a3c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
   font-weight: 700;
 }
 
 .heroSection {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .macroSection,
 .section {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .meals {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
+  padding: 8px 18px;
   background: var(--bg-elevated);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-card);
-  overflow: hidden;
+}
+
+/* ─── Quick-log tiles ─── */
+
+.quickRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.quickTile {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 22px;
+  padding: 18px 16px;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.18s ease;
+}
+
+.quickTile:active {
+  transform: scale(0.98);
+}
+
+.quickDark {
+  background: #0b0b0c;
+  border-color: #0b0b0c;
+}
+
+.quickIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quickIconDark {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.quickIconOrange {
+  background: #fff1e8;
+}
+
+.quickTitle {
+  font-size: 15px;
+  font-weight: 800;
+  margin-top: 14px;
+  color: var(--text-primary);
+}
+
+.quickDark .quickTitle {
+  color: #fff;
+}
+
+.quickSub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.quickSubDark {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 600;
+  margin-top: 2px;
 }
 
 /* ─── Quick Actions (Utility) ─── */
