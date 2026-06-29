@@ -5,6 +5,11 @@ import { createPortal } from "react-dom";
 import { scaleMacros } from "@/src/services/foodDataService";
 import styles from "./CameraModal.module.css";
 
+function mealLabelFor(meal) {
+  if (!meal) return "diary";
+  return meal.charAt(0).toUpperCase() + meal.slice(1);
+}
+
 export default function CameraModal({ meal, onAdd, onClose }) {
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -12,16 +17,17 @@ export default function CameraModal({ meal, onAdd, onClose }) {
   const [imageBase64, setImageBase64] = useState(null);
   const [analysis, setAnalysis] = useState(null);
   const [foodName, setFoodName] = useState("");
-  const [servingGrams, setServingGrams] = useState(100);
-  const [confidence, setConfidence] = useState(null);
-  const [items, setItems] = useState([]);
+  const [baseGrams, setBaseGrams] = useState(100);
+  const [qty, setQty] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [showCorrection, setShowCorrection] = useState(false);
-  const [correctionText, setCorrectionText] = useState("");
+  const [cameraReady, setCameraReady] = useState(false);
 
   const fileInputRef = useRef(null);
-  const cameraInputRef = useRef(null);
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
+
+  const detected = !!analysis;
 
   useEffect(() => {
     setMounted(true);
@@ -34,9 +40,56 @@ export default function CameraModal({ meal, onAdd, onClose }) {
     };
   }, []);
 
+  // Live rear-camera preview. Falls back silently to the decorative
+  // backdrop + native file capture when getUserMedia is unavailable.
+  useEffect(() => {
+    let cancelled = false;
+    async function startCamera() {
+      if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia)
+        return;
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: "environment" } },
+          audio: false,
+        });
+        if (cancelled) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+        streamRef.current = stream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+        setCameraReady(true);
+      } catch {
+        setCameraReady(false);
+      }
+    }
+    startCamera();
+    return () => {
+      cancelled = true;
+      stopCamera();
+    };
+  }, []);
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    }
+  };
+
   const handleClose = () => {
     setVisible(false);
-    setTimeout(onClose, 300);
+    stopCamera();
+    setTimeout(onClose, 320);
+  };
+
+  const ingestImage = (dataUrl) => {
+    const base64 = typeof dataUrl === "string" ? dataUrl.split(",")[1] : "";
+    setPreview(dataUrl);
+    setImageBase64(base64);
+    return base64;
   };
 
   const handleImageChange = (e) => {
@@ -44,58 +97,45 @@ export default function CameraModal({ meal, onAdd, onClose }) {
     if (!file) return;
     const reader = new FileReader();
     reader.onloadend = () => {
-      const result = reader.result;
-      const base64 = typeof result === "string" ? result.split(",")[1] : "";
-      setPreview(result);
-      setImageBase64(base64);
-      setAnalysis(null);
-      setError(null);
+      ingestImage(reader.result);
+      runAnalysis(reader.result);
     };
     reader.readAsDataURL(file);
   };
 
-  const parseAnalysis = (data) => {
-    const estimatedGrams = Number(data.estimatedGrams) || 100;
-    setAnalysis(data);
-    setFoodName(data.name || "Food");
-    setServingGrams(estimatedGrams);
-    setConfidence(data.confidence || null);
-    setItems(Array.isArray(data.items) ? data.items : []);
+  // Grab a frame from the live video and analyze it.
+  const captureFrame = () => {
+    const video = videoRef.current;
+    if (!cameraReady || !video || !video.videoWidth) {
+      fileInputRef.current?.click();
+      return;
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+    ingestImage(dataUrl);
+    runAnalysis(dataUrl);
   };
 
   const sanitizeAndParse = (rawText) => {
     const cleaned = (rawText || "").replace(/```json|```/g, "").trim();
     try {
       return JSON.parse(cleaned);
-    } catch (err) {
+    } catch {
       const match = cleaned.match(/\{[\s\S]*\}/);
-      if (match) {
-        return JSON.parse(match[0]);
-      }
+      if (match) return JSON.parse(match[0]);
       throw new Error("Model returned non-JSON response");
     }
   };
 
-  const callGeminiDirect = async ({ descriptionOnly = false }) => {
+  const callGeminiDirect = async (b64, mime) => {
     const key = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY;
     if (!key) throw new Error("Missing GOOGLE_AI_API_KEY");
 
     const prompt =
-      'You are a food nutrition expert. Analyze the food in this image. Return ONLY a JSON object (no markdown, no explanation) with this exact shape:\\n{ "name": string, "estimatedGrams": number, "calories": number, "protein": number, "carbs": number, "fat": number, "fiber": number, "confidence": "high"|"medium"|"low", "items": [{ "name": string, "grams": number, "calories": number }] }\\nIf multiple foods are visible, list each in items[] and sum the totals. Estimate portion sizes from visual cues.';
-
-    const parts = [];
-    if (!descriptionOnly && imageBase64) {
-      parts.push({
-        inline_data: {
-          mime_type: preview?.split(";")[0]?.split(":")[1] || "image/jpeg",
-          data: imageBase64,
-        },
-      });
-    }
-    if (descriptionOnly && correctionText) {
-      parts.push({ text: `User description: ${correctionText}` });
-    }
-    parts.push({ text: prompt });
+      'You are a food nutrition expert. Analyze the food in this image. Return ONLY a JSON object (no markdown, no explanation) with this exact shape:\n{ "name": string, "estimatedGrams": number, "calories": number, "protein": number, "carbs": number, "fat": number, "fiber": number, "confidence": "high"|"medium"|"low", "items": [{ "name": string, "grams": number, "calories": number }] }\nIf multiple foods are visible, list each in items[] and sum the totals. Estimate portion sizes from visual cues.';
 
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
@@ -103,73 +143,64 @@ export default function CameraModal({ meal, onAdd, onClose }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{ parts }],
+          contents: [
+            { parts: [{ inline_data: { mime_type: mime, data: b64 } }, { text: prompt }] },
+          ],
           generationConfig: { temperature: 0.1 },
         }),
       },
     );
-
     if (!res.ok) {
       const errJson = await res.json().catch(() => ({}));
-      const msg = errJson?.error?.message || "Analysis failed";
-      throw new Error(msg);
+      throw new Error(errJson?.error?.message || "Analysis failed");
     }
-
     const data = await res.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    return sanitizeAndParse(text);
+    return sanitizeAndParse(data?.candidates?.[0]?.content?.parts?.[0]?.text);
   };
 
-  const callServerAnalysis = async ({ descriptionOnly = false }) => {
-    const payload = {
-      imageBase64: descriptionOnly ? undefined : imageBase64,
-      mimeType: preview?.split(";")[0]?.split(":")[1] || "image/jpeg",
-      textDescription: descriptionOnly ? correctionText : undefined,
-    };
-
+  const callServerAnalysis = async (b64, mime) => {
     const res = await fetch("/api/analyze-food", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ imageBase64: b64, mimeType: mime }),
     });
-
     const textBody = await res.text();
     let data;
     try {
       data = JSON.parse(textBody);
     } catch {
-      if (textBody?.trim().startsWith("<")) {
+      if (textBody?.trim().startsWith("<"))
         throw new Error("Server API unavailable (HTML response)");
-      }
       throw new Error("Unexpected response from analysis API");
     }
-
-    if (!res.ok) {
-      throw new Error(data?.error || "Analysis failed");
-    }
-
+    if (!res.ok) throw new Error(data?.error || "Analysis failed");
     return data;
   };
 
-  const runAnalysis = async ({ descriptionOnly = false } = {}) => {
-    if (!descriptionOnly && !imageBase64) {
-      setError("Please add a photo first");
+  const runAnalysis = async (dataUrl) => {
+    const source = dataUrl || preview;
+    const b64 = imageBase64 || (typeof source === "string" ? source.split(",")[1] : "");
+    if (!b64) {
+      setError("Please capture a photo first");
       return;
     }
+    const mime = source?.split(";")[0]?.split(":")[1] || "image/jpeg";
 
     setLoading(true);
     setError(null);
-
+    stopCamera();
     try {
-      // Prefer server API; fall back to direct Gemini if server is unreachable or returns HTML
       let result;
       try {
-        result = await callServerAnalysis({ descriptionOnly });
+        result = await callServerAnalysis(b64, mime);
       } catch (serverErr) {
         console.warn("Server analysis failed, falling back to client Gemini:", serverErr);
-        result = await callGeminiDirect({ descriptionOnly });
+        result = await callGeminiDirect(b64, mime);
       }
-      parseAnalysis(result);
+      setAnalysis(result);
+      setFoodName(result.name || "Food");
+      setBaseGrams(Number(result.estimatedGrams) || 100);
+      setQty(1);
     } catch (err) {
       const msg = err.message || "Analysis failed";
       setError(
@@ -195,14 +226,34 @@ export default function CameraModal({ meal, onAdd, onClose }) {
     };
   }, [analysis]);
 
-  const scaledMacros = useMemo(() => {
-    if (!per100g) return null;
-    return scaleMacros(per100g, servingGrams || 0);
-  }, [per100g, servingGrams]);
+  const servingGrams = baseGrams * qty;
+  const scaledMacros = useMemo(
+    () => (per100g ? scaleMacros(per100g, servingGrams || 0) : null),
+    [per100g, servingGrams],
+  );
+
+  const handleRetake = () => {
+    setAnalysis(null);
+    setPreview(null);
+    setImageBase64(null);
+    setError(null);
+    setCameraReady(false);
+    // restart the camera
+    if (navigator.mediaDevices?.getUserMedia) {
+      navigator.mediaDevices
+        .getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false })
+        .then((stream) => {
+          streamRef.current = stream;
+          if (videoRef.current) videoRef.current.srcObject = stream;
+          setCameraReady(true);
+        })
+        .catch(() => setCameraReady(false));
+    }
+  };
 
   const handleLog = () => {
     if (!per100g) return;
-    const foodData = {
+    onAdd({
       name: foodName?.trim() || "Food",
       per_100g: per100g,
       servingAmount: servingGrams,
@@ -215,277 +266,165 @@ export default function CameraModal({ meal, onAdd, onClose }) {
       carbs: scaledMacros?.carbs,
       fat: scaledMacros?.fat,
       fiber: scaledMacros?.fiber,
-    };
-    onAdd(foodData);
+    });
     handleClose();
   };
-
-  const confidenceClass = confidence
-    ? confidence === "high"
-      ? styles.confidenceHigh
-      : confidence === "medium"
-        ? styles.confidenceMedium
-        : styles.confidenceLow
-    : "";
 
   if (!mounted) return null;
 
   return createPortal(
-    <div
-      className={`${styles.overlay} ${visible ? styles.overlayVisible : ""}`}
-      onClick={handleClose}
-    >
-      <div
-        className={`${styles.sheet} ${visible ? styles.sheetVisible : ""}`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className={styles.handleBar}>
-          <div className={styles.handle} />
-        </div>
+    <div className={`${styles.scanner} ${visible ? styles.scannerVisible : ""}`}>
+      {/* camera feed / backdrop */}
+      <video
+        ref={videoRef}
+        className={`${styles.video} ${cameraReady && !detected ? styles.videoOn : ""}`}
+        autoPlay
+        playsInline
+        muted
+      />
+      <div className={styles.cameraBg} />
+      <div className={styles.vignette} />
 
-        <div className={styles.sheetHeader}>
-          <h2 className={styles.sheetTitle}>Scan Food for {meal}</h2>
-          <button className={styles.closeBtn} onClick={handleClose}>
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            >
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <div className={styles.content}>
-          {!analysis && !loading && (
-            <div className={styles.uploadArea}>
-              {preview ? (
-                <div className={styles.previewContainer}>
-                  <img
-                    src={preview}
-                    alt="Upload preview"
-                    className={styles.previewImage}
-                  />
-                  <button
-                    className={styles.changeBtn}
-                    onClick={() => {
-                      setPreview(null);
-                      setImageBase64(null);
-                    }}
-                  >
-                    Change Photo
-                  </button>
-                </div>
-              ) : (
-                <div className={styles.sourceChoices}>
-                  <button
-                    type="button"
-                    className={styles.sourceTile}
-                    onClick={() => cameraInputRef.current?.click()}
-                  >
-                    <div className={styles.sourceIcon}>
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                        <circle cx="12" cy="13" r="4" />
-                      </svg>
-                    </div>
-                    <div className={styles.sourceTextGroup}>
-                      <span className={styles.sourceTitle}>Take Photo</span>
-                      <span className={styles.sourceSub}>Use camera now</span>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    className={styles.sourceTile}
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    <div className={styles.sourceIcon}>
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <rect x="3" y="3" width="18" height="18" rx="2.5" />
-                        <circle cx="8.5" cy="9" r="1.6" />
-                        <path d="M21 15l-5-5-8 8" />
-                      </svg>
-                    </div>
-                    <div className={styles.sourceTextGroup}>
-                      <span className={styles.sourceTitle}>Choose Photo</span>
-                      <span className={styles.sourceSub}>From library</span>
-                    </div>
-                  </button>
-
-                  <input
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    ref={cameraInputRef}
-                    className={styles.fileInput}
-                    onChange={handleImageChange}
-                  />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    ref={fileInputRef}
-                    className={styles.fileInput}
-                    onChange={handleImageChange}
-                  />
-                </div>
-              )}
-
-              {error && (
-                <div className={styles.errorCard}>
-                  <p className={styles.errorText}>{error}</p>
-                </div>
-              )}
-
-              <button
-                className="btn btn-primary btn-full"
-                disabled={!preview}
-                onClick={() => runAnalysis()}
-              >
-                Analyze Food
-              </button>
-            </div>
-          )}
-
-          {loading && (
-            <div className={styles.loadingArea}>
-              <div className={styles.pulseRing}>
-                <div className={styles.pulseInner}><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg></div>
-              </div>
-              <p className={styles.loadingText}>Analyzing your meal...</p>
-              {preview && (
-                <img
-                  src={preview}
-                  alt="Analyzing"
-                  className={styles.loadingPreview}
-                />
-              )}
-            </div>
-          )}
-
-          {analysis && !loading && (
-            <div className={styles.resultArea}>
-              <div className={styles.resultHeader}>
-                <input
-                  className={styles.foodNameInput}
-                  value={foodName}
-                  onChange={(e) => setFoodName(e.target.value)}
-                />
-                {confidence && (
-                  <span className={`${styles.confidenceBadge} ${confidenceClass}`}>
-                    {confidence} confidence
-                  </span>
-                )}
-              </div>
-
-              {items.length > 0 && (
-                <div className={styles.itemsList}>
-                  {items.map((it, idx) => (
-                    <div key={`${it.name}-${idx}`} className={styles.itemRow}>
-                      <span className={styles.itemName}>{it.name}</span>
-                      <span className={styles.itemDetail}>{Math.round(it.grams)}g</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {scaledMacros && (
-                <div className={styles.macrosPills}>
-                  <span className={styles.pill} data-type="calories">
-                    {scaledMacros.calories} kcal
-                  </span>
-                  <span className={styles.pill}>{scaledMacros.protein}g P</span>
-                  <span className={styles.pill}>{scaledMacros.carbs}g C</span>
-                  <span className={styles.pill}>{scaledMacros.fat}g F</span>
-                </div>
-              )}
-
-              <div className={styles.servingSection}>
-                <label className={styles.servingLabel}>Serving size (g)</label>
-                <input
-                  type="number"
-                  className={`input ${styles.servingInput}`}
-                  value={servingGrams}
-                  onChange={(e) =>
-                    setServingGrams(Math.max(1, parseFloat(e.target.value) || 1))
-                  }
-                  min="1"
-                />
-              </div>
-
-              {(confidence === "low" || showCorrection) && (
-                <div className={styles.correctionBox}>
-                  <p className={styles.correctionTitle}>Describe your meal</p>
-                  <textarea
-                    className={styles.correctionInput}
-                    rows={3}
-                    value={correctionText}
-                    onChange={(e) => setCorrectionText(e.target.value)}
-                    placeholder="e.g. Two scrambled eggs with butter and toast"
-                  />
-                  <button
-                    className="btn btn-secondary btn-full"
-                    disabled={!correctionText.trim()}
-                    onClick={() => runAnalysis({ descriptionOnly: true })}
-                  >
-                    Re-analyze
-                  </button>
-                </div>
-              )}
-
-              {confidence === "low" && !showCorrection && (
-                <button
-                  className={styles.correctionPrompt}
-                  onClick={() => setShowCorrection(true)}
-                >
-                  Confidence is low — tap to correct
-                </button>
-              )}
-
-              {error && (
-                <div className={styles.errorCard}>
-                  <p className={styles.errorText}>{error}</p>
-                </div>
-              )}
-
-              <div className={styles.actionButtons}>
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => {
-                    setAnalysis(null);
-                    setItems([]);
-                    setShowCorrection(false);
-                    setCorrectionText("");
-                  }}
-                >
-                  Start Over
-                </button>
-                <button className="btn btn-primary" onClick={handleLog}>
-                  Log it
-                </button>
-              </div>
-            </div>
-          )}
+      {/* top bar */}
+      <div className={styles.topBar}>
+        <button className={styles.roundBtn} onClick={handleClose} aria-label="Close scanner">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+        </button>
+        <div className={styles.topTitle}>Scan</div>
+        <div className={styles.roundBtn} aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L4.5 13H11l-1 9 8.5-11H12z" /></svg>
         </div>
       </div>
+
+      {/* auto-detect badge */}
+      <div className={styles.autoBadge}>
+        <span className={styles.dot} />
+        <span className={styles.autoLabel}>Auto-detect</span>
+        <span className={styles.autoKind}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 11h1v2H3zM6 11h1v2H6zM9 10h1.4v4H9zM12.4 11h1v2h-1zM15.4 10h1.4v4h-1.4zM19 11h1v2h-1z" /></svg>
+          Food &amp; barcode
+        </span>
+      </div>
+
+      {/* reticle */}
+      <div className={styles.reticle}>
+        <span className={`${styles.corner} ${styles.tl}`} />
+        <span className={`${styles.corner} ${styles.tr}`} />
+        <span className={`${styles.corner} ${styles.bl}`} />
+        <span className={`${styles.corner} ${styles.br}`} />
+        <div className={styles.barHint}>
+          {[3, 2, 4, 2, 3, 5, 2, 3].map((w, i) => (
+            <span key={i} style={{ width: w }} />
+          ))}
+        </div>
+        {!detected && <div className={styles.scanline} />}
+      </div>
+
+      {/* scanning helper text + controls */}
+      {!detected && !loading && (
+        <>
+          <div className={styles.hint}>
+            Point at your meal or a barcode —<br />Calo figures out which automatically
+          </div>
+          <div className={styles.controls}>
+            <button
+              className={styles.sideBtn}
+              onClick={() => fileInputRef.current?.click()}
+              aria-label="Choose from library"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="4" /><circle cx="8.5" cy="9" r="1.6" /><path d="M21 16l-5-5L5 21" /></svg>
+            </button>
+            <button className={styles.shutter} onClick={captureFrame} aria-label="Capture">
+              <span className={styles.shutterInner} />
+            </button>
+            <button className={styles.sideBtn} aria-label="Options" type="button">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6h16M4 12h16M4 18h10" /></svg>
+            </button>
+          </div>
+        </>
+      )}
+
+      {loading && (
+        <div className={styles.analyzing}>
+          <span className={styles.dot} />
+          Analyzing your meal…
+        </div>
+      )}
+
+      {error && !detected && <div className={styles.errorToast}>{error}</div>}
+
+      {/* detected result sheet */}
+      {detected && (
+        <div className={styles.sheet}>
+          <div className={styles.grabber} />
+          <div className={styles.detectedTag}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#16B26A"><path d="M12 2l2.6 5.6 6 .8-4.4 4.1 1.1 6L12 15.6 6.3 18.5l1.1-6L3 8.4l6-.8z" /></svg>
+            Detected via photo
+          </div>
+          <div className={styles.detRow}>
+            <input
+              className={styles.detName}
+              value={foodName}
+              onChange={(e) => setFoodName(e.target.value)}
+              aria-label="Food name"
+            />
+            <div className={styles.stepper}>
+              <button
+                className={styles.stepMinus}
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                aria-label="Decrease quantity"
+              >
+                −
+              </button>
+              <span className={styles.stepVal}>{qty}</span>
+              <button
+                className={styles.stepPlus}
+                onClick={() => setQty((q) => q + 1)}
+                aria-label="Increase quantity"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          <div className={styles.macroGrid}>
+            <div className={styles.macroCell}>
+              <div className={styles.macroVal}>{scaledMacros?.calories ?? 0}</div>
+              <div className={styles.macroKey}>KCAL</div>
+            </div>
+            <div className={styles.macroCell}>
+              <div className={styles.macroVal} style={{ color: "var(--accent-protein)" }}>{scaledMacros?.protein ?? 0}g</div>
+              <div className={styles.macroKey}>PROTEIN</div>
+            </div>
+            <div className={styles.macroCell}>
+              <div className={styles.macroVal} style={{ color: "var(--accent-carbs)" }}>{scaledMacros?.carbs ?? 0}g</div>
+              <div className={styles.macroKey}>CARBS</div>
+            </div>
+            <div className={styles.macroCell}>
+              <div className={styles.macroVal} style={{ color: "var(--accent-fat)" }}>{scaledMacros?.fat ?? 0}g</div>
+              <div className={styles.macroKey}>FAT</div>
+            </div>
+          </div>
+
+          {error && <div className={styles.sheetError}>{error}</div>}
+
+          <div className={styles.sheetActions}>
+            <button className={styles.retake} onClick={handleRetake}>Retake</button>
+            <button className={styles.confirm} onClick={handleLog}>
+              Add to {mealLabelFor(meal)}
+            </button>
+          </div>
+        </div>
+      )}
+
+      <input
+        type="file"
+        accept="image/*"
+        capture="environment"
+        ref={fileInputRef}
+        className={styles.fileInput}
+        onChange={handleImageChange}
+      />
     </div>,
     document.body,
   );

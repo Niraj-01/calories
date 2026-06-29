@@ -439,14 +439,13 @@ export default function HomePage() {
         />
       )}
 
-      {/* Camera Modal */}
+      {/* Unified auto-detect scanner — its detected sheet is the final confirm,
+          so it logs straight to the resolved meal. */}
       {cameraMeal && (
         <CameraModal
           meal={cameraMeal === "__quick__" ? suggestedMeal : cameraMeal}
           onAdd={(food) =>
-            cameraMeal === "__quick__"
-              ? handleQuickScanResult(food)
-              : handleStageFood(food, cameraMeal)
+            handleAddFood(food, cameraMeal === "__quick__" ? suggestedMeal : cameraMeal)
           }
           onClose={() => setCameraMeal(null)}
         />
