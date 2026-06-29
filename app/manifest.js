@@ -1,3 +1,5 @@
+export const dynamic = "force-static";
+
 // Next.js metadata route → served at /manifest.webmanifest
 // This is what makes the app installable and what Bubblewrap reads to build the Android app.
 export default function manifest() {
