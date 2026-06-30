@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { compressedJson } from "@/src/lib/compressedJson";
 
 function sanitizeInput(str, maxLen = 200) {
   if (typeof str !== "string") return "";
@@ -73,7 +74,7 @@ export async function POST(request) {
     const met = Number(result.metValue) || 6;
     const calories = Math.round(met * 3.5 * weightKg * durationMinutes / 200);
 
-    return NextResponse.json({
+    return compressedJson(request, {
       name: sanitizeInput(result.name) || exercise,
       caloriesBurned: calories,
       metValue: met,

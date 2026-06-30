@@ -197,16 +197,34 @@ export default function DashboardPage() {
   };
 
   if (loading) {
+    // Mirror the real structure so nothing shifts when data loads: the
+    // dateFilters pill row (otherwise it pops in and pushes the cards down) and
+    // cards built from the same .card/.chartWrapper classes, so their heights
+    // match the live charts exactly.
     return (
       <div className={`${styles.container} fade-in`}>
         <div className={styles.header}>
           <h1 className={styles.title}>Nutrition</h1>
         </div>
-        <div className={styles.card} style={{ height: 200 }}>
-          <div
-            className={styles.skeleton}
-            style={{ width: "100%", height: "100%", borderRadius: 16 }}
-          />
+        <div className={styles.dateFilters}>
+          {["1W", "1M", "6M", "1Y"].map((f) => (
+            <div
+              key={f}
+              className={styles.skeleton}
+              style={{ flex: 1, height: 32, borderRadius: "var(--radius-pill)" }}
+            />
+          ))}
+        </div>
+        <div className={styles.card}>
+          <div className={styles.skeleton} style={{ width: 140, height: 18, marginBottom: 6 }} />
+          <div className={styles.skeleton} style={{ width: 90, height: 13 }} />
+          <div className={styles.chartWrapper}>
+            <div className={styles.skeleton} style={{ width: "100%", height: "100%", borderRadius: 8 }} />
+          </div>
+        </div>
+        <div className={styles.card}>
+          <div className={styles.skeleton} style={{ width: 120, height: 18, marginBottom: 12 }} />
+          <div className={styles.skeleton} style={{ width: "100%", height: 120, borderRadius: 12 }} />
         </div>
       </div>
     );

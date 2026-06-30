@@ -2,6 +2,10 @@ import { Plus_Jakarta_Sans, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import ServiceWorkerRegister from "@/src/components/ServiceWorkerRegister";
 
+// NOTE: force-dynamic lives on the (app) route group, not here, so that public
+// static pages (e.g. /privacy) can be statically generated and CDN-cached while
+// the personalized app routes still render per-request for the CSP nonce.
+
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-main",

@@ -8,7 +8,10 @@ import {
   updateMyFood,
   deleteMyFood,
 } from "@/src/services/firestoreService";
+import { useToast } from "@/src/components/Toast";
 import styles from "./MyFoodsPage.module.css";
+
+const tempId = () => `temp-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 
 const emptyForm = {
   name: "",
@@ -27,8 +30,8 @@ export default function MyFoodsPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({ ...emptyForm });
-  const [saving, setSaving] = useState(false);
   const [query, setQuery] = useState("");
+  const { showToast, toastNode } = useToast();
 
   useEffect(() => {
     if (!user) return;
@@ -56,32 +59,47 @@ export default function MyFoodsPage() {
 
   const handleSave = async () => {
     if (!form.name || !form.calories) return;
-    setSaving(true);
-    try {
-      const foodData = {
-        name: form.name,
-        calories: parseFloat(form.calories) || 0,
-        protein: parseFloat(form.protein) || 0,
-        carbs: parseFloat(form.carbs) || 0,
-        fat: parseFloat(form.fat) || 0,
-        defaultAmount: parseFloat(form.defaultAmount) || 100,
-        defaultUnit: form.defaultUnit || "g",
-      };
+    const foodData = {
+      name: form.name,
+      calories: parseFloat(form.calories) || 0,
+      protein: parseFloat(form.protein) || 0,
+      carbs: parseFloat(form.carbs) || 0,
+      fat: parseFloat(form.fat) || 0,
+      defaultAmount: parseFloat(form.defaultAmount) || 100,
+      defaultUnit: form.defaultUnit || "g",
+    };
 
-      if (editingId) {
-        await updateMyFood(user.uid, editingId, foodData);
-        setFoods((prev) =>
-          prev.map((f) => (f.id === editingId ? { ...f, ...foodData } : f)),
-        );
-      } else {
-        const id = await addMyFood(user.uid, foodData);
-        setFoods((prev) => [...prev, { id, ...foodData }]);
-      }
+    if (editingId) {
+      // Optimistic edit: apply instantly, snapshot to revert on failure.
+      const id = editingId;
+      let snapshot;
+      setFoods((prev) => {
+        snapshot = prev;
+        return prev.map((f) => (f.id === id ? { ...f, ...foodData } : f));
+      });
       resetForm();
-    } catch (err) {
-      console.warn("Failed to save food:", err);
-    } finally {
-      setSaving(false);
+      try {
+        await updateMyFood(user.uid, id, foodData);
+      } catch (err) {
+        console.warn("Failed to update food:", err);
+        if (snapshot) setFoods(snapshot);
+        showToast(`Couldn't update "${foodData.name}" — reverted.`);
+      }
+    } else {
+      // Optimistic add: show the row immediately, reconcile the id after save.
+      const tid = tempId();
+      setFoods((prev) => [...prev, { id: tid, ...foodData, pending: true }]);
+      resetForm();
+      try {
+        const id = await addMyFood(user.uid, foodData);
+        setFoods((prev) =>
+          prev.map((f) => (f.id === tid ? { id, ...foodData } : f)),
+        );
+      } catch (err) {
+        console.warn("Failed to save food:", err);
+        setFoods((prev) => prev.filter((f) => f.id !== tid));
+        showToast(`Couldn't save "${foodData.name}" — removed.`);
+      }
     }
   };
 
@@ -100,19 +118,37 @@ export default function MyFoodsPage() {
   };
 
   const handleDelete = async (id) => {
+    // Optimistic removal; snapshot to restore exact list/order on failure.
+    let snapshot;
+    setFoods((prev) => {
+      snapshot = prev;
+      return prev.filter((f) => f.id !== id);
+    });
+    if (String(id).startsWith("temp-")) return;
     try {
       await deleteMyFood(user.uid, id);
-      setFoods((prev) => prev.filter((f) => f.id !== id));
     } catch (err) {
       console.warn("Failed to delete food:", err);
+      if (snapshot) setFoods(snapshot);
+      showToast("Couldn't delete food — restored.");
     }
   };
 
   if (loading) {
+    // Render the static header (title + subtitle) directly so it doesn't shrink
+    // when content arrives, and reserve the search bar (otherwise it pops in
+    // above the list once foods load and pushes everything down).
     return (
       <div className="page container fade-in">
         <div className={styles.header}>
-          <div className="skeleton" style={{ width: 120, height: 32 }} />
+          <div>
+            <h1 className="page-title">My Foods</h1>
+            <p className="page-subtitle">Saved &amp; frequent</p>
+          </div>
+          <div className="skeleton" style={{ width: 72, height: 32, borderRadius: 999 }} />
+        </div>
+        <div className={styles.searchBar}>
+          <div className="skeleton" style={{ width: "100%", height: 20 }} />
         </div>
         <div className={styles.list}>
           {[1, 2, 3].map((i) => (
@@ -237,10 +273,10 @@ export default function MyFoodsPage() {
           </div>
           <button
             className="btn btn-primary btn-full"
-            disabled={!form.name || !form.calories || saving}
+            disabled={!form.name || !form.calories}
             onClick={handleSave}
           >
-            {saving ? "Saving..." : editingId ? "Update" : "Save"}
+            {editingId ? "Update" : "Save"}
           </button>
         </div>
       )}
@@ -314,6 +350,7 @@ export default function MyFoodsPage() {
           </div>
         );
       })()}
+      {toastNode}
     </div>
   );
 }

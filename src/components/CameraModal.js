@@ -158,23 +158,47 @@ export default function CameraModal({ meal, onAdd, onClose }) {
     return sanitizeAndParse(data?.candidates?.[0]?.content?.parts?.[0]?.text);
   };
 
+  // Background-job flow: the POST returns a jobId in ~10ms while the slow Gemini
+  // call runs out of band; we then poll for the result. The job is idempotent
+  // (id = hash of the image), so a retry of the same photo never re-runs the
+  // model — it just returns the cached result.
   const callServerAnalysis = async (b64, mime) => {
-    const res = await fetch("/api/analyze-food", {
+    const parseJobResponse = async (res) => {
+      const textBody = await res.text();
+      let data;
+      try {
+        data = JSON.parse(textBody);
+      } catch {
+        if (textBody?.trim().startsWith("<"))
+          throw new Error("Server API unavailable (HTML response)");
+        throw new Error("Unexpected response from analysis API");
+      }
+      return data;
+    };
+
+    // Enqueue (or join an in-flight / completed job).
+    const res = await fetch("/api/analyze-food/jobs", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ imageBase64: b64, mimeType: mime }),
     });
-    const textBody = await res.text();
-    let data;
-    try {
-      data = JSON.parse(textBody);
-    } catch {
-      if (textBody?.trim().startsWith("<"))
-        throw new Error("Server API unavailable (HTML response)");
-      throw new Error("Unexpected response from analysis API");
+    const job = await parseJobResponse(res);
+    if (!res.ok && res.status !== 202)
+      throw new Error(job?.error || "Analysis failed");
+    if (job.status === "done") return job.result;
+    if (job.status === "error") throw new Error(job.error || "Analysis failed");
+
+    // Poll until the deferred work reaches a terminal state.
+    const deadline = Date.now() + 45000;
+    while (Date.now() < deadline) {
+      await new Promise((r) => setTimeout(r, 1200));
+      const pollRes = await fetch(`/api/analyze-food/jobs/${job.jobId}`);
+      const status = await parseJobResponse(pollRes);
+      if (status.status === "done") return status.result;
+      if (status.status === "error")
+        throw new Error(status.error || "Analysis failed");
     }
-    if (!res.ok) throw new Error(data?.error || "Analysis failed");
-    return data;
+    throw new Error("Analysis timed out — please try again.");
   };
 
   const runAnalysis = async (dataUrl) => {

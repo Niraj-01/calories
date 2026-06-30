@@ -1,6 +1,13 @@
 import Link from "next/link";
 import styles from "./privacy.module.css";
 
+// Static, user-identical content. Prerender at build time and regenerate at most
+// once a day (ISR); a content edit + redeploy also produces a fresh prerender.
+// The rendered HTML is served directly from cache instead of re-rendering per
+// request. See middleware.js for this route's nonce-free, CDN-cacheable CSP.
+export const dynamic = "force-static";
+export const revalidate = 86400; // 24h
+
 export const metadata = {
   title: "Privacy Policy — Calories",
   description:

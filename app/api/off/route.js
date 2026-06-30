@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { compressedJson } from "@/src/lib/compressedJson";
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -18,7 +19,7 @@ export async function GET(request) {
         throw new Error(`OpenFoodFacts responded with ${res.status}`);
       }
       const data = await res.json();
-      return NextResponse.json(data);
+      return compressedJson(request, data);
     } else if (action === "search") {
       const q = searchParams.get("q");
       if (!q) {
@@ -41,7 +42,7 @@ export async function GET(request) {
         throw new Error(`OpenFoodFacts responded with ${res.status}`);
       }
       const data = await res.json();
-      return NextResponse.json(data);
+      return compressedJson(request, data);
     }
 
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });

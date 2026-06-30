@@ -13,6 +13,7 @@ import {
   orderBy,
   limit,
   serverTimestamp,
+  Timestamp,
 } from "firebase/firestore";
 import { db } from "@/src/firebase";
 
@@ -52,29 +53,63 @@ export async function getDayEntries(uid, date) {
   return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
 
-// Get entries for a range of dates (for history)
+// Local YYYY-MM-DD for a Date (matches the log-document id format).
+function localDateKey(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+// Get entries for a range of dates (for history), keyed by "YYYY-MM-DD".
+//
+// One round trip: instead of firing a getDocs() per day (N round trips — e.g.
+// ~900 for the 30-month export), we issue a single collectionGroup query over
+// all of the user's "entries", bounded by a createdAt timestamp range, then
+// group the results by their log-day in memory. The createdAt bounds are padded
+// by a day on each side so entries written near midnight (createdAt is UTC
+// server time, the log-day is local) are never missed; the precise day filter
+// happens during grouping. Reuses the existing (uid, createdAt) collection-group
+// index — no schema change.
 export async function getDayRange(uid, startDate, endDate) {
+  const startKey = String(startDate).slice(0, 10);
+  const endKey = String(endDate).slice(0, 10);
+
+  // Pre-seed every day in the range so empty days are still present as [] —
+  // callers (e.g. HistoryPage) iterate the full range, not just logged days.
   const results = {};
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-
-  const promises = [];
-
-  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-    const key = dateKey(d);
-    promises.push(
-      (async () => {
-        try {
-          const entries = await getDayEntries(uid, key);
-          results[key] = entries;
-        } catch {
-          results[key] = [];
-        }
-      })(),
-    );
+  for (
+    let d = new Date(`${startKey}T12:00:00`);
+    localDateKey(d) <= endKey;
+    d.setDate(d.getDate() + 1)
+  ) {
+    results[localDateKey(d)] = [];
   }
 
-  await Promise.all(promises);
+  // createdAt window, padded ±1 day to absorb local-day vs UTC skew.
+  const lower = new Date(`${startKey}T00:00:00`);
+  lower.setDate(lower.getDate() - 1);
+  const upper = new Date(`${endKey}T23:59:59`);
+  upper.setDate(upper.getDate() + 1);
+
+  const q = query(
+    collectionGroup(db, "entries"),
+    where("uid", "==", uid),
+    where("createdAt", ">=", Timestamp.fromDate(lower)),
+    where("createdAt", "<=", Timestamp.fromDate(upper)),
+  );
+
+  const snap = await getDocs(q);
+  // Inequality on createdAt means results arrive in createdAt-ascending order,
+  // so each day's entries land sorted the same way getDayEntries returned them.
+  snap.docs.forEach((docSnap) => {
+    // path: users/{uid}/logs/{date}/entries/{entryId}
+    const date = docSnap.ref.path.split("/")[3];
+    if (date >= startKey && date <= endKey) {
+      (results[date] ||= []).push({ id: docSnap.id, ...docSnap.data() });
+    }
+  });
+
   return results;
 }
 

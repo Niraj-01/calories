@@ -23,10 +23,15 @@ export default function PdfsPage() {
   return (
     <div className={`page container fade-in ${styles.container}`}>
       <header className={styles.header}>
+        {/* Intrinsic dimensions let the browser reserve the right space (the
+            CSS caps width to 92px and derives height from this 838:312 ratio),
+            so the header doesn't jump when the logo loads. */}
         <img
           className={styles.logo}
           src="/amity_logo.png"
           alt="AMITY University logo"
+          width={838}
+          height={312}
         />
         <h1 className={styles.university}>AMITY UNIVERSITY, MUMBAI</h1>
         <p className={styles.school}>

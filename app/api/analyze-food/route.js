@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { compressedJson } from "@/src/lib/compressedJson";
 
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB base64
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -125,7 +126,7 @@ If multiple foods are visible, list each in items[] and sum the totals. Estimate
       }
     }
 
-    return NextResponse.json(parsed);
+    return compressedJson(request, parsed);
   } catch (err) {
     console.error("/api/analyze-food error", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

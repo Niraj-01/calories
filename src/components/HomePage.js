@@ -17,20 +17,39 @@ import {
   getExerciseEntries,
   deleteExerciseEntry,
 } from "@/src/services/firestoreService";
+import dynamic from "next/dynamic";
 import { scaleMacros } from "@/src/services/foodDataService";
+// Eager: part of the initial Today view, needed for first paint.
 import CalorieRing from "@/src/components/CalorieRing";
 import MacroBar from "@/src/components/MacroBar";
 import MealSection from "@/src/components/MealSection";
-import SearchModal from "@/src/components/SearchModal";
-import CameraModal from "@/src/components/CameraModal";
-import BarcodeScannerModal from "@/src/components/BarcodeScannerModal";
-import AddFoodModal from "@/src/components/AddFoodModal";
-import FoodDetailsModal from "@/src/components/FoodDetailsModal";
 import WaterTracker from "@/src/components/WaterTracker";
-import MealPickerSheet from "@/src/components/MealPickerSheet";
-import QuickLogPanel from "@/src/components/QuickLogPanel";
-import ExerciseModal from "@/src/components/ExerciseModal";
+import { useToast } from "@/src/components/Toast";
 import styles from "./HomePage.module.css";
+
+// Lazy: interaction-only modals/sheets. These are client-only (portals, camera,
+// network) and never shown on first paint, so we split each into its own chunk
+// that loads on demand when the user opens it — keeping the Today route's
+// initial bundle to just what the first view needs.
+const ModalLoading = () => (
+  <div className={styles.modalLoading}>
+    <div className="spinner spinner-lg" />
+  </div>
+);
+const lazyModal = (importer, withFallback = true) =>
+  dynamic(importer, { ssr: false, ...(withFallback ? { loading: ModalLoading } : {}) });
+
+const SearchModal = lazyModal(() => import("@/src/components/SearchModal"));
+const CameraModal = lazyModal(() => import("@/src/components/CameraModal"));
+const BarcodeScannerModal = lazyModal(() => import("@/src/components/BarcodeScannerModal"));
+const FoodDetailsModal = lazyModal(() => import("@/src/components/FoodDetailsModal"));
+const ExerciseModal = lazyModal(() => import("@/src/components/ExerciseModal"));
+// Small, instant sheets — no spinner fallback to avoid a flicker.
+const AddFoodModal = lazyModal(() => import("@/src/components/AddFoodModal"), false);
+const MealPickerSheet = lazyModal(() => import("@/src/components/MealPickerSheet"), false);
+
+// Local-only id for an optimistic row that hasn't been persisted yet.
+const tempId = () => `temp-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 
 const MEALS = ["breakfast", "lunch", "dinner", "snacks"];
 
@@ -74,6 +93,7 @@ export default function HomePage() {
   const todayLabel = getTodayLabel();
   const prevStreakRef = useRef(0);
   const confettiLoaded = useRef(false);
+  const { showToast, toastNode } = useToast();
 
   const fetchData = useCallback(async () => {
     if (!user) {
@@ -133,63 +153,95 @@ export default function HomePage() {
 
   const handleAddFood = async (food, meal) => {
     if (!user) return;
+    const per100g = food.per_100g || {
+      calories: food.calories || 0,
+      protein: food.protein || 0,
+      carbs: food.carbs || 0,
+      fat: food.fat || 0,
+      fiber: food.fiber || 0,
+    };
+    const servingAmount = food.servingAmount || food.defaultAmount || 100;
+    const servingUnit = food.servingUnit || food.defaultUnit || "g";
+    const scaled = scaleMacros(per100g, servingAmount);
+    const entry = {
+      name: food.name,
+      brand: food.brand || "",
+      calories: scaled.calories,
+      protein: scaled.protein,
+      carbs: scaled.carbs,
+      fat: scaled.fat,
+      meal,
+      servingAmount,
+      servingUnit,
+      source: food.source || "user",
+    };
+
+    // Optimistic: show the entry (and updated calorie ring) instantly.
+    const tid = tempId();
+    setEntries((prev) => [...prev, { id: tid, ...entry, pending: true }]);
     try {
-      const per100g = food.per_100g || {
-        calories: food.calories || 0,
-        protein: food.protein || 0,
-        carbs: food.carbs || 0,
-        fat: food.fat || 0,
-        fiber: food.fiber || 0,
-      };
-      const servingAmount = food.servingAmount || food.defaultAmount || 100;
-      const servingUnit = food.servingUnit || food.defaultUnit || "g";
-      const scaled = scaleMacros(per100g, servingAmount);
-      const entry = {
-        name: food.name,
-        brand: food.brand || "",
-        calories: scaled.calories,
-        protein: scaled.protein,
-        carbs: scaled.carbs,
-        fat: scaled.fat,
-        meal,
-        servingAmount,
-        servingUnit,
-        source: food.source || "user",
-      };
       const id = await addFoodEntry(user.uid, today, entry);
-      setEntries((prev) => [...prev, { id, ...entry }]);
+      // Reconcile: swap the temp row for the persisted one.
+      setEntries((prev) =>
+        prev.map((e) => (e.id === tid ? { id, ...entry } : e)),
+      );
     } catch (err) {
       console.warn("Failed to add food:", err);
+      // Roll back the optimistic row and tell the user.
+      setEntries((prev) => prev.filter((e) => e.id !== tid));
+      showToast(`Couldn't save "${entry.name}" — removed.`);
     }
   };
 
   const handleAddExercise = async (exData) => {
     if (!user) return;
+    const tid = tempId();
+    setExercises((prev) => [{ id: tid, ...exData, pending: true }, ...prev]);
     try {
       const id = await addExerciseEntry(user.uid, today, exData);
-      setExercises((prev) => [{ id, ...exData }, ...prev]);
+      setExercises((prev) =>
+        prev.map((e) => (e.id === tid ? { id, ...exData } : e)),
+      );
     } catch (err) {
       console.warn("Failed to add exercise:", err);
+      setExercises((prev) => prev.filter((e) => e.id !== tid));
+      showToast("Couldn't save exercise — removed.");
     }
   };
 
   const handleDeleteExercise = async (entryId) => {
     if (!user) return;
+    // Optimistic removal; snapshot the prior list to restore exact order on fail.
+    let snapshot;
+    setExercises((prev) => {
+      snapshot = prev;
+      return prev.filter((e) => e.id !== entryId);
+    });
+    // A not-yet-persisted row has no server doc — nothing to delete remotely.
+    if (String(entryId).startsWith("temp-")) return;
     try {
       await deleteExerciseEntry(user.uid, today, entryId);
-      setExercises((prev) => prev.filter((e) => e.id !== entryId));
     } catch (err) {
       console.warn("Failed to delete exercise:", err);
+      if (snapshot) setExercises(snapshot);
+      showToast("Couldn't delete exercise — restored.");
     }
   };
 
   const handleDelete = async (entryId) => {
     if (!user) return;
+    let snapshot;
+    setEntries((prev) => {
+      snapshot = prev;
+      return prev.filter((e) => e.id !== entryId);
+    });
+    if (String(entryId).startsWith("temp-")) return;
     try {
       await deleteFoodEntry(user.uid, today, entryId);
-      setEntries((prev) => prev.filter((e) => e.id !== entryId));
     } catch (err) {
       console.warn("Failed to delete entry:", err);
+      if (snapshot) setEntries(snapshot);
+      showToast("Couldn't delete item — restored.");
     }
   };
 
@@ -307,31 +359,49 @@ export default function HomePage() {
   };
 
   if (loading) {
+    // Skeleton mirrors the real content's structure and per-section heights so
+    // that when data arrives nothing below shifts. Heights match the live
+    // components: CalorieRing card ≈320px, MacroBar card ≈108px,
+    // WaterTracker card ≈110px, MealSection rows ≈64px. Same wrapper classes
+    // (styles.page/header/heroSection/macroSection/section/meals) keep the
+    // spacing identical, so the swap is shift-free (CLS 0).
     return (
-      <div className="page container fade-in">
+      <div className={`page container fade-in ${styles.page}`}>
         <div className={styles.header}>
           <div>
             <div
               className="skeleton"
               style={{ width: 100, height: 16, marginBottom: 6 }}
             />
-            <div className="skeleton" style={{ width: 140, height: 24 }} />
+            <div className="skeleton" style={{ width: 140, height: 28 }} />
           </div>
         </div>
-        <div
-          className={styles.section}
-          style={{ display: "flex", justifyContent: "center" }}
-        >
+        <div className={styles.heroSection}>
           <div
             className="skeleton"
-            style={{ width: 200, height: 200, borderRadius: "50%" }}
+            style={{ width: "100%", height: 320, borderRadius: 24 }}
+          />
+        </div>
+        <div className={styles.macroSection}>
+          <div
+            className="skeleton"
+            style={{ width: "100%", height: 108, borderRadius: 20 }}
           />
         </div>
         <div className={styles.section}>
           <div
             className="skeleton"
-            style={{ width: "100%", height: 100, borderRadius: 20 }}
+            style={{ width: "100%", height: 110, borderRadius: 20 }}
           />
+        </div>
+        <div className={styles.meals}>
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="skeleton"
+              style={{ width: "100%", height: 64, borderRadius: 16, marginBottom: 10 }}
+            />
+          ))}
         </div>
       </div>
     );
@@ -411,14 +481,17 @@ export default function HomePage() {
         </button>
       </div>
 
-      {/* Add Food Selection Modal (Stitch UI) */}
-      <AddFoodModal
-        open={!!addFoodMeal}
-        onClose={() => setAddFoodMeal(null)}
-        onCamera={() => setCameraMeal(addFoodMeal)}
-        onSearch={() => setSearchMeal(addFoodMeal)}
-        onBarcode={() => setBarcodeMeal(addFoodMeal)}
-      />
+      {/* Add Food Selection Modal (Stitch UI). Conditionally mounted so its lazy
+          chunk is fetched only when the user opens it. */}
+      {!!addFoodMeal && (
+        <AddFoodModal
+          open
+          onClose={() => setAddFoodMeal(null)}
+          onCamera={() => setCameraMeal(addFoodMeal)}
+          onSearch={() => setSearchMeal(addFoodMeal)}
+          onBarcode={() => setBarcodeMeal(addFoodMeal)}
+        />
+      )}
 
       {/* Selected Food Details / Logging Modal */}
       {foodDetail && (
@@ -452,35 +525,42 @@ export default function HomePage() {
       )}
 
       {/* Barcode Scanner Modal */}
-      <BarcodeScannerModal
-        open={!!barcodeMeal}
-        meal={barcodeMeal === "__quick__" ? suggestedMeal : barcodeMeal || ""}
-        onAdd={(food, meal) => {
-          if (barcodeMeal === "__quick__" || !meal) {
-            handleQuickScanResult(food);
-          } else {
-            handleStageFood(food, meal || suggestedMeal);
-          }
-        }}
-        onClose={() => setBarcodeMeal(null)}
-      />
+      {!!barcodeMeal && (
+        <BarcodeScannerModal
+          open
+          meal={barcodeMeal === "__quick__" ? suggestedMeal : barcodeMeal || ""}
+          onAdd={(food, meal) => {
+            if (barcodeMeal === "__quick__" || !meal) {
+              handleQuickScanResult(food);
+            } else {
+              handleStageFood(food, meal || suggestedMeal);
+            }
+          }}
+          onClose={() => setBarcodeMeal(null)}
+        />
+      )}
 
       {/* Meal Picker Bottom Sheet */}
-      <MealPickerSheet
-        open={mealPickerOpen}
-        defaultMeal={suggestedMeal}
-        onSelect={handleMealPicked}
-        onClose={() => {
-          setMealPickerOpen(false);
-          setMealPickerIntent(null);
-        }}
-      />
+      {mealPickerOpen && (
+        <MealPickerSheet
+          open
+          defaultMeal={suggestedMeal}
+          onSelect={handleMealPicked}
+          onClose={() => {
+            setMealPickerOpen(false);
+            setMealPickerIntent(null);
+          }}
+        />
+      )}
 
-      <ExerciseModal
-        open={exerciseModalOpen}
-        onClose={() => setExerciseModalOpen(false)}
-        onLog={handleAddExercise}
-      />
+      {exerciseModalOpen && (
+        <ExerciseModal
+          open
+          onClose={() => setExerciseModalOpen(false)}
+          onLog={handleAddExercise}
+        />
+      )}
+      {toastNode}
     </div>
   );
 }

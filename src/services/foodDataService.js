@@ -21,19 +21,58 @@ function toNumber(value, fallback = 0) {
   return Number.isFinite(num) ? num : fallback;
 }
 
+// Edit distance between two short strings (food/word length), iterative DP.
+function levenshtein(a, b) {
+  const m = a.length;
+  const n = b.length;
+  if (!m) return n;
+  if (!n) return m;
+  let prev = Array.from({ length: n + 1 }, (_, i) => i);
+  let curr = new Array(n + 1);
+  for (let i = 1; i <= m; i++) {
+    curr[0] = i;
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost);
+    }
+    [prev, curr] = [curr, prev];
+  }
+  return prev[n];
+}
+
+// How well one query word matches one name word, 1 = identical. Tolerates typos
+// (e.g. "chiken" ≈ "chicken") via edit distance, but ranks exact/prefix higher.
+function wordSim(qw, nw) {
+  if (qw === nw) return 1;
+  if (nw.startsWith(qw)) return 0.95; // prefix — natural for search-as-you-type
+  if (nw.includes(qw)) return 0.85; // substring
+  const sim = 1 - levenshtein(qw, nw) / Math.max(qw.length, nw.length);
+  return sim >= 0.7 ? sim * 0.8 : 0; // close enough to be a likely typo
+}
+
+// Relevance of a food `name` to the `query`. Whole-query prefix/substring wins;
+// otherwise each query word scores against its closest name word (typo-tolerant),
+// so multi-word and misspelled queries still surface the right foods.
 function scoreMatch(name, query) {
-  const a = name.toLowerCase();
-  const b = query.toLowerCase();
+  const a = (name || "").toLowerCase().trim();
+  const b = (query || "").toLowerCase().trim();
   if (!a || !b) return 0;
 
-  if (a.includes(b)) return Math.min(1, b.length / a.length);
-  if (b.includes(a)) return Math.min(1, a.length / b.length);
+  if (a.startsWith(b)) return 1; // strongest: name begins with the query
+  if (a.includes(b)) return 0.9; // whole query appears somewhere in the name
 
-  const aWords = new Set(a.split(/\s+/));
-  const bWords = new Set(b.split(/\s+/));
-  const intersection = [...aWords].filter((w) => bWords.has(w)).length;
-  const union = aWords.size + bWords.size - intersection || 1;
-  return intersection / union;
+  const aWords = a.split(/\s+/);
+  const bWords = b.split(/\s+/);
+  let total = 0;
+  for (const qw of bWords) {
+    let best = 0;
+    for (const nw of aWords) {
+      const s = wordSim(qw, nw);
+      if (s > best) best = s;
+    }
+    total += best;
+  }
+  return total / bWords.length;
 }
 
 export function scaleMacros(per100g, grams) {

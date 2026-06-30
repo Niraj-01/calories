@@ -70,31 +70,30 @@ export default function HistoryPage() {
   };
 
   if (loading) {
+    // Static header text is rendered directly (no data needed → zero mismatch),
+    // and the skeleton reserves the week chart card (otherwise it pops in and
+    // pushes the day rows down) plus day rows, using the real .chartCard/.chart
+    // and .dayGroup/.dayRow classes so heights match the loaded content.
     return (
       <div className="page container fade-in">
         <div className={styles.header}>
-          <div
-            className="skeleton"
-            style={{ width: 100, height: 32, marginBottom: 8 }}
-          />
-          <div className="skeleton" style={{ width: 120, height: 20 }} />
+          <h1 className="page-title">History</h1>
+          <p className="page-subtitle">Last 7 days</p>
         </div>
-        <div className={styles.list}>
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className={`card ${styles.dayCard}`}>
-              <div className={styles.dayTop}>
-                <div className="skeleton" style={{ width: 80, height: 20 }} />
-                <div className="skeleton" style={{ width: 50, height: 20 }} />
+        <div className={styles.chartCard}>
+          <div className={styles.chart}>
+            <div className="skeleton" style={{ width: "100%", height: "100%", borderRadius: 8 }} />
+          </div>
+          <div className="skeleton" style={{ width: 140, height: 14, marginTop: 14 }} />
+        </div>
+        <div className={styles.dayGroup}>
+          {[0, 1, 2, 3, 4].map((i) => (
+            <div key={i} className={styles.dayRow}>
+              <div>
+                <div className="skeleton" style={{ width: 90, height: 16, marginBottom: 6 }} />
+                <div className="skeleton" style={{ width: 130, height: 12 }} />
               </div>
-              <div className={styles.barTrack}>
-                <div
-                  className="skeleton"
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </div>
-              <div className={styles.dayMeta} style={{ marginTop: 12 }}>
-                <div className="skeleton" style={{ width: 180, height: 16 }} />
-              </div>
+              <div className="skeleton" style={{ width: 54, height: 18 }} />
             </div>
           ))}
         </div>
