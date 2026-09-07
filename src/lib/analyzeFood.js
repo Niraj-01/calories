@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { GEMINI_MODEL } from "./gemini";
 
 export const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB base64
 export const ALLOWED_MIME_TYPES = [
@@ -71,7 +72,7 @@ export async function runAnalyzeFood(input, apiKey) {
   const base =
     process.env.GEMINI_BASE_URL || "https://generativelanguage.googleapis.com";
   const response = await fetch(
-    `${base}/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+    `${base}/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },

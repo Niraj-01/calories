@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { compressedJson } from "@/src/lib/compressedJson";
+import { GEMINI_MODEL } from "@/src/lib/gemini";
 
 function sanitizeInput(str, maxLen = 200) {
   if (typeof str !== "string") return "";
@@ -30,7 +31,7 @@ export async function POST(request) {
     const userPrompt = `Estimate the MET value for this exercise: "${exercise}". Duration: ${durationMinutes} minutes. Body weight: ${weightKg} kg.`;
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

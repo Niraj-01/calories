@@ -1,0 +1,287 @@
+.card {
+  margin-top: 10px;
+  padding: 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+
+.cardLogged {
+  background: var(--accent-light);
+  border-color: var(--accent-dim);
+  box-shadow: none;
+}
+
+.emptied {
+  margin-top: 10px;
+  padding: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-highest);
+  border-radius: var(--radius-md);
+}
+
+/* ─── Items ─── */
+
+.itemList {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border-divider);
+}
+
+.item:first-child {
+  padding-top: 0;
+}
+
+.itemMain {
+  min-width: 0;
+}
+
+.itemHead {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
+.itemName {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.015em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badge {
+  flex-shrink: 0;
+  padding: 2px 5px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  border-radius: 5px;
+}
+
+.badgeDb {
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.badgeAi {
+  color: #9A7B12;
+  background: var(--tint-carbs);
+}
+
+.macros {
+  display: flex;
+  gap: 9px;
+  font-size: 11.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.macroP {
+  color: var(--accent-protein);
+}
+
+.macroC {
+  color: var(--accent-carbs);
+}
+
+.macroF {
+  color: var(--accent-fat);
+}
+
+.itemSide {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.calories {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.kcal {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+/* ─── Per-item controls ─── */
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gramsWrap {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  padding: 4px 6px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+}
+
+.gramsWrap:focus-within {
+  border-color: var(--accent);
+}
+
+.gramsInput {
+  width: 38px;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.gramsInput::-webkit-outer-spin-button,
+.gramsInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.gramsUnit {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.gramsStatic {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: var(--text-tertiary);
+  transition: color 0.15s var(--ease-smooth), background 0.15s var(--ease-smooth);
+}
+
+.remove:hover {
+  color: var(--danger);
+  background: var(--danger-dim);
+}
+
+/* ─── Total ─── */
+
+.totalRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 0 3px;
+}
+
+.totalLabel {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+
+.totalValue {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ─── Meal picker ─── */
+
+.mealPicker {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  margin: 10px 0;
+}
+
+.mealChip {
+  padding: 7px 2px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: var(--bg-highest);
+  border-radius: var(--radius-xs);
+  transition: background 0.15s var(--ease-smooth), color 0.15s var(--ease-smooth);
+}
+
+.mealChipActive {
+  color: var(--text-inverse);
+  background: var(--accent);
+}
+
+/* ─── Log button ─── */
+
+.logButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 44px;
+  font-size: 14.5px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--text-inverse);
+  background: var(--accent);
+  border-radius: var(--radius-sm);
+  transition: transform 0.15s var(--ease-spring), opacity 0.15s var(--ease-smooth);
+}
+
+.logButton:active {
+  transform: scale(0.98);
+}
+
+.logButton:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* The global .spinner is accent-green on a subtle track — invisible against a
+   green button, so this variant inverts it. */
+.btnSpinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.loggedNote {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 9px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--accent);
+}

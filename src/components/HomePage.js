@@ -24,6 +24,7 @@ import CalorieRing from "@/src/components/CalorieRing";
 import MacroBar from "@/src/components/MacroBar";
 import MealSection from "@/src/components/MealSection";
 import WaterTracker from "@/src/components/WaterTracker";
+import ChatBar from "@/src/components/ChatBar";
 import { useToast } from "@/src/components/Toast";
 import styles from "./HomePage.module.css";
 
@@ -376,6 +377,12 @@ export default function HomePage() {
             <div className="skeleton" style={{ width: 140, height: 28 }} />
           </div>
         </div>
+        <div className={styles.chatSection}>
+          <div
+            className="skeleton"
+            style={{ width: "100%", height: 52, borderRadius: 999 }}
+          />
+        </div>
         <div className={styles.heroSection}>
           <div
             className="skeleton"
@@ -423,6 +430,10 @@ export default function HomePage() {
             {(user?.displayName || user?.email || "U").charAt(0).toUpperCase()}
           </div>
         </div>
+      </div>
+
+      <div className={styles.chatSection}>
+        <ChatBar />
       </div>
 
       <div className={styles.heroSection}>

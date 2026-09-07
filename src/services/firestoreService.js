@@ -312,6 +312,71 @@ export async function getExerciseEntries(uid, date) {
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 }
 
+// --- Chat Messages ---
+// Path: users/{uid}/chatMessages/{msgId}
+// Covered by the existing `users/{uid}/{document=**}` rule — no rules change.
+
+function chatMessagesRef(uid) {
+  return collection(db, "users", uid, "chatMessages");
+}
+
+// Newest-first from Firestore (that's the only direction an index can give us
+// cheaply with a limit), then reversed so callers get chronological order for
+// rendering a transcript.
+export async function getChatMessages(uid, maxItems = 50) {
+  const q = query(
+    chatMessagesRef(uid),
+    orderBy("createdAt", "desc"),
+    limit(maxItems),
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() })).reverse();
+}
+
+export async function addChatMessage(uid, message) {
+  const docRef = await addDoc(chatMessagesRef(uid), {
+    ...message,
+    uid,
+    createdAt: serverTimestamp(),
+  });
+  return docRef.id;
+}
+
+export async function updateChatMessage(uid, msgId, data) {
+  await updateDoc(doc(db, "users", uid, "chatMessages", msgId), data);
+}
+
+export async function clearChatMessages(uid) {
+  const snap = await getDocs(chatMessagesRef(uid));
+  await Promise.all(snap.docs.map((d) => deleteDoc(d.ref)));
+}
+
+// --- Bulk Food Logging (chat confirm card) ---
+
+// Write a whole confirmed meal at once. Items arrive already portion-scaled by
+// mealResolver, so this only maps them onto the entry shape the rest of the app
+// reads (same fields HomePage.handleAddFood writes) and fans out the writes.
+export async function logFoodItems(uid, date, items, meal) {
+  const entries = items.map((item) => ({
+    name: item.name,
+    brand: item.matchedName && item.matchedName !== item.name ? item.matchedName : "",
+    calories: Math.round(item.calories || 0),
+    protein: item.protein || 0,
+    carbs: item.carbs || 0,
+    fat: item.fat || 0,
+    fiber: item.fiber || 0,
+    meal,
+    servingAmount: item.grams || 100,
+    servingUnit: "g",
+    source: item.source === "database" ? "chat-db" : "chat-ai",
+  }));
+
+  const ids = await Promise.all(
+    entries.map((entry) => addFoodEntry(uid, date, entry)),
+  );
+  return entries.map((entry, i) => ({ id: ids[i], ...entry }));
+}
+
 // --- Progress Photos ---
 
 function progressPhotosRef(uid) {

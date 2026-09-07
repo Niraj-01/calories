@@ -8,3 +8,9 @@ runConfig:
 env:
   - variable: NEXT_PUBLIC_APP_ENV
     value: production
+  # Gemini API key. Stored in Cloud Secret Manager, injected at runtime so it
+  # never enters the client bundle. Create/update it with:
+  #   firebase apphosting:secrets:set GOOGLE_AI_API_KEY
+  #   firebase apphosting:secrets:grantaccess GOOGLE_AI_API_KEY --backend <backend-id>
+  - variable: GOOGLE_AI_API_KEY
+    secret: GOOGLE_AI_API_KEY

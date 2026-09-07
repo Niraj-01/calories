@@ -1,0 +1,63 @@
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 6px 6px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.2s var(--ease-smooth), border-color 0.2s var(--ease-smooth);
+}
+
+.bar:focus-within {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-input-focus);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.011em;
+}
+
+.input::placeholder {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.send {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--bg-highest);
+  color: var(--text-tertiary);
+  transition: background 0.2s var(--ease-smooth), color 0.2s var(--ease-smooth),
+    transform 0.15s var(--ease-spring);
+}
+
+.sendActive {
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+.send:active {
+  transform: scale(0.92);
+}

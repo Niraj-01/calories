@@ -119,45 +119,6 @@ export default function CameraModal({ meal, onAdd, onClose }) {
     runAnalysis(dataUrl);
   };
 
-  const sanitizeAndParse = (rawText) => {
-    const cleaned = (rawText || "").replace(/```json|```/g, "").trim();
-    try {
-      return JSON.parse(cleaned);
-    } catch {
-      const match = cleaned.match(/\{[\s\S]*\}/);
-      if (match) return JSON.parse(match[0]);
-      throw new Error("Model returned non-JSON response");
-    }
-  };
-
-  const callGeminiDirect = async (b64, mime) => {
-    const key = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY;
-    if (!key) throw new Error("Missing GOOGLE_AI_API_KEY");
-
-    const prompt =
-      'You are a food nutrition expert. Analyze the food in this image. Return ONLY a JSON object (no markdown, no explanation) with this exact shape:\n{ "name": string, "estimatedGrams": number, "calories": number, "protein": number, "carbs": number, "fat": number, "fiber": number, "confidence": "high"|"medium"|"low", "items": [{ "name": string, "grams": number, "calories": number }] }\nIf multiple foods are visible, list each in items[] and sum the totals. Estimate portion sizes from visual cues.';
-
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            { parts: [{ inline_data: { mime_type: mime, data: b64 } }, { text: prompt }] },
-          ],
-          generationConfig: { temperature: 0.1 },
-        }),
-      },
-    );
-    if (!res.ok) {
-      const errJson = await res.json().catch(() => ({}));
-      throw new Error(errJson?.error?.message || "Analysis failed");
-    }
-    const data = await res.json();
-    return sanitizeAndParse(data?.candidates?.[0]?.content?.parts?.[0]?.text);
-  };
-
   // Background-job flow: the POST returns a jobId in ~10ms while the slow Gemini
   // call runs out of band; we then poll for the result. The job is idempotent
   // (id = hash of the image), so a retry of the same photo never re-runs the
@@ -214,13 +175,7 @@ export default function CameraModal({ meal, onAdd, onClose }) {
     setError(null);
     stopCamera();
     try {
-      let result;
-      try {
-        result = await callServerAnalysis(b64, mime);
-      } catch (serverErr) {
-        console.warn("Server analysis failed, falling back to client Gemini:", serverErr);
-        result = await callGeminiDirect(b64, mime);
-      }
+      const result = await callServerAnalysis(b64, mime);
       setAnalysis(result);
       setFoodName(result.name || "Food");
       setBaseGrams(Number(result.estimatedGrams) || 100);

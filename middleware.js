@@ -27,6 +27,15 @@ import { NextResponse } from "next/server";
 
 const REPORT_ONLY = process.env.CSP_REPORT_ONLY === "true";
 
+// The Firebase emulators serve Auth on 9099 and Firestore on 8080 over plain
+// http://127.0.0.1, which `connect-src` would otherwise block — making the app
+// unusable against `firebase emulators:start`. Allowed in development builds
+// only; production bundles never contain these origins.
+const DEV_EMULATOR_ORIGINS =
+  process.env.NODE_ENV === "production"
+    ? ""
+    : " http://127.0.0.1:8080 http://127.0.0.1:9099 http://localhost:8080 http://localhost:9099";
+
 // Public pages that are statically generated and CDN-cached (see their route
 // segment config). Their HTML is prerendered, so it can't carry a per-request
 // nonce — these get a nonce-free CSP instead. Keep this list tiny and limited to
@@ -59,7 +68,7 @@ const COMMON_DIRECTIVES = [
   //   accounts.google.com    -> Google Sign-In
   //   *.openfoodfacts.org    -> food search / barcode lookup
   //   cdn.jsdelivr.net       -> confetti module fetch
-  `connect-src 'self' https://*.googleapis.com wss://*.googleapis.com https://accounts.google.com https://*.openfoodfacts.org https://cdn.jsdelivr.net`,
+  `connect-src 'self' https://*.googleapis.com wss://*.googleapis.com https://accounts.google.com https://*.openfoodfacts.org https://cdn.jsdelivr.net${DEV_EMULATOR_ORIGINS}`,
 
   // Iframes: Firebase Auth uses a hidden iframe on the authDomain plus the
   // Google sign-in surface.

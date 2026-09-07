@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { compressedJson } from "@/src/lib/compressedJson";
+import { GEMINI_MODEL } from "@/src/lib/gemini";
 
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB base64
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -72,7 +73,7 @@ export async function POST(request) {
     }
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -53,7 +53,7 @@ function wordSim(qw, nw) {
 // Relevance of a food `name` to the `query`. Whole-query prefix/substring wins;
 // otherwise each query word scores against its closest name word (typo-tolerant),
 // so multi-word and misspelled queries still surface the right foods.
-function scoreMatch(name, query) {
+export function scoreMatch(name, query) {
   const a = (name || "").toLowerCase().trim();
   const b = (query || "").toLowerCase().trim();
   if (!a || !b) return 0;
@@ -226,16 +226,20 @@ async function fetchOpenFoodFactsSearch(query) {
   }
 }
 
-function searchLocal(query) {
-  const scored = LOCAL_FOODS
-    .map((item) => {
-      const score = scoreMatch(item.name || "", query);
-      return { item, score };
-    })
+// Scored variant: keeps the relevance score alongside each hit. The chat meal
+// resolver needs it to decide whether a match is strong enough to be treated as
+// authoritative nutrition data (a loose 0.5 match is worse than the AI's own
+// estimate), which a bare list of foods can't express.
+export function searchLocalScored(query) {
+  return LOCAL_FOODS
+    .map((item) => ({ item, score: scoreMatch(item.name || "", query) }))
     .filter((x) => x.score > 0.4)
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => b.score - a.score)
+    .map(({ item, score }) => ({ food: normalizeLocalFood(item), score }));
+}
 
-  return scored.map(({ item }) => normalizeLocalFood(item));
+function searchLocal(query) {
+  return searchLocalScored(query).map(({ food }) => food);
 }
 
 function findLocalByBarcode(barcode) {
