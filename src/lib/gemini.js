@@ -12,10 +12,10 @@
  * the outermost braces.
  */
 
-// gemini-2.5-flash: has a free tier, handles portion reasoning on home-cooked
-// food noticeably better than the lite tier. Swap to "gemini-2.5-flash-lite"
-// here if cost ever becomes the binding constraint.
-export const GEMINI_MODEL = "gemini-2.5-flash";
+// gemini-3.8-flash: gemini-2.5-flash is closed to newly created API keys (they
+// get a 404), so it can't be relied on. Swap to "gemini-3.5-flash-lite" here if
+// cost ever becomes the binding constraint.
+export const GEMINI_MODEL = "gemini-3.8-flash";
 
 // Overridable so tests can point at a mock server (mirrors analyzeFood.js).
 const BASE_URL =
