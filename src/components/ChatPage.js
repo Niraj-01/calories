@@ -12,7 +12,7 @@ import {
   updateChatMessage,
   updateStreak,
 } from "@/src/services/firestoreService";
-import { resolveMealItems } from "@/src/services/mealResolver";
+import { parseMeal } from "@/src/services/chatLogClient";
 import { useToast } from "@/src/components/Toast";
 import MealConfirmCard from "@/src/components/MealConfirmCard";
 import useSpeechInput from "@/src/hooks/useSpeechInput";
@@ -102,34 +102,19 @@ export default function ChatPage() {
         .catch((err) => console.warn("Failed to persist message:", err));
 
       try {
+        // Error bubbles are app UI, not conversation — keep them out of context.
         const history = [...messages, userMsg]
+          .filter((m) => !m.error)
           .slice(-HISTORY_TURNS)
           .map((m) => ({ role: m.role, text: m.text }));
 
-        const token = await user.getIdToken();
-        const res = await fetch("/api/chat-log", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ messages: history, localHour: new Date().getHours() }),
-        });
-
-        const data = await res.json().catch(() => null);
-        if (!res.ok) {
-          throw new Error(data?.error || "Couldn't reach the AI. Try again.");
-        }
-
-        // Ground the AI's numbers in real nutrition data where we can.
-        const items =
-          data.kind === "meal" ? await resolveMealItems(data.items || []) : [];
+        const { reply, meal, items } = await parseMeal(user, history);
 
         const assistant = {
           role: "assistant",
-          text: data.reply,
+          text: reply,
           items,
-          meal: data.meal,
+          meal,
           logged: false,
         };
 
@@ -145,12 +130,7 @@ export default function ChatPage() {
           )
           .catch((err) => console.warn("Failed to persist reply:", err));
       } catch (err) {
-        // "Failed to fetch" is the browser's own wording for an unreachable
-        // network — say something the user can act on instead.
-        const message =
-          err.message === "Failed to fetch"
-            ? "Network error — check your connection and try again."
-            : err.message || "Something went wrong. Try again.";
+        const message = err.message || "Something went wrong. Try again.";
 
         setMessages((prev) => [
           ...prev,

@@ -16,6 +16,7 @@ import {
   getFrequentFoods,
   getExerciseEntries,
   deleteExerciseEntry,
+  logFoodItems,
 } from "@/src/services/firestoreService";
 import dynamic from "next/dynamic";
 import { scaleMacros } from "@/src/services/foodDataService";
@@ -96,46 +97,70 @@ export default function HomePage() {
   const confettiLoaded = useRef(false);
   const { showToast, toastNode } = useToast();
 
-  const fetchData = useCallback(async () => {
+  // `silent` refreshes in place (no skeleton) — used when the user comes back
+  // to the tab after logging from another page or device.
+  const fetchData = useCallback(async ({ silent = false } = {}) => {
     if (!user) {
       setLoading(false);
       return;
     }
-    try {
-      setLoading(true);
-      const [dayEntries, settings, water, currentStreak, recent, frequent, todaysExercises] =
-        await Promise.all([
-          getDayEntries(user.uid, today),
-          getUserSettings(user.uid),
-          getWaterIntake(user.uid, today),
-          updateStreak(user.uid),
-          getRecentEntries(user.uid, 10),
-          getFrequentFoods(user.uid, 8),
-          getExerciseEntries(user.uid, today),
-        ]);
-      setEntries(dayEntries);
-      setGoal(settings.calorieGoal || 2000);
-      setWaterGoal(settings.waterGoal || 2500);
-      setWaterState(water);
-      const prevStreak = prevStreakRef.current;
-      setStreak(currentStreak);
-      setRecentEntries(recent || []);
-      setFrequentFoods(frequent || []);
-      setExercises(todaysExercises || []);
+    if (!silent) setLoading(true);
+    // allSettled, not all: the side panels (recent/frequent foods, streak) must
+    // never be able to blank the day's own log. A single failing query used to
+    // reject the whole batch and leave Today showing 0 kcal.
+    const [dayEntries, settings, water, currentStreak, recent, frequent, todaysExercises] =
+      await Promise.allSettled([
+        getDayEntries(user.uid, today),
+        getUserSettings(user.uid),
+        getWaterIntake(user.uid, today),
+        updateStreak(user.uid),
+        getRecentEntries(user.uid, 10),
+        getFrequentFoods(user.uid, 8),
+        getExerciseEntries(user.uid, today),
+      ]);
+    const ok = (r, fallback) => {
+      if (r.status === "fulfilled") return r.value;
+      console.warn("Failed to load data:", r.reason);
+      return fallback;
+    };
 
-      if (currentStreak > prevStreak && [3, 7, 14, 30, 60, 90].includes(currentStreak)) {
+    if (dayEntries.status === "fulfilled") setEntries(dayEntries.value);
+    else ok(dayEntries);
+    const s = ok(settings, null);
+    if (s) {
+      setGoal(s.calorieGoal || 2000);
+      setWaterGoal(s.waterGoal || 2500);
+    }
+    if (water.status === "fulfilled") setWaterState(water.value);
+    else ok(water);
+    setRecentEntries(ok(recent, []) || []);
+    setFrequentFoods(ok(frequent, []) || []);
+    setExercises(ok(todaysExercises, []) || []);
+
+    const streakValue = ok(currentStreak, null);
+    if (streakValue != null) {
+      const prevStreak = prevStreakRef.current;
+      setStreak(streakValue);
+      if (streakValue > prevStreak && [3, 7, 14, 30, 60, 90].includes(streakValue)) {
         triggerConfetti();
       }
-      prevStreakRef.current = currentStreak;
-    } catch (err) {
-      console.warn("Failed to load data:", err);
-    } finally {
-      setLoading(false);
+      prevStreakRef.current = streakValue;
     }
+    setLoading(false);
   }, [user, today]);
 
   useEffect(() => {
     fetchData();
+  }, [fetchData]);
+
+  // Pick up meals logged elsewhere (the chat page, another device) when the
+  // user returns to this tab.
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === "visible") fetchData({ silent: true });
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
   }, [fetchData]);
 
   // Open the camera scanner when triggered by the bottom-nav scan FAB
@@ -191,6 +216,44 @@ export default function HomePage() {
       // Roll back the optimistic row and tell the user.
       setEntries((prev) => prev.filter((e) => e.id !== tid));
       showToast(`Couldn't save "${entry.name}" — removed.`);
+    }
+  };
+
+  // Inline AI log from the Today bar. Optimistic like handleAddFood: rows show
+  // up (and the ring moves) the moment the user taps Log.
+  const handleLogItems = async (items, meal) => {
+    if (!user) return;
+    const tids = items.map(() => tempId());
+    const optimistic = items.map((item, i) => ({
+      id: tids[i],
+      name: item.name,
+      calories: Math.round(item.calories || 0),
+      protein: item.protein || 0,
+      carbs: item.carbs || 0,
+      fat: item.fat || 0,
+      meal,
+      servingAmount: item.grams || 100,
+      servingUnit: "g",
+      pending: true,
+    }));
+    setEntries((prev) => [...prev, ...optimistic]);
+    try {
+      const saved = await logFoodItems(user.uid, today, items, meal);
+      setEntries((prev) => [...prev.filter((e) => !tids.includes(e.id)), ...saved]);
+      updateStreak(user.uid)
+        .then((value) => {
+          setStreak(value);
+          prevStreakRef.current = value;
+        })
+        .catch(() => {});
+      const kcal = saved.reduce((sum, e) => sum + (e.calories || 0), 0);
+      showToast(`Logged ${saved.length} item${saved.length > 1 ? "s" : ""} · ${kcal} kcal`, "success");
+    } catch (err) {
+      console.warn("Failed to log meal:", err);
+      setEntries((prev) => prev.filter((e) => !tids.includes(e.id)));
+      showToast("Couldn't save that — nothing was logged.");
+      // Keep the card open so the user can retry without retyping.
+      throw err;
     }
   };
 
@@ -433,7 +496,7 @@ export default function HomePage() {
       </div>
 
       <div className={styles.chatSection}>
-        <ChatBar />
+        <ChatBar onLog={handleLogItems} />
       </div>
 
       <div className={styles.heroSection}>

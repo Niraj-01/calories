@@ -124,6 +124,9 @@ function systemInstruction({ mealHint, localTime }) {
   return `You are the food-logging engine inside a calorie tracking app. You turn a casual description of a meal into structured food items.
 
 RULES
+- Only extract foods from the LATEST user message. Earlier turns are context (e.g. to resolve
+  "same again" or "make that 3"), and anything mentioned in them has already been handled —
+  never include those foods again unless the latest message explicitly repeats them.
 - Split the description into one item per distinct food. "2 rotis and dal" is two items, never one.
 - Resolve portions to total grams for the WHOLE quantity. "2 rotis" = 2 x ~40g = 80 grams total.
 - For liquids, put millilitres in the grams field.

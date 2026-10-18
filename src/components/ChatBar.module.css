@@ -61,3 +61,74 @@
 .send:active {
   transform: scale(0.92);
 }
+
+.icon {
+  width: 30px;
+  height: 30px;
+  margin-left: -4px;
+  border-radius: 50%;
+}
+
+.icon:active {
+  background: var(--accent-dim);
+}
+
+.send:disabled {
+  cursor: default;
+}
+
+.micActive {
+  color: var(--text-inverse);
+  background: var(--danger);
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border-glass);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ─── Inline result under the bar ─── */
+
+.note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-highest);
+  border-radius: var(--radius-md);
+  animation: fadeIn 0.2s var(--ease-smooth);
+}
+
+.noteError {
+  color: var(--danger);
+  background: var(--danger-dim);
+}
+
+.noteClose {
+  flex-shrink: 0;
+  font-size: 18px;
+  line-height: 1;
+  color: inherit;
+}
+
+.draft {
+  animation: fadeIn 0.2s var(--ease-smooth);
+}
+
+.discard {
+  display: block;
+  margin: 8px auto 0;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
