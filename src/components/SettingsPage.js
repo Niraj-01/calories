@@ -64,7 +64,6 @@ export default function SettingsPage() {
   const [activity, setActivity] = useState(1.55);
   const [weightGoal, setWeightGoal] = useState("maintain");
   const [loading, setLoading] = useState(true);
-  const [waterGoal, setWaterGoal] = useState(2500);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -84,7 +83,6 @@ export default function SettingsPage() {
         setWeightUnit("kg");
         setActivity(s.activityLevel || 1.55);
         setWeightGoal(s.weightGoal || "maintain");
-        setWaterGoal(s.waterGoal || 2500);
       } catch (err) {
         console.warn("Failed to load settings:", err);
       } finally {
@@ -162,7 +160,6 @@ export default function SettingsPage() {
         weight: weightKg || null,
         activityLevel: activity,
         weightGoal,
-        waterGoal: parseInt(waterGoal) || 2500,
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
@@ -377,16 +374,6 @@ export default function SettingsPage() {
             placeholder="2000"
             value={calorieGoal}
             onChange={(e) => setCalorieGoal(e.target.value)}
-          />
-        </div>
-        <div className={styles.listRow}>
-          <label className={styles.rowLabel}>Water Goal (ml)</label>
-          <input
-            className={styles.rowInput}
-            type="number"
-            placeholder="2500"
-            value={waterGoal}
-            onChange={(e) => setWaterGoal(e.target.value)}
           />
         </div>
       </section>

@@ -6,11 +6,11 @@ import styles from "./CalorieRing.module.css";
 const R = 86;
 const CIRC = 2 * Math.PI * R;
 
-export default function CalorieRing({ consumed = 0, goal = 2000, burned = 0 }) {
+export default function CalorieRing({ consumed = 0, goal = 2000 }) {
   const [mounted, setMounted] = useState(false);
-  const adjustedGoal = Math.max(goal + burned, 1);
-  const left = Math.max(Math.round(adjustedGoal - consumed), 0);
-  const pct = Math.min(consumed / adjustedGoal, 1);
+  const safeGoal = Math.max(goal, 1);
+  const left = Math.max(Math.round(safeGoal - consumed), 0);
+  const pct = Math.min(consumed / safeGoal, 1);
   const offset = CIRC * (1 - (mounted ? pct : 0));
 
   useEffect(() => {
@@ -59,11 +59,6 @@ export default function CalorieRing({ consumed = 0, goal = 2000, burned = 0 }) {
         <div className={styles.stat}>
           <div className={`${styles.statLabel} ${styles.food}`}>FOOD</div>
           <div className={styles.statVal}>{Math.round(consumed).toLocaleString()}</div>
-        </div>
-        <div className={styles.divider} />
-        <div className={styles.stat}>
-          <div className={`${styles.statLabel} ${styles.burn}`}>BURN</div>
-          <div className={styles.statVal}>{Math.round(burned).toLocaleString()}</div>
         </div>
       </div>
     </div>

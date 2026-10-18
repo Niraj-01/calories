@@ -7,7 +7,7 @@ export default function manifest() {
     name: "Calories — Daily Nutrition Tracker",
     short_name: "Calories",
     description:
-      "Track calories, macros, and water. Log meals with a photo, barcode, or search.",
+      "Log calories and macros. Describe a meal, snap a photo, scan a barcode, or search.",
     id: "/",
     start_url: "/",
     scope: "/",

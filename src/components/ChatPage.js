@@ -10,7 +10,6 @@ import {
   getChatMessages,
   logFoodItems,
   updateChatMessage,
-  updateStreak,
 } from "@/src/services/firestoreService";
 import { parseMeal } from "@/src/services/chatLogClient";
 import { useToast } from "@/src/components/Toast";
@@ -159,7 +158,6 @@ export default function ChatPage() {
     if (!user) return;
     try {
       await logFoodItems(user.uid, dateKey(), items, meal);
-      updateStreak(user.uid).catch(() => {});
 
       // Freeze the card at exactly what was saved.
       setMessages((prev) =>

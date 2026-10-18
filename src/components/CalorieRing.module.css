@@ -78,9 +78,6 @@
   color: var(--accent);
 }
 
-.statLabel.burn {
-  color: var(--accent-streak);
-}
 
 .statVal {
   font-family: var(--font-display);

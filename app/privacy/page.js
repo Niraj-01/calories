@@ -15,7 +15,7 @@ export const metadata = {
 };
 
 const CONTACT_EMAIL = "joblessduo18@gmail.com";
-const LAST_UPDATED = "June 25, 2026";
+const LAST_UPDATED = "October 19, 2026";
 
 export default function PrivacyPolicy() {
   return (
@@ -30,7 +30,7 @@ export default function PrivacyPolicy() {
 
         <p className={styles.lead}>
           Calories (&ldquo;the app&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;) is a
-          personal calorie, macro, and water tracker. This policy explains what
+          personal calorie and macro tracker. This policy explains what
           information we collect, how we use it, and the choices you have. We
           only collect what the app needs to work, and we do not sell your data.
         </p>
@@ -49,8 +49,8 @@ export default function PrivacyPolicy() {
               goal.
             </li>
             <li>
-              <strong>Activity logs.</strong> The food entries, water intake,
-              exercise, weight, and progress data you record in the app.
+              <strong>Food logs.</strong> The meals and food entries you record
+              in the app, and your conversations with the AI meal logger.
             </li>
             <li>
               <strong>Meal photos.</strong> If you use the AI photo-scan feature,
@@ -65,7 +65,7 @@ export default function PrivacyPolicy() {
           <p>
             We use your information solely to provide the app&rsquo;s features:
             calculating your calorie and macro goals, displaying your daily and
-            historical progress, tracking streaks, and saving your logs so they
+            historical intake, and saving your logs so they
             sync across your devices. We do not use your data for advertising and
             we do not sell or rent it to anyone.
           </p>
@@ -108,7 +108,7 @@ export default function PrivacyPolicy() {
           <h2>Data retention and deletion</h2>
           <p>
             Your data is kept while your account is active. You can delete
-            individual food, water, or weight entries at any time within the app.
+            individual food entries at any time within the app.
             To delete your account and all associated data, email us at{" "}
             <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> and we will
             remove it.

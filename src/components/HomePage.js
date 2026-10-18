@@ -1,21 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/src/context/AuthContext";
 import {
   addFoodEntry,
-  addExerciseEntry,
   getDayEntries,
   deleteFoodEntry,
   getUserSettings,
   dateKey,
-  getWaterIntake,
-  setWaterIntake,
-  updateStreak,
-  getRecentEntries,
-  getFrequentFoods,
-  getExerciseEntries,
-  deleteExerciseEntry,
   logFoodItems,
 } from "@/src/services/firestoreService";
 import dynamic from "next/dynamic";
@@ -24,7 +16,6 @@ import { scaleMacros } from "@/src/services/foodDataService";
 import CalorieRing from "@/src/components/CalorieRing";
 import MacroBar from "@/src/components/MacroBar";
 import MealSection from "@/src/components/MealSection";
-import WaterTracker from "@/src/components/WaterTracker";
 import ChatBar from "@/src/components/ChatBar";
 import { useToast } from "@/src/components/Toast";
 import styles from "./HomePage.module.css";
@@ -45,7 +36,6 @@ const SearchModal = lazyModal(() => import("@/src/components/SearchModal"));
 const CameraModal = lazyModal(() => import("@/src/components/CameraModal"));
 const BarcodeScannerModal = lazyModal(() => import("@/src/components/BarcodeScannerModal"));
 const FoodDetailsModal = lazyModal(() => import("@/src/components/FoodDetailsModal"));
-const ExerciseModal = lazyModal(() => import("@/src/components/ExerciseModal"));
 // Small, instant sheets — no spinner fallback to avoid a flicker.
 const AddFoodModal = lazyModal(() => import("@/src/components/AddFoodModal"), false);
 const MealPickerSheet = lazyModal(() => import("@/src/components/MealPickerSheet"), false);
@@ -83,70 +73,29 @@ export default function HomePage() {
   const [mealPickerOpen, setMealPickerOpen] = useState(false);
   const [mealPickerIntent, setMealPickerIntent] = useState(null); // "start-flow" | "assign-food"
   const [stagedFood, setStagedFood] = useState(null);
-  const [waterIntake, setWaterState] = useState(0);
-  const [streak, setStreak] = useState(0);
-  const [recentEntries, setRecentEntries] = useState([]);
-  const [frequentFoods, setFrequentFoods] = useState([]);
-  const [exercises, setExercises] = useState([]);
-  const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
-  const [waterGoal, setWaterGoal] = useState(2500);
   const today = dateKey();
   const suggestedMeal = getSuggestedMeal();
   const todayLabel = getTodayLabel();
-  const prevStreakRef = useRef(0);
-  const confettiLoaded = useRef(false);
   const { showToast, toastNode } = useToast();
 
-  // `silent` refreshes in place (no skeleton) — used when the user comes back
-  // to the tab after logging from another page or device.
-  const fetchData = useCallback(async ({ silent = false } = {}) => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-    if (!silent) setLoading(true);
-    // allSettled, not all: the side panels (recent/frequent foods, streak) must
-    // never be able to blank the day's own log. A single failing query used to
-    // reject the whole batch and leave Today showing 0 kcal.
-    const [dayEntries, settings, water, currentStreak, recent, frequent, todaysExercises] =
-      await Promise.allSettled([
+  // Called on mount and again whenever the user returns to the tab, so meals
+  // logged from the chat page or another device show up. State is only set
+  // after the awaits, so the refresh never flashes the skeleton.
+  const fetchData = useCallback(async () => {
+    if (!user) return;
+    try {
+      // allSettled: a failed settings read must never hide the day's own log.
+      const [dayEntries, settings] = await Promise.allSettled([
         getDayEntries(user.uid, today),
         getUserSettings(user.uid),
-        getWaterIntake(user.uid, today),
-        updateStreak(user.uid),
-        getRecentEntries(user.uid, 10),
-        getFrequentFoods(user.uid, 8),
-        getExerciseEntries(user.uid, today),
       ]);
-    const ok = (r, fallback) => {
-      if (r.status === "fulfilled") return r.value;
-      console.warn("Failed to load data:", r.reason);
-      return fallback;
-    };
-
-    if (dayEntries.status === "fulfilled") setEntries(dayEntries.value);
-    else ok(dayEntries);
-    const s = ok(settings, null);
-    if (s) {
-      setGoal(s.calorieGoal || 2000);
-      setWaterGoal(s.waterGoal || 2500);
+      if (dayEntries.status === "fulfilled") setEntries(dayEntries.value);
+      else console.warn("Failed to load entries:", dayEntries.reason);
+      if (settings.status === "fulfilled") setGoal(settings.value.calorieGoal || 2000);
+      else console.warn("Failed to load settings:", settings.reason);
+    } finally {
+      setLoading(false);
     }
-    if (water.status === "fulfilled") setWaterState(water.value);
-    else ok(water);
-    setRecentEntries(ok(recent, []) || []);
-    setFrequentFoods(ok(frequent, []) || []);
-    setExercises(ok(todaysExercises, []) || []);
-
-    const streakValue = ok(currentStreak, null);
-    if (streakValue != null) {
-      const prevStreak = prevStreakRef.current;
-      setStreak(streakValue);
-      if (streakValue > prevStreak && [3, 7, 14, 30, 60, 90].includes(streakValue)) {
-        triggerConfetti();
-      }
-      prevStreakRef.current = streakValue;
-    }
-    setLoading(false);
   }, [user, today]);
 
   useEffect(() => {
@@ -157,7 +106,7 @@ export default function HomePage() {
   // user returns to this tab.
   useEffect(() => {
     const onVisible = () => {
-      if (document.visibilityState === "visible") fetchData({ silent: true });
+      if (document.visibilityState === "visible") fetchData();
     };
     document.addEventListener("visibilitychange", onVisible);
     return () => document.removeEventListener("visibilitychange", onVisible);
@@ -240,12 +189,6 @@ export default function HomePage() {
     try {
       const saved = await logFoodItems(user.uid, today, items, meal);
       setEntries((prev) => [...prev.filter((e) => !tids.includes(e.id)), ...saved]);
-      updateStreak(user.uid)
-        .then((value) => {
-          setStreak(value);
-          prevStreakRef.current = value;
-        })
-        .catch(() => {});
       const kcal = saved.reduce((sum, e) => sum + (e.calories || 0), 0);
       showToast(`Logged ${saved.length} item${saved.length > 1 ? "s" : ""} · ${kcal} kcal`, "success");
     } catch (err) {
@@ -254,41 +197,6 @@ export default function HomePage() {
       showToast("Couldn't save that — nothing was logged.");
       // Keep the card open so the user can retry without retyping.
       throw err;
-    }
-  };
-
-  const handleAddExercise = async (exData) => {
-    if (!user) return;
-    const tid = tempId();
-    setExercises((prev) => [{ id: tid, ...exData, pending: true }, ...prev]);
-    try {
-      const id = await addExerciseEntry(user.uid, today, exData);
-      setExercises((prev) =>
-        prev.map((e) => (e.id === tid ? { id, ...exData } : e)),
-      );
-    } catch (err) {
-      console.warn("Failed to add exercise:", err);
-      setExercises((prev) => prev.filter((e) => e.id !== tid));
-      showToast("Couldn't save exercise — removed.");
-    }
-  };
-
-  const handleDeleteExercise = async (entryId) => {
-    if (!user) return;
-    // Optimistic removal; snapshot the prior list to restore exact order on fail.
-    let snapshot;
-    setExercises((prev) => {
-      snapshot = prev;
-      return prev.filter((e) => e.id !== entryId);
-    });
-    // A not-yet-persisted row has no server doc — nothing to delete remotely.
-    if (String(entryId).startsWith("temp-")) return;
-    try {
-      await deleteExerciseEntry(user.uid, today, entryId);
-    } catch (err) {
-      console.warn("Failed to delete exercise:", err);
-      if (snapshot) setExercises(snapshot);
-      showToast("Couldn't delete exercise — restored.");
     }
   };
 
@@ -309,28 +217,6 @@ export default function HomePage() {
     }
   };
 
-  const handleAddWater = async (ml) => {
-    if (!user) return;
-    setWaterState((prev) => {
-      const newTotal = prev + ml;
-      setWaterIntake(user.uid, today, newTotal).catch((err) => {
-        console.warn("Failed to save water:", err);
-      });
-      return newTotal;
-    });
-  };
-
-  const handleSubtractWater = async (ml) => {
-    if (!user) return;
-    setWaterState((prev) => {
-      const newTotal = Math.max(0, prev - ml);
-      setWaterIntake(user.uid, today, newTotal).catch((err) => {
-        console.warn("Failed to save water:", err);
-      });
-      return newTotal;
-    });
-  };
-
   // Compute totals
   const totals = entries.reduce(
     (acc, e) => ({
@@ -347,8 +233,6 @@ export default function HomePage() {
   MEALS.forEach((m) => {
     mealEntries[m] = entries.filter((e) => e.meal === m);
   });
-
-  const totalBurned = exercises.reduce((s, ex) => s + (ex.caloriesBurned || 0), 0);
 
   const handleStageFood = (food, targetMeal) => {
     const per100g = food.per_100g || {
@@ -403,31 +287,13 @@ export default function HomePage() {
     openMealPicker("assign-food");
   };
 
-  const handleQuickAdd = (foodData, meal) => {
-    handleAddFood(foodData, meal);
-  };
-
-  const triggerConfetti = async () => {
-    if (typeof window === "undefined") return;
-    if (!confettiLoaded.current) {
-      await import("https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js");
-      confettiLoaded.current = true;
-    }
-    if (window.confetti) {
-      window.confetti({
-        particleCount: 120,
-        spread: 70,
-        origin: { y: 0.7 },
-      });
-    }
-  };
 
   if (loading) {
     // Skeleton mirrors the real content's structure and per-section heights so
     // that when data arrives nothing below shifts. Heights match the live
     // components: CalorieRing card ≈320px, MacroBar card ≈108px,
-    // WaterTracker card ≈110px, MealSection rows ≈64px. Same wrapper classes
-    // (styles.page/header/heroSection/macroSection/section/meals) keep the
+    // MealSection rows ≈64px. Same wrapper classes
+    // (styles.page/header/heroSection/macroSection/meals) keep the
     // spacing identical, so the swap is shift-free (CLS 0).
     return (
       <div className={`page container fade-in ${styles.page}`}>
@@ -458,12 +324,6 @@ export default function HomePage() {
             style={{ width: "100%", height: 108, borderRadius: 20 }}
           />
         </div>
-        <div className={styles.section}>
-          <div
-            className="skeleton"
-            style={{ width: "100%", height: 110, borderRadius: 20 }}
-          />
-        </div>
         <div className={styles.meals}>
           {[0, 1, 2].map((i) => (
             <div
@@ -485,10 +345,6 @@ export default function HomePage() {
           <p className={styles.headerMeta}>{todayLabel}</p>
         </div>
         <div className={styles.headerRight}>
-          <div className={styles.streakBadge}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--accent-streak)"><path d="M12 2c1 3-1 4-1 6 0 1.5 1 2 1 2s2-1 2-3c2 1.5 4 4 4 7a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3 0-2-1-3-1-6 1 0 2 .5 2 1z"/></svg>
-            <span className={styles.streakCount}>{streak}</span>
-          </div>
           <div className={styles.avatar}>
             {(user?.displayName || user?.email || "U").charAt(0).toUpperCase()}
           </div>
@@ -500,7 +356,7 @@ export default function HomePage() {
       </div>
 
       <div className={styles.heroSection}>
-        <CalorieRing consumed={totals.calories} goal={goal} burned={totalBurned} />
+        <CalorieRing consumed={totals.calories} goal={goal} />
       </div>
 
       <div className={styles.macroSection}>
@@ -508,15 +364,6 @@ export default function HomePage() {
           protein={totals.protein}
           carbs={totals.carbs}
           fat={totals.fat}
-        />
-      </div>
-
-      <div className={styles.section}>
-        <WaterTracker
-          intake={waterIntake}
-          goal={waterGoal}
-          onAdd={handleAddWater}
-          onSubtract={handleSubtractWater}
         />
       </div>
 
@@ -530,29 +377,6 @@ export default function HomePage() {
             onDelete={handleDelete}
           />
         ))}
-      </div>
-
-      <div className={styles.quickRow}>
-        <button
-          className={`${styles.quickTile} ${styles.quickDark}`}
-          onClick={() => setCameraMeal("__quick__")}
-        >
-          <span className={`${styles.quickIcon} ${styles.quickIconDark}`}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1FD080" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/></svg>
-          </span>
-          <span className={styles.quickTitle}>Scan a meal</span>
-          <span className={styles.quickSubDark}>Food or barcode</span>
-        </button>
-        <button
-          className={styles.quickTile}
-          onClick={() => setExerciseModalOpen(true)}
-        >
-          <span className={`${styles.quickIcon} ${styles.quickIconOrange}`}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF7A3D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-          </span>
-          <span className={styles.quickTitle}>Log activity</span>
-          <span className={styles.quickSub}>Burn calories</span>
-        </button>
       </div>
 
       {/* Add Food Selection Modal (Stitch UI). Conditionally mounted so its lazy
@@ -627,13 +451,6 @@ export default function HomePage() {
         />
       )}
 
-      {exerciseModalOpen && (
-        <ExerciseModal
-          open
-          onClose={() => setExerciseModalOpen(false)}
-          onLog={handleAddExercise}
-        />
-      )}
       {toastNode}
     </div>
   );

@@ -6,11 +6,7 @@ import {
   getDayRange,
   getUserSettings,
   dateKey,
-  getDayLog,
-  setLoggedWeight,
-  getProgressPhotos,
 } from "@/src/services/firestoreService";
-import ProgressPhotos from "@/src/components/ProgressPhotos";
 import {
   ResponsiveContainer,
   BarChart,
@@ -18,8 +14,6 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  AreaChart,
-  Area,
   PieChart,
   Pie,
   Cell,
@@ -46,11 +40,7 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [rangeData, setRangeData] = useState({});
-  const [dayLogs, setDayLogs] = useState({});
   const [goal, setGoal] = useState(2000);
-  const [weightInput, setWeightInput] = useState("");
-  const [weightSaved, setWeightSaved] = useState(false);
-  const [photos, setPhotos] = useState([]);
 
   const [activeFilter, setActiveFilter] = useState("1W");
 
@@ -63,56 +53,25 @@ export default function DashboardPage() {
           ? 180
           : 365;
   const days = useMemo(() => getLastNDays(numDays), [numDays]);
-  const today = dateKey();
 
   useEffect(() => {
     if (!user) return;
     (async () => {
       try {
         setLoading(true);
-        const [range, settings, photosList, ...logs] = await Promise.all([
+        const [range, settings] = await Promise.all([
           getDayRange(user.uid, days[0], days[days.length - 1]),
           getUserSettings(user.uid),
-          getProgressPhotos(user.uid),
-          ...days.map((d) => getDayLog(user.uid, d)),
         ]);
         setRangeData(range);
         setGoal(settings.calorieGoal || 2000);
-        setPhotos(photosList || []);
-
-        const logMap = {};
-        days.forEach((d, i) => {
-          logMap[d] = logs[i] || {};
-        });
-        setDayLogs(logMap);
-
-        const todayLog = logMap[today] || {};
-        if (todayLog.loggedWeight)
-          setWeightInput(String(todayLog.loggedWeight));
       } catch (err) {
         console.warn("Dashboard load error:", err);
       } finally {
         setLoading(false);
       }
     })();
-  }, [user, days, today]);
-
-  const handleSaveWeight = async () => {
-    if (!user || !weightInput) return;
-    const kg = parseFloat(weightInput);
-    if (isNaN(kg) || kg <= 0) return;
-    try {
-      await setLoggedWeight(user.uid, today, kg);
-      setWeightSaved(true);
-      setDayLogs((prev) => ({
-        ...prev,
-        [today]: { ...prev[today], loggedWeight: kg },
-      }));
-      setTimeout(() => setWeightSaved(false), 2000);
-    } catch (err) {
-      console.warn("Failed to save weight:", err);
-    }
-  };
+  }, [user, days]);
 
   const calorieData = days.map((d) => {
     const entries = rangeData[d] || [];
@@ -146,21 +105,6 @@ export default function DashboardPage() {
       color: "rgba(255,255,255,0.1)",
     });
   }
-
-  const weightData = days
-    .map((d) => ({
-      day: shortDay(d),
-      weight: dayLogs[d]?.loggedWeight || null,
-    }))
-    .filter((d) => d.weight !== null);
-
-  const latestWeight =
-    weightData.length > 0 ? weightData[weightData.length - 1].weight : null;
-
-  const waterData = days.map((d) => ({
-    day: shortDay(d),
-    water: (dayLogs[d]?.waterIntake || 0) / 1000,
-  }));
 
   const chartTheme = {
     tooltipBg: "rgba(28, 28, 30, 0.9)",
@@ -248,11 +192,11 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Calories in vs out */}
+      {/* Calories */}
       <div className={styles.card}>
         <div className={styles.cardHeader}>
           <div>
-            <div className={styles.cardTitle}>Calories in vs out</div>
+            <div className={styles.cardTitle}>Calories</div>
             <div className={styles.cardSub}>Avg {avgCals} kcal/day</div>
           </div>
         </div>
@@ -359,135 +303,6 @@ export default function DashboardPage() {
               <span className={styles.macroValue}>{Math.round(totalFat)}g</span>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Weight Trend */}
-      <div className={styles.card}>
-        <div className={styles.cardHeader}>
-          <div>
-            <div className={styles.cardTitle}>Weight Trend</div>
-            <div className={styles.cardSub}>
-              {latestWeight ? `${latestWeight} kg` : "No data"}
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.weightRow}>
-          <input
-            className={styles.weightInput}
-            type="number"
-            placeholder="Log today's weight"
-            value={weightInput}
-            onChange={(e) => setWeightInput(e.target.value)}
-          />
-          <button className={styles.weightBtn} onClick={handleSaveWeight}>
-            {weightSaved ? "✓" : "Log"}
-          </button>
-        </div>
-
-        {weightData.length > 1 ? (
-          <div className={styles.chartWrapper}>
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart
-                data={weightData}
-                margin={{ top: 10, right: 0, left: -25, bottom: 0 }}
-              >
-                <defs>
-                  <linearGradient id="colorWeight" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#00B84D" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#00B84D" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke={chartTheme.grid}
-                />
-                <XAxis
-                  dataKey="day"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: chartTheme.textTertiary, fontSize: 12 }}
-                  dy={10}
-                  minTickGap={20}
-                />
-                <YAxis
-                  domain={["dataMin - 1", "dataMax + 1"]}
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: chartTheme.textTertiary, fontSize: 12 }}
-                />
-                <Tooltip content={<CustomTooltip />} />
-                <Area
-                  type="monotone"
-                  dataKey="weight"
-                  name="Weight"
-                  stroke="#00B84D"
-                  strokeWidth={3}
-                  fillOpacity={1}
-                  fill="url(#colorWeight)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        ) : (
-          <p className={styles.hint}>
-            Log your weight for at least 2 days to see the trend.
-          </p>
-        )}
-      </div>
-
-      {/* Progress Photos */}
-      <div className={styles.card}>
-        <ProgressPhotos user={user} />
-      </div>
-
-      {/* Water Intake */}
-      <div className={styles.card}>
-        <div className={styles.cardHeader}>
-          <div>
-            <div className={styles.cardTitle}>Water Intake</div>
-            <div className={styles.cardSub}>Hydration (Liters)</div>
-          </div>
-        </div>
-        <div className={styles.chartWrapper}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={waterData}
-              margin={{ top: 10, right: 0, left: -20, bottom: 0 }}
-            >
-              <CartesianGrid
-                strokeDasharray="3 3"
-                vertical={false}
-                stroke={chartTheme.grid}
-              />
-              <XAxis
-                dataKey="day"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: chartTheme.textTertiary, fontSize: 12 }}
-                dy={10}
-                minTickGap={20}
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: chartTheme.textTertiary, fontSize: 12 }}
-              />
-              <Tooltip
-                content={<CustomTooltip />}
-                cursor={{ fill: "rgba(255,255,255,0.05)" }}
-              />
-              <Bar
-                dataKey="water"
-                name="Water (L)"
-                fill="#4A90D9"
-                radius={[4, 4, 4, 4]}
-                barSize={24}
-              />
-            </BarChart>
-          </ResponsiveContainer>
         </div>
       </div>
     </div>
