@@ -1,3 +1,5 @@
+import AppShell from "@/src/components/AppShell";
+
 // Personalized, auth-gated app routes. These render per-request so the CSP
 // nonce (set in middleware.js) can be stamped onto Next's inline scripts, and
 // because their content is user-specific and not cacheable anyway.
@@ -8,5 +10,5 @@
 export const dynamic = "force-dynamic";
 
 export default function AppGroupLayout({ children }) {
-  return children;
+  return <AppShell>{children}</AppShell>;
 }

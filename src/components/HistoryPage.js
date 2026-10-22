@@ -17,41 +17,52 @@ export default function HistoryPage() {
 
   useEffect(() => {
     if (!user) return;
-    (async () => {
-      try {
-        const today = new Date();
-        const start = new Date(today);
-        start.setDate(start.getDate() - 13);
+    const today = new Date();
+    const start = new Date(today);
+    start.setDate(start.getDate() - 13);
+    const load = (cache) =>
+      Promise.all([
+        getUserSettings(user.uid, { cache }),
+        getDayRange(user.uid, dateKey(start), dateKey(today), { cache }),
+      ]);
 
-        const [settings, rangeData] = await Promise.all([
-          getUserSettings(user.uid),
-          getDayRange(user.uid, dateKey(start), dateKey(today)),
-        ]);
+    const show = ([settings, rangeData]) => {
+      setGoal(settings.calorieGoal || 2000);
 
-        setGoal(settings.calorieGoal || 2000);
+      const daysList = Object.entries(rangeData)
+        .map(([date, entries]) => {
+          const totals = entries.reduce(
+            (acc, e) => ({
+              calories: acc.calories + (e.calories || 0),
+              protein: acc.protein + (e.protein || 0),
+              carbs: acc.carbs + (e.carbs || 0),
+              fat: acc.fat + (e.fat || 0),
+            }),
+            { calories: 0, protein: 0, carbs: 0, fat: 0 },
+          );
+          return { date, entries: entries.length, ...totals };
+        })
+        .sort((a, b) => b.date.localeCompare(a.date));
 
-        const daysList = Object.entries(rangeData)
-          .map(([date, entries]) => {
-            const totals = entries.reduce(
-              (acc, e) => ({
-                calories: acc.calories + (e.calories || 0),
-                protein: acc.protein + (e.protein || 0),
-                carbs: acc.carbs + (e.carbs || 0),
-                fat: acc.fat + (e.fat || 0),
-              }),
-              { calories: 0, protein: 0, carbs: 0, fat: 0 },
-            );
-            return { date, entries: entries.length, ...totals };
-          })
-          .sort((a, b) => b.date.localeCompare(a.date));
+      setDays(daysList);
+      setLoading(false);
+    };
 
-        setDays(daysList);
-      } catch (err) {
+    // Paint from the on-device cache first (see firestoreService), then
+    // revalidate from the server.
+    let serverLoaded = false;
+    load(true).then(([settings, rangeData]) => {
+      if (!serverLoaded && settings && rangeData) show([settings, rangeData]);
+    });
+    load(false)
+      .then((result) => {
+        serverLoaded = true;
+        show(result);
+      })
+      .catch((err) => {
         console.warn("Failed to load history:", err);
-      } finally {
         setLoading(false);
-      }
-    })();
+      });
   }, [user]);
 
   const formatDate = (dateStr) => {

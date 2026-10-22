@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "@/src/context/AuthContext";
 import {
   addFoodEntry,
@@ -11,7 +11,7 @@ import {
   logFoodItems,
 } from "@/src/services/firestoreService";
 import dynamic from "next/dynamic";
-import { scaleMacros } from "@/src/services/foodDataService";
+import { scaleMacros } from "@/src/services/macros";
 // Eager: part of the initial Today view, needed for first paint.
 import CalorieRing from "@/src/components/CalorieRing";
 import MacroBar from "@/src/components/MacroBar";
@@ -78,6 +78,9 @@ export default function HomePage() {
   const todayLabel = getTodayLabel();
   const { showToast, toastNode } = useToast();
 
+  // Set once a server read lands, so a slower cache read can't overwrite it.
+  const serverLoaded = useRef(false);
+
   // Called on mount and again whenever the user returns to the tab, so meals
   // logged from the chat page or another device show up. State is only set
   // after the awaits, so the refresh never flashes the skeleton.
@@ -89,6 +92,7 @@ export default function HomePage() {
         getDayEntries(user.uid, today),
         getUserSettings(user.uid),
       ]);
+      serverLoaded.current = true;
       if (dayEntries.status === "fulfilled") setEntries(dayEntries.value);
       else console.warn("Failed to load entries:", dayEntries.reason);
       if (settings.status === "fulfilled") setGoal(settings.value.calorieGoal || 2000);
@@ -99,8 +103,22 @@ export default function HomePage() {
   }, [user, today]);
 
   useEffect(() => {
+    if (!user) return;
+    // Paint from the on-device cache first — a returning user sees their day
+    // instantly — while the server read above revalidates it.
+    Promise.all([
+      getDayEntries(user.uid, today, { cache: true }),
+      getUserSettings(user.uid, { cache: true }),
+    ]).then(([cachedEntries, cachedSettings]) => {
+      // A cached settings doc means this device has synced before, so an empty
+      // cached day really is empty rather than not-yet-downloaded.
+      if (serverLoaded.current || !cachedEntries || !cachedSettings) return;
+      setEntries(cachedEntries);
+      setGoal(cachedSettings.calorieGoal || 2000);
+      setLoading(false);
+    });
     fetchData();
-  }, [fetchData]);
+  }, [user, today, fetchData]);
 
   // Pick up meals logged elsewhere (the chat page, another device) when the
   // user returns to this tab.

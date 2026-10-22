@@ -1,14 +1,20 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useAuth } from "@/src/context/AuthContext";
 import { parseMeal } from "@/src/services/chatLogClient";
-import MealConfirmCard from "@/src/components/MealConfirmCard";
 import useSpeechInput from "@/src/hooks/useSpeechInput";
 import styles from "./ChatBar.module.css";
 
 const MAX_LENGTH = 500;
+
+// The confirm card (and the meal resolver it uses) only appears after a parse,
+// so it stays out of Today's initial bundle. handleSubmit starts loading it
+// alongside the AI request.
+const loadConfirmCard = () => import("@/src/components/MealConfirmCard");
+const MealConfirmCard = dynamic(loadConfirmCard, { ssr: false });
 
 /**
  * The "What did you eat?" bar on the Today page.
@@ -32,6 +38,11 @@ export default function ChatBar({ onLog }) {
     onResult: (transcript) => setText(transcript.slice(0, MAX_LENGTH)),
   });
 
+  // The chat icon (and an empty submit) open /chat; have it ready.
+  useEffect(() => {
+    router.prefetch("/chat");
+  }, [router]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const q = text.trim().slice(0, MAX_LENGTH);
@@ -42,6 +53,7 @@ export default function ChatBar({ onLog }) {
     if (busy || !user) return;
 
     speech.stop();
+    loadConfirmCard().catch(() => {});
     setBusy(true);
     setNote(null);
     setDraft(null);
