@@ -1,4 +1,7 @@
-import { resolveMealItems } from "@/src/services/mealResolver";
+// The resolver bundles the local food database, so it's loaded on first use
+// rather than with the Today screen. parseMeal starts the import before the AI
+// request, so it downloads while the request is in flight.
+const loadResolver = () => import("@/src/services/mealResolver");
 
 /**
  * Turn a casual meal description into resolved, portion-scaled items.
@@ -10,6 +13,8 @@ import { resolveMealItems } from "@/src/services/mealResolver";
  * that is safe to show the user.
  */
 export async function parseMeal(user, messages) {
+  const resolver = loadResolver();
+  resolver.catch(() => {}); // a failed preload surfaces below, if it's needed
   let res;
   try {
     const token = await user.getIdToken();
@@ -32,6 +37,10 @@ export async function parseMeal(user, messages) {
   }
 
   // Ground the AI's numbers in real nutrition data where we can.
-  const items = data.kind === "meal" ? await resolveMealItems(data.items || []) : [];
+  let items = [];
+  if (data.kind === "meal") {
+    const { resolveMealItems } = await resolver;
+    items = await resolveMealItems(data.items || []);
+  }
   return { kind: items.length > 0 ? "meal" : "chat", reply: data.reply, meal: data.meal, items };
 }

@@ -1,5 +1,13 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, connectAuthEmulator } from "firebase/auth";
+import {
+  initializeAuth,
+  getAuth,
+  indexedDBLocalPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+  GoogleAuthProvider,
+  connectAuthEmulator,
+} from "firebase/auth";
 import {
   initializeFirestore,
   getFirestore,
@@ -24,7 +32,24 @@ let app, auth, db, googleProvider;
 
 if (typeof window !== "undefined") {
   app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-  auth = getAuth(app);
+  // initializeAuth rather than getAuth: getAuth also wires in the popup/redirect
+  // resolver, and on mobile browsers and Safari that makes auth start-up WAIT for
+  // a hidden Google iframe (plus its scripts) to load before it reports who is
+  // signed in — a network round trip on every app open. Without the resolver,
+  // a returning user is read straight from IndexedDB. Sign-in passes the
+  // resolver explicitly (see AuthContext), so popups still work.
+  // Same persistence chain as getAuth's default, so nobody gets signed out.
+  try {
+    auth = initializeAuth(app, {
+      persistence: [
+        indexedDBLocalPersistence,
+        browserLocalPersistence,
+        browserSessionPersistence,
+      ],
+    });
+  } catch {
+    auth = getAuth(app); // already initialized (fast refresh)
+  }
   try {
     db = initializeFirestore(app, {
       localCache: persistentLocalCache({

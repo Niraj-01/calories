@@ -1,10 +1,15 @@
 "use client";
 
-import { useAuth } from "@/src/context/AuthContext";
+import { useEffect } from "react";
+import { useAuth, warmUpSignIn } from "@/src/context/AuthContext";
 import styles from "./LoginPage.module.css";
 
 export default function LoginPage() {
   const { signIn } = useAuth();
+
+  useEffect(() => {
+    warmUpSignIn();
+  }, []);
 
   return (
     <div className={styles.container}>

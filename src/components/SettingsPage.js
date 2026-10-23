@@ -72,7 +72,12 @@ export default function SettingsPage() {
     if (!user) return;
     (async () => {
       try {
-        const s = await getUserSettings(user.uid);
+        // This is a form, so it loads once rather than repainting under the
+        // user's fingers: the on-device copy when there is one (kept current
+        // by this device's saves and by Today's server reads), else the server.
+        const s =
+          (await getUserSettings(user.uid, { cache: true })) ||
+          (await getUserSettings(user.uid));
         setDisplayName(s.displayName || user.displayName || "");
         setCalorieGoal(s.calorieGoal || 2000);
         setAge(s.age || "");

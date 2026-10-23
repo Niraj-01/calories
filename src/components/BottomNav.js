@@ -60,6 +60,10 @@ export default function BottomNav() {
       <Link
         key={tab.href}
         href={tab.href}
+        // Full prefetch: the tab's page is fetched and kept in the client
+        // router cache as soon as the nav renders, so a tap swaps screens
+        // without a server round trip.
+        prefetch={true}
         className={`${styles.tab} ${isActive ? styles.active : ""}`}
       >
         <span className={styles.icon}>{tab.icon}</span>

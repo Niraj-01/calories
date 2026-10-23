@@ -28,7 +28,8 @@ import { NextResponse } from "next/server";
 const REPORT_ONLY = process.env.CSP_REPORT_ONLY === "true";
 
 // The Firebase emulators serve Auth on 9099 and Firestore on 8080 over plain
-// http://127.0.0.1, which `connect-src` would otherwise block — making the app
+// http://127.0.0.1, which `connect-src` (and, for the auth emulator's sign-in
+// iframe, `frame-src`) would otherwise block — making the app
 // unusable against `firebase emulators:start`. Allowed in development builds
 // only; production bundles never contain these origins.
 const DEV_EMULATOR_ORIGINS =
@@ -72,7 +73,7 @@ const COMMON_DIRECTIVES = [
 
   // Iframes: Firebase Auth uses a hidden iframe on the authDomain plus the
   // Google sign-in surface.
-  `frame-src 'self' https://*.firebaseapp.com https://accounts.google.com`,
+  `frame-src 'self' https://*.firebaseapp.com https://accounts.google.com${DEV_EMULATOR_ORIGINS}`,
 
   // Service worker / any blob-based workers.
   `worker-src 'self' blob:`,

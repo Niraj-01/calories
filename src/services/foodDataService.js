@@ -1,4 +1,7 @@
 import localFoods from "@/food_database.json";
+import { scaleMacros } from "./macros";
+
+export { scaleMacros };
 
 const OFF_PRODUCT_URL = "https://world.openfoodfacts.org/api/v2/product/";
 const OFF_SEARCH_URL = "https://world.openfoodfacts.org/cgi/search.pl";
@@ -73,17 +76,6 @@ export function scoreMatch(name, query) {
     total += best;
   }
   return total / bWords.length;
-}
-
-export function scaleMacros(per100g, grams) {
-  const ratio = grams / 100;
-  return {
-    calories: Math.round(per100g.calories * ratio),
-    protein: Math.round(per100g.protein * ratio * 10) / 10,
-    carbs: Math.round(per100g.carbs * ratio * 10) / 10,
-    fat: Math.round(per100g.fat * ratio * 10) / 10,
-    fiber: Math.round((per100g.fiber ?? 0) * ratio * 10) / 10,
-  };
 }
 
 function normalizeLocalFood(item) {

@@ -6,6 +6,8 @@ import {
   deleteDoc,
   getDocs,
   getDoc,
+  getDocsFromCache,
+  getDocFromCache,
   setDoc,
   updateDoc,
   query,
@@ -23,6 +25,26 @@ export function dateKey(date = new Date()) {
   const adjustedDate = new Date(date.getTime() - offset * 60 * 1000);
   return adjustedDate.toISOString().split("T")[0];
 }
+
+// --- Cache-first reads ---
+//
+// The Firestore SDK keeps an on-device copy of everything it has synced
+// (persistentLocalCache in firebase.js). Reads below take { cache: true } to
+// answer from that copy alone — IndexedDB, no network, a few milliseconds —
+// so screens can paint a returning user's data instantly and then revalidate
+// with a normal (server) read. A cache read never throws: it resolves to null
+// when the device has nothing for it.
+
+async function readQuery(q, cache) {
+  if (!cache) return getDocs(q);
+  try {
+    return await getDocsFromCache(q);
+  } catch {
+    return null;
+  }
+}
+
+const listOf = (snap) => snap && snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 
 // --- Entries ---
 
@@ -46,11 +68,10 @@ export async function deleteFoodEntry(uid, date, entryId) {
   await deleteDoc(ref);
 }
 
-export async function getDayEntries(uid, date) {
+export async function getDayEntries(uid, date, { cache = false } = {}) {
   const ref = entriesRef(uid, date);
   const q = query(ref, orderBy("createdAt", "asc"));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+  return listOf(await readQuery(q, cache));
 }
 
 // Local YYYY-MM-DD for a Date (matches the log-document id format).
@@ -71,7 +92,7 @@ function localDateKey(d) {
 // server time, the log-day is local) are never missed; the precise day filter
 // happens during grouping. Reuses the existing (uid, createdAt) collection-group
 // index — no schema change.
-export async function getDayRange(uid, startDate, endDate) {
+export async function getDayRange(uid, startDate, endDate, { cache = false } = {}) {
   const startKey = String(startDate).slice(0, 10);
   const endKey = String(endDate).slice(0, 10);
 
@@ -99,7 +120,8 @@ export async function getDayRange(uid, startDate, endDate) {
     where("createdAt", "<=", Timestamp.fromDate(upper)),
   );
 
-  const snap = await getDocs(q);
+  const snap = await readQuery(q, cache);
+  if (!snap) return null;
   // Inequality on createdAt means results arrive in createdAt-ascending order,
   // so each day's entries land sorted the same way getDayEntries returned them.
   snap.docs.forEach((docSnap) => {
@@ -119,16 +141,38 @@ function userDocRef(uid) {
   return doc(db, "users", uid);
 }
 
-export async function getUserSettings(uid) {
-  const snap = await getDoc(userDocRef(uid));
-  if (snap.exists()) {
-    return snap.data();
+// Several screens ask for settings at once on start-up (the onboarding check,
+// then Today). A server read is shared for a few seconds so they cost one
+// round trip, not two.
+const SETTINGS_SHARE_MS = 5000;
+let settingsRead = null; // { uid, at, promise }
+
+export async function getUserSettings(uid, { cache = false } = {}) {
+  if (cache) {
+    try {
+      const snap = await getDocFromCache(userDocRef(uid));
+      return snap.exists() ? snap.data() : null;
+    } catch {
+      return null;
+    }
   }
-  // Default settings
-  return { calorieGoal: 2000, displayName: "" };
+
+  if (settingsRead?.uid === uid && Date.now() - settingsRead.at < SETTINGS_SHARE_MS) {
+    return settingsRead.promise;
+  }
+  const promise = getDoc(userDocRef(uid)).then((snap) =>
+    // Default settings
+    snap.exists() ? snap.data() : { calorieGoal: 2000, displayName: "" },
+  );
+  settingsRead = { uid, at: Date.now(), promise };
+  promise.catch(() => {
+    if (settingsRead?.promise === promise) settingsRead = null;
+  });
+  return promise;
 }
 
 export async function setUserSettings(uid, settings) {
+  settingsRead = null;
   await setDoc(userDocRef(uid), settings, { merge: true });
 }
 
@@ -139,11 +183,10 @@ function myFoodsRef(uid) {
   return collection(db, "users", uid, "myFoods");
 }
 
-export async function getMyFoods(uid) {
+export async function getMyFoods(uid, { cache = false } = {}) {
   const ref = myFoodsRef(uid);
   const q = query(ref, orderBy("name", "asc"));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+  return listOf(await readQuery(q, cache));
 }
 
 export async function addMyFood(uid, food) {

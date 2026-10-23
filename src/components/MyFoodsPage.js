@@ -35,16 +35,21 @@ export default function MyFoodsPage() {
 
   useEffect(() => {
     if (!user) return;
-    (async () => {
-      try {
-        const data = await getMyFoods(user.uid);
+    // Paint from the on-device cache first (see firestoreService), then
+    // revalidate from the server.
+    let serverLoaded = false;
+    getMyFoods(user.uid, { cache: true }).then((cached) => {
+      if (serverLoaded || !cached?.length) return;
+      setFoods(cached);
+      setLoading(false);
+    });
+    getMyFoods(user.uid)
+      .then((data) => {
+        serverLoaded = true;
         setFoods(data);
-      } catch (err) {
-        console.warn("Failed to load foods:", err);
-      } finally {
-        setLoading(false);
-      }
-    })();
+      })
+      .catch((err) => console.warn("Failed to load foods:", err))
+      .finally(() => setLoading(false));
   }, [user]);
 
   const handleFormChange = (field, value) => {

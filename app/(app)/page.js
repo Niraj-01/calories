@@ -7,9 +7,12 @@ import { useEffect, useState } from "react";
 import { getUserSettings } from "@/src/services/firestoreService";
 import OnboardingFlow from "@/src/components/OnboardingFlow";
 
-const HomePage = dynamic(() => import("@/src/components/HomePage"), {
-  ssr: false,
-});
+const loadHomePage = () => import("@/src/components/HomePage");
+const HomePage = dynamic(loadHomePage, { ssr: false });
+
+// Start fetching Today's chunk as soon as this route's code runs, in parallel
+// with the auth check, instead of only after the onboarding check resolves.
+if (typeof window !== "undefined") loadHomePage().catch(() => {});
 
 export default function Page() {
   const { user } = useAuth();
@@ -18,17 +21,24 @@ export default function Page() {
 
   useEffect(() => {
     if (!user) return;
+    let cancelled = false;
     (async () => {
       try {
         setLoadingSettings(true);
-        const settings = await getUserSettings(user.uid);
-        setNeedsOnboarding(!settings.calorieGoal);
+        // Nobody un-onboards, so a goal in the on-device cache settles it with
+        // no network wait. Only a first visit on this device asks the server.
+        const cached = await getUserSettings(user.uid, { cache: true });
+        const settings = cached?.calorieGoal ? cached : await getUserSettings(user.uid);
+        if (!cancelled) setNeedsOnboarding(!settings.calorieGoal);
       } catch (err) {
         console.warn("Settings load failed", err);
       } finally {
-        setLoadingSettings(false);
+        if (!cancelled) setLoadingSettings(false);
       }
     })();
+    return () => {
+      cancelled = true;
+    };
   }, [user]);
 
   if (!user) return <LoginPage />;
