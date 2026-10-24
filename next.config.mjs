@@ -6,10 +6,12 @@ const nextConfig = {
     // the client router refetches a dynamic page from the server on every
     // visit. The pages themselves are client-rendered shells that load their
     // own data from Firestore on mount, so a cached copy is never stale in any
-    // way that matters — keep visited and prefetched pages for 5 minutes and
-    // switching tabs needs no server round trip.
+    // way that matters — keep visited (dynamic) and prefetched (static) pages
+    // for a day, so switching tabs never waits on the server (or on a server
+    // cold start) for as long as the app stays open.
     staleTimes: {
-      dynamic: 300,
+      dynamic: 86400,
+      static: 86400,
     },
   },
 };
