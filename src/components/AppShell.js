@@ -10,14 +10,26 @@ import BottomNav from "@/src/components/BottomNav";
 // it — these screens carry their own back button instead.
 const FULLSCREEN_ROUTES = new Set(["/chat"]);
 
-// Each tab's screen is its own lazy chunk, normally fetched only when the tab
-// is first opened. Once the app is idle we fetch them all ahead of time, so the
-// first tap on any tab renders without waiting on the network.
-const TAB_SCREENS = [
+// Each tab's screen, modal and the chat flow is its own lazy chunk, normally
+// fetched only when first opened. Once the app is idle we fetch them all ahead
+// of time, so the first tap on any of them renders without waiting on the
+// network. The service worker keeps them on disk, so this costs a download
+// once per deploy and also means a cached app shell always has every screen.
+const LAZY_SCREENS = [
   () => import("@/src/components/HomePage"),
   () => import("@/src/components/HistoryPage"),
   () => import("@/src/components/MyFoodsPage"),
   () => import("@/src/components/SettingsPage"),
+  () => import("@/src/components/ChatPage"),
+  () => import("@/src/components/SearchModal"),
+  () => import("@/src/components/CameraModal"),
+  () => import("@/src/components/BarcodeScannerModal"),
+  () => import("@/src/components/FoodDetailsModal"),
+  () => import("@/src/components/AddFoodModal"),
+  () => import("@/src/components/MealPickerSheet"),
+  () => import("@/src/components/MealConfirmCard"),
+  () => import("@/src/services/mealResolver"),
+  () => import("html5-qrcode"),
 ];
 
 function whenIdle(fn) {
@@ -36,7 +48,7 @@ function Shell({ children }) {
   useEffect(() => {
     if (!user) return;
     return whenIdle(() => {
-      TAB_SCREENS.forEach((load) => load().catch(() => {}));
+      LAZY_SCREENS.forEach((load) => load().catch(() => {}));
     });
   }, [user]);
 
